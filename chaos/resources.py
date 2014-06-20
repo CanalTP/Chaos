@@ -89,57 +89,6 @@ class Index(flask_restful.Resource):
         return response, 200
 
 class Disruptions(flask_restful.Resource):
-    def __init__(self):
-        self.parsers = {}
-        self.parsers["get"] = reqparse.RequestParser()
-        parser_get = self.parsers["get"]
-        parser_get.add_argument("start_index", type=int, default=1)
-        parser_get.add_argument("items_per_page", type=int, default=20)
-
-    def get_value(self, args, param, default):
-        if param in args:
-            return args[param]
-        else:
-            return default
-
-    def paginate(self, result, response):
-
-        prev = None
-        next = None
-        if result.has_prev:
-            prev = url_for('disruption',
-                           start_index=result.prev_num,
-                           items_per_page=result.per_page,
-                           _external=True)
-
-        if result.has_next:
-            next = url_for('disruption',
-                           start_index=result.next_num,
-                           items_per_page=result.per_page,
-                           _external=True)
-
-        last = url_for('disruption',
-                       start_index=result.pages,
-                       items_per_page=result.per_page,
-                       _external=True)
-
-        first = url_for('disruption',
-                        start_index=1,
-                        items_per_page=result.per_page,
-                        _external=True)
-
-        response["meta"] = {
-            "pagination":{
-            "start_index": result.page,
-            "items_per_page": result.per_page,
-            "total_results": result.total,
-            "prev": {"href": prev},
-            "next": {"href": next},
-            "first": {"href": first},
-            "last": {"href": last}
-            }
-        }
-        return response
 
     def get(self, id=None):
         try:
@@ -147,25 +96,12 @@ class Disruptions(flask_restful.Resource):
                 return marshal({'disruption': models.Disruption.get(id)},
                                one_disruption_fields)
             else:
-                args = self.parsers['get'].parse_args()
-                page_index = self.get_value(args, 'start_index', 1)
-                if page_index == 0:
-                    raise ChaosException("page_index")
-
-                items_per_page = self.get_value(args, 'items_per_page', 20)
-                if items_per_page == 0:
-                    raise ChaosException("items_per_page")
-
-                result = models.Disruption.paginate(page_index, items_per_page)
-                response = marshal({'disruptions': result.items},
-                                disruptions_fields)
-                return self.paginate(result, response)
+                return marshal({'disruptions': models.Disruption.all()},
+                           disruptions_fields)
 
         except exc.DataError as e:
             logging.getLogger(__name__).error(str(e))
             return {"error": errors_dict["id_not_exist"]}, 400
-        except ChaosException as e:
-            return {"error": errors_dict[e.message]}, 400
         except exc.DatabaseError as e:
             logging.getLogger(__name__).error(str(e))
             return {"error": errors_dict["database"]}, 400
