@@ -35,7 +35,8 @@ from sqlalchemy import exc
 from chaos import models, db
 from jsonschema import validate, ValidationError
 import logging
-import errors
+from errors import errors_dict, ChaosException
+from werkzeug.exceptions import BadRequest
 
 __all__ = ['Disruptions']
 
@@ -65,7 +66,8 @@ one_disruption_fields = {'disruption': fields.Nested(disruption_fields)
                      }
 
 error_field = {'id': fields.String(),
-                'message': fields.String()}
+               'message': fields.String()}
+
 error_fields = {'error': error_field}
 
 #see http://json-schema.org/
@@ -89,8 +91,7 @@ class Index(flask_restful.Resource):
 class Disruptions(flask_restful.Resource):
     def __init__(self):
         self.parsers = {}
-        self.parsers["get"] = reqparse.RequestParser(
-            argument_class=argument.ArgumentDoc)
+        self.parsers["get"] = reqparse.RequestParser()
         parser_get = self.parsers["get"]
         parser_get.add_argument("start_index", type=int, default=1)
         parser_get.add_argument("items_per_page", type=int, default=20)
@@ -141,69 +142,91 @@ class Disruptions(flask_restful.Resource):
         return response
 
     def get(self, id=None):
-        if id:
-            return marshal({'disruption': models.Disruption.get(id)},
-                           one_disruption_fields)
-        else:
-            args = self.parsers['get'].parse_args()
-            page_index = self.get_value(args, 'start_index', 1)
-            if page_index == 0:
-                return {"error": errors.get_message(errors.Error_Enum.page_index)}, 400
+        try:
+            if id:
+                return marshal({'disruption': models.Disruption.get(id)},
+                               one_disruption_fields)
+            else:
+                args = self.parsers['get'].parse_args()
+                page_index = self.get_value(args, 'start_index', 1)
+                if page_index == 0:
+                    raise ChaosException("page_index")
 
-            items_per_page = self.get_value(args, 'items_per_page', 20)
-            if items_per_page == 0:
-                return {"error": errors.get_message(errors.Error_Enum.items_per_page)}, 400
+                items_per_page = self.get_value(args, 'items_per_page', 20)
+                if items_per_page == 0:
+                    raise ChaosException("items_per_page")
 
-            result = models.Disruption.paginate(page_index, items_per_page)
-            response = marshal({'disruptions': result.items},
-                            disruptions_fields)
+                result = models.Disruption.paginate(page_index, items_per_page)
+                response = marshal({'disruptions': result.items},
+                                disruptions_fields)
+                return self.paginate(result, response)
 
-            return self.paginate(result, response)
+        except exc.DataError as e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["id_not_exist"]}, 400
+        except ChaosException as e:
+            return {"error": errors_dict[e.message]}, 400
+        except exc.DatabaseError as e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["database"]}, 400
+        except Exception, e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["unknown"]}, 400
 
     def post(self):
         try:
             json = request.get_json()
-        except Exception as e:
-            return {"error": errors.get_message(errors.Error_Enum.parse_json)}, 400
-
-        logging.getLogger(__name__).debug(json)
-        try:
+            logging.getLogger(__name__).debug(json)
             validate(json, disruptions_input_format)
+            disruption = models.Disruption()
+            disruption.fill_from_json(json)
+            db.session.add(disruption)
+            db.session.commit()
+        except BadRequest as e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["parse_json"]}, 400
         except ValidationError, e:
-            logging.debug(str(e))
-            return {"error": errors.get_message(errors.Error_Enum.schema_json)}, 400
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["schema_json"]}, 400
+        except Exception, e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["unknown"]}, 400
 
-        disruption = models.Disruption()
-        disruption.fill_from_json(json)
-        db.session.add(disruption)
-        db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 201
-
 
     def put(self, id):
         try:
             disruption = models.Disruption.get(id)
-        except exc.DataError as e:
-            return {"error": errors.get_message(errors.Error_Enum.id_not_exist)}, 400
-
-        try:
             json = request.get_json()
-        except Exception as e:
-            return {"error": errors.get_message(errors.Error_Enum.parse_json)}, 400
-        logging.getLogger(__name__).debug(json)
-
-        try:
+            logging.getLogger(__name__).debug(json)
             validate(json, disruptions_input_format)
+            disruption.fill_from_json(json)
+            db.session.commit()
+        except exc.DataError as e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["id_not_exist"]}, 400
+        except BadRequest as e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["parse_json"]}, 400
         except ValidationError, e:
-            logging.getLogger(__name__).debug(str(e))
-            return {"error": errors.get_message(errors.Error_Enum.schema_json)}, 400
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["schema_json"]}, 400
+        except Exception, e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["unknown"]}, 400
 
-        disruption.fill_from_json(json)
-        db.session.commit()
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
     def delete(self, id):
-        disruption = models.Disruption.get(id)
-        disruption.archive()
-        db.session.commit()
+        try:
+            disruption = models.Disruption.get(id)
+            disruption.archive()
+            db.session.commit()
+        except exc.DataError as e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["id_not_exist"]}, 400
+        except Exception, e:
+            logging.getLogger(__name__).error(str(e))
+            return {"error": errors_dict["unknown"]}, 400
+
         return None, 204

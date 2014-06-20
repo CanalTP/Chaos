@@ -1,4 +1,8 @@
 errors_dict = {
+    "unknown": {
+            "id": "unknown",
+            "message":"unknown error"
+        },
     "page_index": {
         "id": "invalid_page_index",
         "message":"page_index argument value is not valid"
@@ -22,18 +26,16 @@ errors_dict = {
     "id_not_exist": {
         "id": "not_id_object",
         "message": "Object id not exist in database"
+    },
+
+    "database": {
+        "id": "database_error",
+        "message": "Access database failed"
     }
 }
 
-
-class Error_Enum(object):
-    page_index = "page_index"
-    items_per_page = "items_per_page"
-    json = "json"
-    parse_json = "parse_json"
-    schema_json = "schema_json"
-    id_not_exist = "id_not_exist"
-
-
-def get_message(enum):
-    return errors_dict[enum]
+class ChaosException(Exception):
+    def __init__(self, value):
+        self.message = value
+    def __str__(self):
+        return repr(self.message)
