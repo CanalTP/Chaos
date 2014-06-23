@@ -34,11 +34,13 @@ from chaos import db
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 
+
 class TimestampMixin(object):
     created_at = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
     updated_at = db.Column(db.DateTime(), default=None, onupdate=datetime.utcnow)
 
 DisruptionStatus = db.Enum('published', 'archived', name='disruption_status')
+
 
 class Disruption(TimestampMixin, db.Model):
     id = db.Column(UUID, primary_key=True)

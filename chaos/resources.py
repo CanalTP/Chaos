@@ -78,6 +78,7 @@ disruptions_input_format = {'type': 'object',
                             'required': ['reference']
         }
 
+
 class Index(flask_restful.Resource):
 
     def get(self):
@@ -87,6 +88,7 @@ class Index(flask_restful.Resource):
             "disruption": {"href": url + '/{id}', "templated": True}
         }
         return response, 200
+
 
 class Disruptions(flask_restful.Resource):
 
@@ -99,15 +101,12 @@ class Disruptions(flask_restful.Resource):
                 return marshal({'disruptions': models.Disruption.all()},
                            disruptions_fields)
 
-        except exc.DataError as e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["id_not_exist"]}, 400
-        except exc.DatabaseError as e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["database"]}, 400
-        except Exception, e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["unknown"]}, 400
+        except exc.DataError:
+            return {"error": errors_dict["id_not_exist"]}, 500
+        except exc.DatabaseError:
+            return {"error": errors_dict["database"]}, 500
+        except Exception:
+            return {"error": errors_dict["unknown"]}, 500
 
     def post(self):
         try:
@@ -118,15 +117,12 @@ class Disruptions(flask_restful.Resource):
             disruption.fill_from_json(json)
             db.session.add(disruption)
             db.session.commit()
-        except BadRequest as e:
-            logging.getLogger(__name__).error(str(e))
+        except BadRequest:
             return {"error": errors_dict["parse_json"]}, 400
-        except ValidationError, e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["schema_json"]}, 400
-        except Exception, e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["unknown"]}, 400
+        except ValidationError:
+            return {"error": errors_dict["schema_json"]}, 500
+        except Exception:
+            return {"error": errors_dict["unknown"]}, 500
 
         return marshal({'disruption': disruption}, one_disruption_fields), 201
 
@@ -138,18 +134,14 @@ class Disruptions(flask_restful.Resource):
             validate(json, disruptions_input_format)
             disruption.fill_from_json(json)
             db.session.commit()
-        except exc.DataError as e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["id_not_exist"]}, 400
-        except BadRequest as e:
-            logging.getLogger(__name__).error(str(e))
+        except BadRequest:
             return {"error": errors_dict["parse_json"]}, 400
-        except ValidationError, e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["schema_json"]}, 400
-        except Exception, e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["unknown"]}, 400
+        except exc.DataError:
+            return {"error": errors_dict["id_not_exist"]}, 500
+        except ValidationError:
+            return {"error": errors_dict["schema_json"]}, 500
+        except Exception:
+            return {"error": errors_dict["unknown"]}, 500
 
         return marshal({'disruption': disruption}, one_disruption_fields), 200
 
@@ -158,11 +150,9 @@ class Disruptions(flask_restful.Resource):
             disruption = models.Disruption.get(id)
             disruption.archive()
             db.session.commit()
-        except exc.DataError as e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["id_not_exist"]}, 400
-        except Exception, e:
-            logging.getLogger(__name__).error(str(e))
-            return {"error": errors_dict["unknown"]}, 400
+        except exc.DataError:
+            return {"error": errors_dict["id_not_exist"]}, 500
+        except Exception:
+            return {"error": errors_dict["unknown"]}, 500
 
         return None, 204
