@@ -32,7 +32,7 @@ import flask_restful
 import requests
 import logging
 
-class Validator(object):
+class PTobjectHelper(object):
     def __init__(self):
         self.jormungandr_url = current_app.config.get('JORMUNGANDR_URL')
         self.jormungandr_token = current_app.config.get('JORMUNGANDR_TOKEN')
