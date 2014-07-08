@@ -43,21 +43,34 @@ class Validator(object):
                              "network": "networks",
                              "stop_area": "stop_areas"}
 
-    def is_object_valide(self, uri, object_type):
+    def get_collection(self, object_type):
         if object_type in self._collections.keys():
-            collection = self._collections[object_type]
-            url = "%s/v1/coverage/%s/%s/%s" % (self.jormungandr_url, self.coverage, collection, uri)
-            if self.jormungandr_token:
-                auth = (self.jormungandr_token, None)
-            else:
-                auth = None
-            request_jormun = requests.get(url,
-                                          auth=auth)
-            logging.getLogger(__name__).debug("call %s" % request_jormun.url)
-            if request_jormun:
-                json = request_jormun.json()
-                if collection in json and len(json[collection]) > 0:
-                    return True
-                return False
-            logging.getLogger(__name__).debug("url %s is not accessible" % request_jormun.url)
+            return self._collections[object_type]
+        return None
+
+    def format_url(self,uri, object_type):
+        collection = self.get_collection(object_type)
+        if collection:
+            return "%s/v1/coverage/%s/%s/%s" % (self.jormungandr_url, self.coverage, collection, uri)
+        return None
+
+    def get_response(self, url):
+        if self.jormungandr_token:
+            auth = (self.jormungandr_token, None)
+        else:
+            auth = None
+        return requests.get(url, auth=auth)
+
+    def is_object_valide(self, uri, object_type):
+        url = self.format_url(uri, object_type)
+        if url:
+            response = self.get_response(url)
+        logging.getLogger(__name__).debug("call %s" % url)
+        if response:
+            json = response.json()
+            collection = self.get_collection(object_type)
+            if collection in json and len(json[collection]) > 0:
+                return True
             return False
+        logging.getLogger(__name__).debug("url %s is not accessible" % url)
+        return False
