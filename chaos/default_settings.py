@@ -2,6 +2,10 @@
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 #http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 SQLALCHEMY_DATABASE_URI = 'postgresql://navitia:navitia@localhost/chaos'
+JORMUNGANDR_URL = 'http://par-vm196.srv.canaltp.fr'
+JORMUNGANDR_TOKEN = None
+COVERAGE = 'jdr'
+
 
 DEBUG = True
 

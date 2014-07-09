@@ -38,6 +38,7 @@ from formats import *
 from formats import impact_input_format, channel_input_format
 from chaos import mapper
 from chaos import utils
+from chaos import validator
 
 import logging
 from utils import make_pager, option_value
