@@ -29,7 +29,6 @@
 # www.navitia.io
 
 import logging
-from connectors.disruption_sender.config import Config
 from connectors.disruption_sender.sender import Sender
 from connectors.disruption_sender.adjustit import AdjustIt
 from connectors.disruption_sender.utils import FunctionalError, TechnicalError

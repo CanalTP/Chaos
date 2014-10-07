@@ -49,7 +49,15 @@ def main():
     except argparse.ArgumentTypeError:
         print("Bad usage, learn how to use me with %s -h" % sys.argv[0])
         sys.exit(1)
-    config_data = json.loads(open(config_file).read())
+    try:
+        config_data = json.loads(open(config_file).read())
+    except ValueError as e:
+        print("Bad config file, %s" % str(e))
+        sys.exit(1)
+    except IOError as e:
+        print("Bad config file, %s" % str(e))
+        sys.exit(1)
+
     daemon = DisruptionSender(config_data)
     daemon.run()
 
