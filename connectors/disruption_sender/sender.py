@@ -41,23 +41,6 @@ class Sender(object):
         self.adjustit = adjustit
         self.data = Data()
 
-    def fill_urls(self, disruption):
-        if disruption and disruption.entity:
-            for entity in disruption.entity:
-                # Delete disruption
-                url = None
-                if entity.is_deleted:
-                    url = self.adjustit.url_by_action("deleteevent")
-                    if url:
-                        url = url.format(eventextcode=entity.id)
-                else:
-                    disruption_pb = entity.Extensions[chaos_pb2.disruption]
-                    url = self.adjustit.url_by_action("addevent")
-                    if url:
-                        url = url.format(eventextcode=disruption_pb.id, reference=disruption_pb.reference)
-                if url:
-                    self.urls.append(url)
-
     def send_disruption(self, disruption):
         self.data.fill_Events(disruption)
         self.send()
