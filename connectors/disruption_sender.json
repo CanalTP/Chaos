@@ -5,8 +5,8 @@
        "token": "f8a9befb-6bd9-4620-b942-b6b69a07487d"
    },
     "adjustit": {
-        "url": "http://10.2.0.16/alertetrafic/master/cgi-bin/adjustit.dll",
-        "provider": "canaltp",
+        "url": "http://domaine/region/cgi-bin/adjustit.dll",
+        "provider": "provider",
         "interface": 5,
         "timeout": 1
     },
