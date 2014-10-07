@@ -27,34 +27,3 @@
 # IRC #navitia on freenode
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
-
-import sys
-
-from disruption_sender.daemon import DisruptionSender
-import argparse
-import json
-
-
-def main():
-    """
-        main: ce charge d'interpreter les parametres de la ligne de commande
-    """
-    parser = argparse.ArgumentParser(description="DisruptionSender se charge "
-                                     "d'envoyer les perturabations a Adjustit")
-    parser.add_argument('config_file', type=str)
-    config_file = ""
-    try:
-        args = parser.parse_args()
-        config_file = args.config_file
-    except argparse.ArgumentTypeError:
-        print("Bad usage, learn how to use me with %s -h" % sys.argv[0])
-        sys.exit(1)
-    config_data = json.loads(open(config_file).read())
-    daemon = DisruptionSender(config_data)
-    daemon.run()
-
-    sys.exit(0)
-
-
-if __name__ == "__main__":
-    main()

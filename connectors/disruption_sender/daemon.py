@@ -45,12 +45,11 @@ class DisruptionSender(ConsumerMixin):
     Ce service permet d'envoyer des perturbations a Adjustit a partir de rabbitmq
     """
 
-    def __init__(self, conf_file):
+    def __init__(self, config_data):
         self.connection = None
         self.exchange = None
         self.queues = []
-        self.config = Config()
-        self.config.load(conf_file)
+        self.config = config_data
         self.sender = Sender(self.config, AdjustIt(self.config))
         self._init_rabbitmq()
 
@@ -58,14 +57,14 @@ class DisruptionSender(ConsumerMixin):
         """
         connect to rabbitmq and init the queues
         """
-        self.connection = kombu.Connection(self.config.broker_url)
-        exchange_name = self.config.exchange_name
+        self.connection = kombu.Connection(self.config['broker-url'])
+        exchange_name = self.config['exchange-name']
         exchange = kombu.Exchange(exchange_name, type="topic")
         logging.getLogger('disruption_sender').info("listen following exchange: %s",
                                                     exchange_name)
 
-        for topic in self.config.rt_topics:
-            queue = kombu.Queue(exchange_name + ':' + topic,
+        for topic in self.config["rt_topics"]:
+            queue = kombu.Queue(self.config['queue-name'] + ':' + topic,
                                 exchange=exchange,
                                 durable=True,
                                 routing_key=topic)

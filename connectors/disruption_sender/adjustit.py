@@ -36,17 +36,22 @@ class AdjustIt(object):
     def __init__(self, config):
         self.config = config
         self.sub_url = "{url}/api?action={action}&providerextcode={provider}&interface={interface}"
+        adjustit = config["adjustit"]
+        self.timeout = adjustit["timeout"]
+        self.url = adjustit["url"]
+        self.provider = adjustit["provider"]
+        self.interface = adjustit["interface"]
         self.urls = {
             "deleteevent": self.sub_url.format(action="deleteevent",
-                                                    url=self.config.adjustit_url,
-                                                    provider=self.config.adjustit_provider,
-                                                    interface=self.config.adjustit_interface) +
+                                                    url=self.url,
+                                                    provider=self.provider,
+                                                    interface=self.interface) +
                                 "&eventextcode={eventextcode}",
 
             "addevent": self.sub_url.format(action="addevent",
-                                                    url=self.config.adjustit_url,
-                                                    provider=self.config.adjustit_provider,
-                                                    interface=self.config.adjustit_interface) +
+                                                    url=self.url,
+                                                    provider=self.provider,
+                                                    interface=self.interface) +
                         "&eventtitle={reference}" +
                         "&eventextcode={eventextcode}" +
                         "&eventlevelid=1"
@@ -59,7 +64,7 @@ class AdjustIt(object):
 
     def call_adjustit(self, url):
         try:
-            response = requests.get(url, timeout=self.config.adjustit_timeout)
+            response = requests.get(url, timeout=self.timeout)
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to adjustit failed, url :' + url)
             #currently we reraise the previous exceptions
