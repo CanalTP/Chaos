@@ -29,6 +29,7 @@
 # www.navitia.io
 
 from chaos import chaos_pb2
+from data import Data
 
 
 class Sender(object):
@@ -37,8 +38,8 @@ class Sender(object):
     """
     def __init__(self, config, adjustit):
         self.config = config
-        self.urls = []
         self.adjustit = adjustit
+        self.data = Data()
 
     def fill_urls(self, disruption):
         if disruption and disruption.entity:
@@ -58,9 +59,10 @@ class Sender(object):
                     self.urls.append(url)
 
     def send_disruption(self, disruption):
-        self.fill_urls(disruption)
+        self.data.fill_Events(disruption)
         self.send()
 
     def send(self):
-        for url in self.urls:
-            self.adjustit.call_adjustit(url)
+        for event in self.data.events:
+            if event.is_deleted:
+                self.adjustit.delete_event(event)

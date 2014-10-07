@@ -31,6 +31,7 @@
 import requests
 import logging
 
+
 class AdjustIt(object):
 
     def __init__(self, config):
@@ -41,26 +42,15 @@ class AdjustIt(object):
         self.url = adjustit["url"]
         self.provider = adjustit["provider"]
         self.interface = adjustit["interface"]
-        self.urls = {
-            "deleteevent": self.sub_url.format(action="deleteevent",
-                                                    url=self.url,
-                                                    provider=self.provider,
-                                                    interface=self.interface) +
-                                "&eventextcode={eventextcode}",
 
-            "addevent": self.sub_url.format(action="addevent",
-                                                    url=self.url,
-                                                    provider=self.provider,
-                                                    interface=self.interface) +
-                        "&eventtitle={reference}" +
-                        "&eventextcode={eventextcode}" +
-                        "&eventlevelid=1"
-        }
-
-    def url_by_action(self, action):
-        if action in self.urls:
-            return self.urls[action]
-        return None
+    def delete_event(self, event):
+        if event:
+            url = self.sub_url.format(action="deleteevent", url=self.url, provider=self.provider, interface=self.interface) +\
+            "&eventextcode={eventextcode}"
+            url = url.format(eventextcode=event.external_code)
+            self.call_adjustit(url)
+        else:
+            logging.getLogger(__name__).exception('Delete_vent: Event not valid')
 
     def call_adjustit(self, url):
         try:
