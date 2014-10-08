@@ -79,7 +79,7 @@ class Event(object):
         self.modification_date = None
         self.publication_start_date = None
         self.publication_end_date = None
-        self.impact = None
+        self.impact = []
         self.provider = None
 
     def fill_event(self, entity):
@@ -90,7 +90,11 @@ class Event(object):
             disruption_pb = entity.Extensions[chaos_pb2.disruption]
             self.external_code = disruption_pb.id
             self.creation_date = disruption_pb.created_at
-            self.modification_date = disruption_pb.updated_at
+            if disruption_pb.updated_at:
+                self.modification_date = disruption_pb.updated_at
+            self.publication_start_date = disruption_pb.publication_period.start
+            if disruption_pb.publication_period.end:
+                self.publication_end_date = disruption_pb.publication_period.end
             self.title = disruption_pb.reference
 
 
