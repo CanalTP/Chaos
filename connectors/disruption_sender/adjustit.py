@@ -54,6 +54,7 @@ class AdjustIt(object):
 
     def call_adjustit(self, url):
         try:
+            logging.getLogger('call_adjustit').debug("call url :"+url)
             response = requests.get(url, timeout=self.timeout)
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to adjustit failed, url :' + url)

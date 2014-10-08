@@ -1,4 +1,4 @@
-#  Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
+# Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
 #     the software to build cool stuff with public transport.
@@ -27,16 +27,17 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from datetime import datetime
 
-format_date = "%Y|%m|%d"
+class FunctionalError(ValueError):
+    """
+    Exception lance lorsque que la donnee a traiter n'est pas valide
+    """
+    pass
 
 
-def int_date_format(value):
-    str = None
-    try:
-        date = datetime.fromtimestamp(value)
-        str = date.strftime(format_date)
-    except TypeError:
-        raise TypeError("The argument value is not valid, you gave: {}".format(value))
-    return str
+class TechnicalError(ValueError):
+    """
+    Exception lance lors d'un probleme technique
+    typiquement la base de donnees est inaccessible
+    """
+    pass

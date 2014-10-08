@@ -42,7 +42,6 @@ class ImpactBroadCast(object):
         self.msg_media = None
         self.title = None
         self.msg = None
-        self.push = None
 
 
 class TObjectRef(object):
@@ -58,8 +57,6 @@ class Provider(object):
 
 class Impact(object):
     def __init__(self):
-        self.object = None
-        self.impact_broad_cast = None
         self.external_code = None
         self.creation_date = None
         self.modification_date = None
@@ -68,6 +65,16 @@ class Impact(object):
         self.daily_start_date = None
         self.daily_end_date = None
         self.status = None
+        self.pt_object = None
+        self.impact_broad_casts = []
+
+    def fill_message(self, messages):
+        for message in messages:
+            msg = ImpactBroadCast()
+            msg.title = message.text
+            msg.msg_media = MsgMedia()
+            msg.msg_media.media = message.channel.name
+            self.impact_broad_casts.append(msg)
 
 
 class Event(object):
@@ -79,14 +86,15 @@ class Event(object):
         self.modification_date = None
         self.publication_start_date = None
         self.publication_end_date = None
-        self.impact = []
+        self.impacts = []
         self.provider = None
 
     def fill_event(self, entity):
-        if entity.is_deleted:
-            self.is_deleted = True
-            self.external_code = entity.id
-        else:
+
+        self.is_deleted = entity.is_deleted
+        self.external_code = entity.id
+
+        if not entity.is_deleted:
             disruption_pb = entity.Extensions[chaos_pb2.disruption]
             self.external_code = disruption_pb.id
             self.creation_date = disruption_pb.created_at
@@ -96,6 +104,19 @@ class Event(object):
             if disruption_pb.publication_period.end:
                 self.publication_end_date = disruption_pb.publication_period.end
             self.title = disruption_pb.reference
+            for impact_pb in disruption_pb.impacts:
+                for period in impact_pb.application_periods:
+                    for pt_object in impact_pb.informed_entities:
+                        impact = Impact()
+                        impact.creation_date = impact_pb.created_at
+                        impact.modification_date = impact_pb.updated_at
+                        impact.fill_message(impact_pb.messages)
+                        impact.application_start_date = period.start
+                        impact.application_end_date = period.end
+                        impact.pt_object = TObjectRef()
+                        impact.pt_object.external_code = pt_object.uri
+                        impact.pt_object.type = pt_object.pt_object_type
+                        self.impacts.append(impact)
 
 
 class Data(object):
