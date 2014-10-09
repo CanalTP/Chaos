@@ -119,13 +119,11 @@ class Event(object):
                         self.impacts.append(impact)
 
 
-class Data(object):
-    def __init__(self):
-        self.events = []
-
-    def fill_Events(self, disruption):
-        if disruption and disruption.entity:
-            for entity in disruption.entity:
-                event = Event()
-                event.fill_event(entity)
-                self.events.append(event)
+def get_events(disruption):
+    events = []
+    if disruption and disruption.entity:
+        for entity in disruption.entity:
+            event = Event()
+            event.fill_event(entity)
+            events.append(event)
+    return events

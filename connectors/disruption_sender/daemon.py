@@ -29,7 +29,7 @@
 # www.navitia.io
 
 import logging
-from connectors.disruption_sender.sender import Sender
+from connectors.disruption_sender.sender import send_disruption
 from connectors.disruption_sender.adjustit import AdjustIt
 from connectors.disruption_sender.exceptions import FunctionalError, TechnicalError
 from chaos import gtfs_realtime_pb2
@@ -49,7 +49,7 @@ class DisruptionSender(ConsumerMixin):
         self.exchange = None
         self.queues = []
         self.config = config_data
-        self.sender = Sender(self.config, AdjustIt(self.config))
+        self.adjustit = AdjustIt(self.config)
         self._init_rabbitmq()
 
     def _init_rabbitmq(self):
@@ -74,7 +74,7 @@ class DisruptionSender(ConsumerMixin):
     def handle_disruption(self, disruption):
         if disruption.IsInitialized():
             try:
-                self.sender.send_disruption(disruption)
+                send_disruption(disruption, self.adjustit)
             except (FunctionalError) as e:
                 logging.getLogger('disruption_sender').warn("error while preparing stats to save: {}".format(str(e)))
         else:

@@ -28,23 +28,14 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from data import Data
+from data import get_events
 
 
-class Sender(object):
+def send_disruption(disruption, adjustit):
     """
-    Class to consume disruption element from rabbitMQ and to send it to Adjustit.
+    Method to consume disruption element from rabbitMQ and to send it to Adjustit.
     """
-    def __init__(self, config, adjustit):
-        self.config = config
-        self.adjustit = adjustit
-        self.data = Data()
-
-    def send_disruption(self, disruption):
-        self.data.fill_Events(disruption)
-        self.send()
-
-    def send(self):
-        for event in self.data.events:
-            if event.is_deleted:
-                self.adjustit.delete_event(event)
+    events = get_events(disruption)
+    for event in events:
+        if event.is_deleted:
+            adjustit.delete_event(event)
