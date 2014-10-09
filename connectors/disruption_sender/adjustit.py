@@ -32,36 +32,52 @@ import requests
 import logging
 from utils import int_date_format
 
+separator = "&"
+
+actions = {
+    "deleteevent": separator.join(["{url}/api?action={action}",
+                                   "providerextcode={provider}",
+                                   "interface={interface}",
+                                   "eventextcode={eventextcode}"]),
+
+    "addevent": separator.join(["{url}/api?action={action}",
+                                "providerextcode={provider}",
+                                "interface={interface}",
+                                "eventextcode={eventextcode}",
+                                "eventtitle={title}",
+                                "publicationStartDate={start}",
+                                "publicationEndDate={end}"])
+}
+
 
 class AdjustIt(object):
 
     def __init__(self, config):
         self.config = config
-        self.sub_url = "{url}/api?action={action}&providerextcode={provider}&interface={interface}"
-        adjustit = config["adjustit"]
-        self.timeout = adjustit["timeout"]
-        self.url = adjustit["url"]
-        self.provider = adjustit["provider"]
-        self.interface = adjustit["interface"]
+        self.timeout = config["adjustit"]["timeout"]
+        self.url = config["adjustit"]["url"]
+        self.provider = config["adjustit"]["provider"]
+        self.interface = config["adjustit"]["interface"]
 
     def delete_event(self, event):
         if event:
-            url = self.sub_url.format(action="deleteevent", url=self.url, provider=self.provider, interface=self.interface) +\
-            "&eventextcode={eventextcode}"
-            url = url.format(eventextcode=event.external_code)
+            url = actions["deleteevent"].format(action="deleteevent",
+                                             url=self.url,
+                                             provider=self.provider,
+                                             interface=self.interface,
+                                             eventextcode=event.external_code)
             self.call_adjustit(url)
         else:
             logging.getLogger(__name__).exception('delete_vent: Event not valid')
 
     def add_event(self, event):
         if event:
-            url = self.sub_url.format(action="addevent", url=self.url, provider=self.provider, interface=self.interface) +\
-            "&eventextcode={eventextcode}&eventtitle={title}&publicationStartDate={start}&publicationEndDate={end}"
-
-            url = url.format(eventextcode=event.external_code,
-                             title=event.title,
-                             start=int_date_format(event.publication_start_date),
-                             end=int_date_format(event.publication_end_date))
+            url = actions["addevent"].format(action="addevent", url=self.url,
+                                             provider=self.provider, interface=self.interface,
+                                             eventextcode=event.external_code,
+                                             title=event.title,
+                                             start=int_date_format(event.publication_start_date),
+                                             end=int_date_format(event.publication_end_date))
             self.call_adjustit(url)
         else:
             logging.getLogger(__name__).exception('add_vent: Event not valid')
