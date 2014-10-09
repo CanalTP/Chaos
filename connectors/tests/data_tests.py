@@ -1,5 +1,5 @@
 from nose.tools import *
-from chaos import gtfs_realtime_pb2, chaos_pb2
+from connectors.disruption_sender import gtfs_realtime_pb2, chaos_pb2
 from connectors.disruption_sender.data import get_events
 import datetime, time
 

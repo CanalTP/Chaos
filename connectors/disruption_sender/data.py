@@ -28,7 +28,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from chaos import chaos_pb2
+from connectors.disruption_sender import chaos_pb2
 
 
 class MsgMedia(object):

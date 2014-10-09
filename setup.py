@@ -18,6 +18,7 @@ class BuildPbfCommand(Command):
 
     def run(self):
         os.system('{protoc} -Iproto --python_out=chaos proto/*.proto'.format(protoc=protoc))
+        os.system('{protoc} -Iproto --python_out=connectors/disruption_sender proto/*.proto'.format(protoc=protoc))
 
 
 setup(

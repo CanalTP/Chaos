@@ -32,7 +32,7 @@ import logging
 from connectors.disruption_sender.sender import send_disruption
 from connectors.disruption_sender.adjustit import AdjustIt
 from connectors.disruption_sender.exceptions import FunctionalError, TechnicalError
-from chaos import gtfs_realtime_pb2
+from connectors.disruption_sender import gtfs_realtime_pb2
 import time
 import kombu
 from kombu.mixins import ConsumerMixin
