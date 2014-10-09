@@ -31,6 +31,7 @@
 import sys
 
 from disruption_sender.daemon import DisruptionSender
+from connectors.database.database import init_db
 import argparse
 import json
 import logging
@@ -66,6 +67,7 @@ def main():
         print("Bad config file, %s" % str(e))
         sys.exit(1)
 
+    init_db()
     daemon = DisruptionSender(config_data)
     daemon.run()
 
