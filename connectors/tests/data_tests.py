@@ -1,6 +1,6 @@
 from nose.tools import *
 from chaos import gtfs_realtime_pb2, chaos_pb2
-from connectors.disruption_sender.data import Data
+from connectors.disruption_sender.data import get_events
 import datetime, time
 
 
@@ -51,26 +51,24 @@ def get_data(is_deleted):
     ptobject = impact_pb.informed_entities.add()
     ptobject.uri = "object2"
 
-    data = Data()
-    data.fill_Events(feed_message)
-    return data
+    return get_events(feed_message)
 
 
 def test_delete_event():
-    data = get_data(True)
+    events = get_data(True)
 
-    eq_(len(data.events), 1)
-    eq_(data.events[0].is_deleted, True)
-    eq_(data.events[0].external_code, '1234')
+    eq_(len(events), 1)
+    eq_(events[0].is_deleted, True)
+    eq_(events[0].external_code, '1234')
 
 
 def test_data_event():
-    data = get_data(False)
+    events = get_data(False)
 
-    eq_(len(data.events), 1)
-    eq_(data.events[0].is_deleted, False)
-    eq_(data.events[0].external_code, '1234')
-    eq_(data.events[0].title, 'reference')
-    eq_(len(data.events[0].impacts), 4)
-    for impact in data.events[0].impacts:
+    eq_(len(events), 1)
+    eq_(events[0].is_deleted, False)
+    eq_(events[0].external_code, '1234')
+    eq_(events[0].title, 'reference')
+    eq_(len(events[0].impacts), 4)
+    for impact in events[0].impacts:
         eq_(len(impact.impact_broad_casts), 2)
