@@ -38,8 +38,8 @@ import kombu
 from kombu.mixins import ConsumerMixin
 from google.protobuf.message import DecodeError
 
-class DisruptionSender(ConsumerMixin):
 
+class DisruptionSender(ConsumerMixin):
     """
     Ce service permet d'envoyer des perturbations a Adjustit a partir de rabbitmq
     """
@@ -59,8 +59,7 @@ class DisruptionSender(ConsumerMixin):
         self.connection = kombu.Connection(self.config['broker-url'])
         exchange_name = self.config['exchange-name']
         exchange = kombu.Exchange(exchange_name, type="topic")
-        logging.getLogger('disruption_sender').info("listen following exchange: %s",
-                                                    exchange_name)
+        logging.getLogger('disruption_sender').info("listen following exchange: %s", exchange_name)
 
         for topic in self.config["rt_topics"]:
             queue = kombu.Queue(self.config['queue-name'] + ':' + topic,
@@ -79,8 +78,7 @@ class DisruptionSender(ConsumerMixin):
             except (FunctionalError) as e:
                 logging.getLogger('disruption_sender').warn("error while preparing stats to save: {}".format(str(e)))
         else:
-            logging.getLogger('disruption_sender').warn("protobuff query not initialized,"
-                                                     " no stat logged")
+            logging.getLogger('disruption_sender').warn("protobuff query not initialized")
 
     def process_task(self, body, message):
         logging.getLogger('disruption_sender').debug("Message received")
@@ -90,19 +88,18 @@ class DisruptionSender(ConsumerMixin):
             logging.getLogger('disruption_sender').debug('query received: {}'.format(str(feed_message)))
         except DecodeError as e:
             logging.getLogger('disruption_sender').warn("message is not a valid "
-                                             "protobuf task: {}".format(str(e)))
+                                                        "protobuf task: {}".format(str(e)))
             message.ack()
             return
-
         try:
             self.handle_disruption(feed_message)
             message.ack()
         except (TechnicalError) as e:
-                logging.getLogger('disruption_sender').warn("error while saving stats: {}".format(str(e)))
-                # on technical error (like a database KO) we retry this task later
-                # and we sleep 10 seconds
-                message.requeue()
-                time.sleep(10)
+            logging.getLogger('disruption_sender').warn("error while saving stats: {}".format(str(e)))
+            # on technical error (like a database KO) we retry this task later
+            #  and we sleep 10 seconds
+            message.requeue()
+            time.sleep(10)
 
     def __del__(self):
         self.close()
