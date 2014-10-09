@@ -33,6 +33,8 @@ import sys
 from disruption_sender.daemon import DisruptionSender
 import argparse
 import json
+import logging
+import logging.config
 
 
 def main():
@@ -51,6 +53,12 @@ def main():
         sys.exit(1)
     try:
         config_data = json.loads(open(config_file).read())
+        if 'logger' in config_data:
+            logging.config.dictConfig(config_data['logger'])
+        else: # Default is std out
+            handler = logging.StreamHandler(stream=sys.stdout)
+            logging.getLogger().addHandler(handler)
+            logging.getLogger().setLevel('INFO')
     except ValueError as e:
         print("Bad config file, %s" % str(e))
         sys.exit(1)
