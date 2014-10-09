@@ -32,7 +32,7 @@ from datetime import datetime
 format_date = "%Y|%m|%d"
 
 
-def int_date_format(value):
+def convert_to_adjusitit_date(value):
     str = None
     try:
         date = datetime.fromtimestamp(value)

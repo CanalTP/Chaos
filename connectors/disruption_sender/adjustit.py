@@ -30,17 +30,18 @@
 
 import requests
 import logging
-from utils import int_date_format
+from utils import convert_to_adjusitit_date
+from data import get_events
 
 separator = "&"
 
 actions = {
-    "deleteevent": separator.join(["{url}/api?action={action}",
+    "deleteevent": separator.join(["{url}/api?action=deleteevent",
                                    "providerextcode={provider}",
                                    "interface={interface}",
                                    "eventextcode={eventextcode}"]),
 
-    "addevent": separator.join(["{url}/api?action={action}",
+    "addevent": separator.join(["{url}/api?action=addevent",
                                 "providerextcode={provider}",
                                 "interface={interface}",
                                 "eventextcode={eventextcode}",
@@ -61,23 +62,22 @@ class AdjustIt(object):
 
     def delete_event(self, event):
         if event:
-            url = actions["deleteevent"].format(action="deleteevent",
-                                             url=self.url,
-                                             provider=self.provider,
-                                             interface=self.interface,
-                                             eventextcode=event.external_code)
+            url = actions["deleteevent"].format(url=self.url,
+                                                provider=self.provider,
+                                                interface=self.interface,
+                                                eventextcode=event.external_code)
             self.call_adjustit(url)
         else:
             logging.getLogger(__name__).exception('delete_vent: Event not valid')
 
     def add_event(self, event):
         if event:
-            url = actions["addevent"].format(action="addevent", url=self.url,
+            url = actions["addevent"].format(url=self.url,
                                              provider=self.provider, interface=self.interface,
                                              eventextcode=event.external_code,
                                              title=event.title,
-                                             start=int_date_format(event.publication_start_date),
-                                             end=int_date_format(event.publication_end_date))
+                                             start=convert_to_adjusitit_date(event.publication_start_date),
+                                             end=convert_to_adjusitit_date(event.publication_end_date))
             self.call_adjustit(url)
         else:
             logging.getLogger(__name__).exception('add_vent: Event not valid')
@@ -90,3 +90,9 @@ class AdjustIt(object):
             logging.getLogger(__name__).exception('call to adjustit failed, url :' + url)
             #currently we reraise the previous exceptions
             raise
+
+    def send_disruptions(self, disruptions):
+        events = get_events(disruptions)
+        for event in events:
+            if event.is_deleted:
+                self.delete_event(event)

@@ -29,7 +29,6 @@
 # www.navitia.io
 
 import logging
-from connectors.disruption_sender.sender import send_disruption
 from connectors.disruption_sender.adjustit import AdjustIt
 from connectors.disruption_sender.exceptions import FunctionalError, TechnicalError
 from connectors.disruption_sender import gtfs_realtime_pb2
@@ -74,7 +73,7 @@ class DisruptionSender(ConsumerMixin):
     def handle_disruption(self, disruption):
         if disruption.IsInitialized():
             try:
-                send_disruption(disruption, self.adjustit)
+                self.adjustit.send_disruptions(disruption)
             except (FunctionalError) as e:
                 logging.getLogger('disruption_sender').warn("error while preparing stats to save: {}".format(str(e)))
         else:
