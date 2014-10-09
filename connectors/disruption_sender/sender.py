@@ -28,7 +28,6 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from chaos import chaos_pb2
 from data import Data
 
 

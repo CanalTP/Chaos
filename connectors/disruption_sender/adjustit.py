@@ -30,6 +30,7 @@
 
 import requests
 import logging
+from utils import int_date_format
 
 
 class AdjustIt(object):
@@ -50,11 +51,24 @@ class AdjustIt(object):
             url = url.format(eventextcode=event.external_code)
             self.call_adjustit(url)
         else:
-            logging.getLogger(__name__).exception('Delete_vent: Event not valid')
+            logging.getLogger(__name__).exception('delete_vent: Event not valid')
+
+    def add_event(self, event):
+        if event:
+            url = self.sub_url.format(action="addevent", url=self.url, provider=self.provider, interface=self.interface) +\
+            "&eventextcode={eventextcode}&eventtitle={title}&publicationStartDate={start}&publicationEndDate={end}"
+
+            url = url.format(eventextcode=event.external_code,
+                             title=event.title,
+                             start=int_date_format(event.publication_start_date),
+                             end=int_date_format(event.publication_end_date))
+            self.call_adjustit(url)
+        else:
+            logging.getLogger(__name__).exception('add_vent: Event not valid')
 
     def call_adjustit(self, url):
         try:
-            logging.getLogger('call_adjustit').debug("call url :"+url)
+            logging.getLogger('call_adjustit').debug("call url :" + url)
             response = requests.get(url, timeout=self.timeout)
         except (requests.exceptions.RequestException):
             logging.getLogger(__name__).exception('call to adjustit failed, url :' + url)
