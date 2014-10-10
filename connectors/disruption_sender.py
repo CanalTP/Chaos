@@ -67,7 +67,8 @@ def main():
         print("Bad config file, %s" % str(e))
         sys.exit(1)
 
-    init_db()
+    init_db(config_data)
+
     daemon = DisruptionSender(config_data)
     daemon.run()
 

@@ -1,5 +1,6 @@
 {
-   "navitia": {
+    "database": "sqlite:///data.db",
+    "navitia": {
        "url": "http://navitia2-ws.ctp.dev.canaltp.fr",
        "coverage": "fr-cen",
        "token": "f8a9befb-6bd9-4620-b942-b6b69a07487d"
