@@ -41,3 +41,9 @@ class TechnicalError(ValueError):
     typiquement la base de donnees est inaccessible
     """
     pass
+
+
+class RequestsException(Exception):
+
+    def __init__(self, message):
+        self.message = 'Error {message}'.format(message=message)

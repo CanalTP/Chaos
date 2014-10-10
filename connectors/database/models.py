@@ -32,6 +32,7 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text
 from connectors.database.database import Base
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.exc import NoResultFound
 
 
 class DisruptionEvent(Base):
@@ -52,7 +53,10 @@ class DisruptionEvent(Base):
 
     @classmethod
     def get(cls, disruption_id):
-        return cls.query.filter_by(disruption_id=disruption_id).one()
+        try:
+            return cls.query.filter_by(disruption_id=disruption_id).one()
+        except NoResultFound:
+            raise
 
 
 class Impact(Base):

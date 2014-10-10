@@ -31,6 +31,7 @@
 import requests
 import logging
 from utils import convert_to_adjusitit_date
+from exceptions import RequestsException
 from data import get_events
 
 separator = "&"
@@ -47,7 +48,12 @@ actions = {
                                 "eventextcode={eventextcode}",
                                 "eventtitle={title}",
                                 "publicationStartDate={start}",
-                                "publicationEndDate={end}"])
+                                "publicationEndDate={end}"]),
+
+    "deleteimpact": separator.join(["{url}/api?action=deleteimpact",
+                                "providerextcode={provider}",
+                                "interface={interface}",
+                                "impactid={impactid}"])
 }
 
 
@@ -61,35 +67,37 @@ class AdjustIt(object):
         self.interface = config["adjustit"]["interface"]
 
     def delete_event(self, event):
-        if event:
-            url = actions["deleteevent"].format(url=self.url,
-                                                provider=self.provider,
-                                                interface=self.interface,
-                                                eventextcode=event.external_code)
-            self.call_adjustit(url)
-        else:
-            logging.getLogger(__name__).exception('delete_vent: Event not valid')
+        url = actions["deleteevent"].format(url=self.url,
+                                            provider=self.provider,
+                                            interface=self.interface,
+                                            eventextcode=event.external_code)
+        try:
+            response = requests.get(url, timeout=self.timeout)
+        except requests.exceptions.RequestException as e:
+            raise RequestsException(str(e))
 
     def add_event(self, event):
-        if event:
-            url = actions["addevent"].format(url=self.url,
-                                             provider=self.provider, interface=self.interface,
-                                             eventextcode=event.external_code,
-                                             title=event.title,
-                                             start=convert_to_adjusitit_date(event.publication_start_date),
-                                             end=convert_to_adjusitit_date(event.publication_end_date))
-            self.call_adjustit(url)
-        else:
-            logging.getLogger(__name__).exception('add_vent: Event not valid')
-
-    def call_adjustit(self, url):
+        url = actions["addevent"].format(url=self.url,
+                                         provider=self.provider,
+                                         interface=self.interface,
+                                         eventextcode=event.external_code,
+                                         title=event.title,
+                                         start=convert_to_adjusitit_date(event.publication_start_date),
+                                         end=convert_to_adjusitit_date(event.publication_end_date))
         try:
-            logging.getLogger('call_adjustit').debug("call url :" + url)
             response = requests.get(url, timeout=self.timeout)
-        except (requests.exceptions.RequestException):
-            logging.getLogger(__name__).exception('call to adjustit failed, url :' + url)
-            #currently we reraise the previous exceptions
-            raise
+        except requests.exceptions.RequestException as e:
+            raise RequestsException(str(e))
+
+    def delete_impact(self, adjustit_impact_id):
+        url = actions["deleteimpact"].format(url=self.url,
+                                             provider=self.provider,
+                                             interface=self.interface,
+                                             impactid=adjustit_impact_id)
+        try:
+            response = requests.get(url, timeout=self.timeout)
+        except requests.exceptions.RequestException as e:
+            raise RequestsException(str(e))
 
     def send_disruptions(self, disruptions):
         events = get_events(disruptions)
