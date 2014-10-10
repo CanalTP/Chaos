@@ -52,7 +52,7 @@ class DisruptionEvent(Base):
 
     @classmethod
     def get(cls, disruption_id):
-        return cls.query.filter_by(disruption_id=disruption_id).first_or_404()
+        return cls.query.filter_by(disruption_id=disruption_id).one()
 
 
 class Impact(Base):
@@ -66,8 +66,8 @@ class Impact(Base):
     #chaos.impact.updated_at
     chaos_updated_at = Column(DateTime, unique=False, nullable=True)
 
-    def __init__(self, disruption_id=None, chaos_updated_at=None, adjustit_impact_id=None, chaos_new_id=None):
-        self.name = disruption_id
+    def __init__(self, disruption_id=None, chaos_new_id=None, adjustit_impact_id=None, chaos_updated_at=None):
+        self.disruption_id = disruption_id
         self.chaos_updated_at = chaos_updated_at
         self.adjustit_impact_id = adjustit_impact_id
         self.chaos_new_id = chaos_new_id
