@@ -48,7 +48,8 @@ actions = {
                                 "eventextcode={eventextcode}",
                                 "eventtitle={title}",
                                 "publicationStartDate={start}",
-                                "publicationEndDate={end}"]),
+                                "publicationEndDate={end}",
+                                "eventlevelid={eventlevelid}"]),
 
     "deleteimpact": separator.join(["{url}/api?action=deleteimpact",
                                 "providerextcode={provider}",
@@ -83,7 +84,8 @@ class AdjustIt(object):
                                          eventextcode=event.external_code,
                                          title=event.title,
                                          start=convert_to_adjusitit_date(event.publication_start_date),
-                                         end=convert_to_adjusitit_date(event.publication_end_date))
+                                         end=convert_to_adjusitit_date(event.publication_end_date),
+                                         eventlevelid=self.config["eventlevel"])
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:

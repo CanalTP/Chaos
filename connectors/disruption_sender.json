@@ -1,5 +1,6 @@
 {
     "database": "sqlite:///data.db",
+    "eventlevel": 1,
     "navitia": {
        "url": "http://navitia2-ws.ctp.dev.canaltp.fr",
        "coverage": "fr-cen",
