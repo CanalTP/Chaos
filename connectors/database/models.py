@@ -29,20 +29,23 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from sqlalchemy import Column,  String, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text
 from connectors.database.database import Base
 from sqlalchemy.orm import relationship
 
 
 class DisruptionEvent(Base):
     __tablename__ = 'disruptionevent'
-    disruption_id = Column(String(50), primary_key=True)
-    updated_at = Column(String(120), unique=False, nullable=True)
+    # Chaos.disruption.id
+    disruption_id = Column(Text, primary_key=True)
+    # Chaos.disruption.updated_at
+    chaos_updated_at = Column(DateTime, unique=False, nullable=True)
+    # Adjustit.event.impacts
     impacts = relationship('Impact', backref='disruptionevent', lazy='joined')
 
-    def __init__(self, disruption_id=None, updated_at=None):
+    def __init__(self, disruption_id=None, chaos_updated_at=None):
         self.disruption_id = disruption_id
-        self.updated_at = updated_at
+        self.chaos_updated_at = chaos_updated_at
 
     def __repr__(self):
         return '<DisruptionEvent %r>' % (self.disruption_id)
@@ -54,16 +57,20 @@ class DisruptionEvent(Base):
 
 class Impact(Base):
     __tablename__ = 'impact'
-    disruption_id = Column(String(50), ForeignKey(DisruptionEvent.disruption_id))
-    id = Column(Integer, unique=False)
-    chaos_id = Column(String(120), primary_key=True)
-    updated_at = Column(String(120), unique=False, nullable=True)
+    # Chaos.disruption.id
+    disruption_id = Column(Text, ForeignKey(DisruptionEvent.disruption_id))
 
-    def __init__(self, disruption_id=None, updated_at=None, id=None, chaos_id=None):
+    adjustit_impact_id = Column(Integer, unique=False)
+    # chaos.ptobject.uri + chaos.impact.id
+    chaos_new_id = Column(Text, primary_key=True)
+    #chaos.impact.updated_at
+    chaos_updated_at = Column(DateTime, unique=False, nullable=True)
+
+    def __init__(self, disruption_id=None, chaos_updated_at=None, adjustit_impact_id=None, chaos_new_id=None):
         self.name = disruption_id
-        self.updated_at = updated_at
-        self.id = id
-        self.chaos_id = chaos_id
+        self.chaos_updated_at = chaos_updated_at
+        self.adjustit_impact_id = adjustit_impact_id
+        self.chaos_new_id = chaos_new_id
 
     def __repr__(self):
-        return '<Impact %r>' % (self.id)
+        return '<Impact %r>' % (self.adjustit_impact_id)
