@@ -69,6 +69,6 @@ def test_data_event():
     eq_(events[0].is_deleted, False)
     eq_(events[0].external_code, '1234')
     eq_(events[0].title, 'reference')
-    eq_(len(events[0].impacts), 4)
+    eq_(len(events[0].impacts), 2)
     for impact in events[0].impacts:
         eq_(len(impact.impact_broad_casts), 2)

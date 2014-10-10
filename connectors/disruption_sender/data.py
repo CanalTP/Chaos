@@ -29,6 +29,7 @@
 # www.navitia.io
 
 from connectors.disruption_sender import chaos_pb2
+from connectors.disruption_sender.utils import get_max_end_period, get_min_start_period
 
 
 class MsgMedia(object):
@@ -105,18 +106,17 @@ class Event(object):
                 self.publication_end_date = disruption_pb.publication_period.end
             self.title = disruption_pb.reference
             for impact_pb in disruption_pb.impacts:
-                for period in impact_pb.application_periods:
-                    for pt_object in impact_pb.informed_entities:
-                        impact = Impact()
-                        impact.creation_date = impact_pb.created_at
-                        impact.modification_date = impact_pb.updated_at
-                        impact.fill_message(impact_pb.messages)
-                        impact.application_start_date = period.start
-                        impact.application_end_date = period.end
-                        impact.pt_object = TObjectRef()
-                        impact.pt_object.external_code = pt_object.uri
-                        impact.pt_object.type = pt_object.pt_object_type
-                        self.impacts.append(impact)
+                for pt_object in impact_pb.informed_entities:
+                    impact = Impact()
+                    impact.creation_date = impact_pb.created_at
+                    impact.modification_date = impact_pb.updated_at
+                    impact.fill_message(impact_pb.messages)
+                    impact.application_start_date = get_min_start_period(impact_pb.application_periods)
+                    impact.application_end_date = get_max_end_period(impact_pb.application_periods)
+                    impact.pt_object = TObjectRef()
+                    impact.pt_object.external_code = pt_object.uri
+                    impact.pt_object.type = pt_object.pt_object_type
+                    self.impacts.append(impact)
 
 
 def get_events(disruption):

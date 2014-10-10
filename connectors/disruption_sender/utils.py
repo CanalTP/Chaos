@@ -40,3 +40,11 @@ def convert_to_adjusitit_date(value):
     except TypeError:
         raise TypeError("The argument value is not valid, you gave: {}".format(value))
     return str
+
+
+def get_max_end_period(periods):
+    return max([dt.end for dt in periods])
+
+
+def get_min_start_period(periods):
+    return min([dt.start for dt in periods])
