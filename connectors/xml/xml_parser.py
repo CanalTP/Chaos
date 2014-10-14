@@ -29,14 +29,20 @@
 # www.navitia.io
 
 import xml.etree.ElementTree as et
+import logging
 
 
 def parse_response(response):
+
     root = et.fromstring(response.content)
-    event = root.find("Event")
-    event_id = event.get("EventID")
-    event_external_code = (root.find("./Event/EventExternalCode")).text
-    status_action = (root.find("./Event/EventStatusAction")).text
+    try:
+        event = root.find("Event")
+        event_id = event.get("EventID")
+        event_external_code = (root.find("./Event/EventExternalCode")).text
+        status_action = (root.find("./Event/EventStatusAction")).text
+    except AttributeError, e:
+        logging.getLogger('parse_response').debug("response invalid, raison={raison} :".format(raison=str(e)))
+        raise
 
     return {"event_id": event_id,
             "event_external_code": event_external_code,

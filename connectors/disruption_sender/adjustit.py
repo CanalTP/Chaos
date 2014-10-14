@@ -58,6 +58,12 @@ actions = {
                             "publicationEndDate={end}",
                             "eventlevelid={eventlevelid}"]),
 
+    "closeevent": separator.join(["{url}/api?action=closeevent",
+                            "providerextcode={provider}",
+                            "interface={interface}",
+                            "eventextcode={eventextcode}",
+                            "forceclose=true"]),
+
     "deleteimpact": separator.join(["{url}/api?action=deleteimpact",
                                 "providerextcode={provider}",
                                 "interface={interface}",
@@ -111,6 +117,18 @@ class AdjustIt(object):
                                             start=convert_to_adjusitit_date(event.publication_start_date),
                                             end=convert_to_adjusitit_date(event.publication_end_date),
                                             eventlevelid=self.eventlevel)
+        try:
+            response = requests.get(url, timeout=self.timeout)
+        except requests.exceptions.RequestException as e:
+            raise RequestsException(str(e))
+            response = None
+        return response
+
+    def close_event(self, event):
+        url = actions["closeevent"].format(url=self.url,
+                                            provider=self.provider,
+                                            interface=self.interface,
+                                            eventextcode=event.external_code)
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:

@@ -32,9 +32,9 @@ from data import get_events
 from connectors.xml.xml_parser import parse_response
 from connectors.database import models
 from connectors.database.database import Base
+from connectors.disruption_sender.utils import is_valid_response
 from sqlalchemy.orm.exc import NoResultFound
 import logging
-import re
 
 
 def send_disruption(disruption, adjustit):
@@ -50,25 +50,47 @@ def send_disruption(disruption, adjustit):
             logging.getLogger('send_disruption').debug("The event {external_code} not exist in database.".
                                                        format(external_code=event.external_code))
         if event.is_deleted:
-            request_response = adjustit.delete_event(event)
+            # Close the event
+            request_response = adjustit.close_event(event)
             if request_response.status_code == 200:
                 response = parse_response(request_response)
-                if "status" in response and re.search('ok', response["status"], re.IGNORECASE):
-                    local_event.delete_impacts()
-                    Base.session.delete(local_event)
+                if is_valid_response(response):
+                    # Delete Event
+                    request_response = adjustit.delete_event(event)
+                    if request_response.status_code == 200:
+                        response = parse_response(request_response)
+                        if is_valid_response(response):
+                            local_event.delete_impacts()
+                            Base.session.delete(local_event)
+                    else:
+                        logging.getLogger('delete_event').\
+                            debug("The event {external_code} not deleted, Adjustit response_code = {code}.".
+                                  format(external_code=event.external_code, code=request_response.status_code))
+            else:
+                logging.getLogger('close_event').\
+                    debug("The event {external_code} not closed, Adjustit response_code = {code}.".
+                          format(external_code=event.external_code, code=request_response.status_code))
         else:
             if local_event:
                 request_response = adjustit.update_event(event)
                 if request_response.status_code == 200:
                     response = parse_response(request_response)
-                    if "status" in response and re.search('ok', response["status"], re.IGNORECASE):
+                    if is_valid_response(response):
                         local_event.chaos_updated_at = event.modification_date
                         Base.session.commit()
+                else:
+                    logging.getLogger('update_event').\
+                        debug("The event {external_code} not updated, Adjustit response_code = {code}.".
+                              format(external_code=event.external_code, code=request_response.status_code))
             else:
                 request_response = adjustit.add_event(event)
                 if request_response.status_code == 200:
                     response = parse_response(request_response)
-                    if "status" in response and re.search('ok', response["status"], re.IGNORECASE):
+                    if is_valid_response(response):
                         local_event = models.DisruptionEvent(event.external_code)
                         Base.session.add(local_event)
                         Base.session.commit()
+                else:
+                    logging.getLogger('add_event').\
+                        debug("The event {external_code} not added, Adjustit response_code = {code}.".
+                              format(external_code=event.external_code, code=request_response.status_code))

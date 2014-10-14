@@ -28,6 +28,7 @@
 # www.navitia.io
 
 from datetime import datetime
+import re
 
 format_date = "%Y|%m|%d|%H|%M|%S"
 
@@ -48,3 +49,10 @@ def get_max_end_period(periods):
 
 def get_min_start_period(periods):
     return min([dt.start for dt in periods])
+
+
+def is_valid_response(resp):
+
+    if resp and ("status" in resp) and re.search("ok", resp["status"], re.IGNORECASE):
+        return True
+    return False
