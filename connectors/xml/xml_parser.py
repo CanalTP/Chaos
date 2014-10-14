@@ -1,3 +1,4 @@
+
 #  Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
@@ -27,24 +28,16 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from datetime import datetime
-
-format_date = "%Y|%m|%d|%H|%M|%S"
+import xml.etree.ElementTree as et
 
 
-def convert_to_adjusitit_date(value):
-    str = None
-    try:
-        date = datetime.fromtimestamp(value)
-        str = date.strftime(format_date)
-    except TypeError:
-        raise TypeError("The argument value is not valid, you gave: {}".format(value))
-    return str
+def parse_response(response):
+    root = et.fromstring(response.content)
+    event = root.find("Event")
+    event_id = event.get("EventID")
+    event_external_code = (root.find("./Event/EventExternalCode")).text
+    status_action = (root.find("./Event/EventStatusAction")).text
 
-
-def get_max_end_period(periods):
-    return max([dt.end for dt in periods])
-
-
-def get_min_start_period(periods):
-    return min([dt.start for dt in periods])
+    return {"event_id": event_id,
+            "event_external_code": event_external_code,
+            "status": status_action}

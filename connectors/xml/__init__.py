@@ -1,3 +1,4 @@
+
 #  Copyright (c) 2001-2014, Canal TP and/or its affiliates. All rights reserved.
 #
 # This file is part of Navitia,
@@ -26,25 +27,3 @@
 # IRC #navitia on freenode
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
-
-from datetime import datetime
-
-format_date = "%Y|%m|%d|%H|%M|%S"
-
-
-def convert_to_adjusitit_date(value):
-    str = None
-    try:
-        date = datetime.fromtimestamp(value)
-        str = date.strftime(format_date)
-    except TypeError:
-        raise TypeError("The argument value is not valid, you gave: {}".format(value))
-    return str
-
-
-def get_max_end_period(periods):
-    return max([dt.end for dt in periods])
-
-
-def get_min_start_period(periods):
-    return min([dt.start for dt in periods])

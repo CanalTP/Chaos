@@ -58,6 +58,11 @@ class DisruptionEvent(Base):
         except NoResultFound:
             raise
 
+    def delete_impacts(self):
+        for impact in self.impacts:
+            self.impacts.remove(impact)
+            Base.session.delete(impact)
+
 
 class Impact(Base):
     __tablename__ = 'impact'

@@ -49,6 +49,15 @@ actions = {
                                 "publicationEndDate={end}",
                                 "eventlevelid={eventlevelid}"]),
 
+    "updateevent": separator.join(["{url}/api?action=updateevent",
+                            "providerextcode={provider}",
+                            "interface={interface}",
+                            "eventextcode={eventextcode}",
+                            "eventtitle={title}",
+                            "publicationStartDate={start}",
+                            "publicationEndDate={end}",
+                            "eventlevelid={eventlevelid}"]),
+
     "deleteimpact": separator.join(["{url}/api?action=deleteimpact",
                                 "providerextcode={provider}",
                                 "interface={interface}",
@@ -74,6 +83,8 @@ class AdjustIt(object):
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
             raise RequestsException(str(e))
+            response = None
+        return response
 
     def add_event(self, event):
         url = actions["addevent"].format(url=self.url,
@@ -88,6 +99,24 @@ class AdjustIt(object):
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
             raise RequestsException(str(e))
+            response = None
+        return response
+
+    def update_event(self, event):
+        url = actions["updateevent"].format(url=self.url,
+                                            provider=self.provider,
+                                            interface=self.interface,
+                                            eventextcode=event.external_code,
+                                            title=event.title,
+                                            start=convert_to_adjusitit_date(event.publication_start_date),
+                                            end=convert_to_adjusitit_date(event.publication_end_date),
+                                            eventlevelid=self.eventlevel)
+        try:
+            response = requests.get(url, timeout=self.timeout)
+        except requests.exceptions.RequestException as e:
+            raise RequestsException(str(e))
+            response = None
+        return response
 
     def delete_impact(self, adjustit_impact_id):
         url = actions["deleteimpact"].format(url=self.url,
@@ -98,3 +127,5 @@ class AdjustIt(object):
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
             raise RequestsException(str(e))
+            response = None
+        return response

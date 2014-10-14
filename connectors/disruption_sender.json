@@ -10,6 +10,7 @@
         "url": "http://domaine/region/cgi-bin/adjustit.dll",
         "provider": "provider",
         "interface": 5,
+        "interface": 8,
         "timeout": 1
     },
     "exchange-name": "navitia",
