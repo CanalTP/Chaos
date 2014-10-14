@@ -29,10 +29,8 @@
 # www.navitia.io
 
 import requests
-import logging
 from utils import convert_to_adjusitit_date
 from exceptions import RequestsException
-from data import get_events
 
 separator = "&"
 
@@ -61,7 +59,7 @@ actions = {
 class AdjustIt(object):
 
     def __init__(self, config):
-        self.config = config
+        self.eventlevel = config["eventlevel"]
         self.timeout = config["adjustit"]["timeout"]
         self.url = config["adjustit"]["url"]
         self.provider = config["adjustit"]["provider"]
@@ -85,7 +83,7 @@ class AdjustIt(object):
                                          title=event.title,
                                          start=convert_to_adjusitit_date(event.publication_start_date),
                                          end=convert_to_adjusitit_date(event.publication_end_date),
-                                         eventlevelid=self.config["eventlevel"])
+                                         eventlevelid=self.eventlevel)
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
@@ -100,9 +98,3 @@ class AdjustIt(object):
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
             raise RequestsException(str(e))
-
-    def send_disruptions(self, disruptions):
-        events = get_events(disruptions)
-        for event in events:
-            if event.is_deleted:
-                self.delete_event(event)

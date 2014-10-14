@@ -36,13 +36,13 @@ from sqlalchemy.orm.exc import NoResultFound
 
 
 class DisruptionEvent(Base):
-    __tablename__ = 'disruptionevent'
+    __tablename__ = 'disruption_event'
     # Chaos.disruption.id
     disruption_id = Column(Text, primary_key=True)
     # Chaos.disruption.updated_at
     chaos_updated_at = Column(DateTime, unique=False, nullable=True)
     # Adjustit.event.impacts
-    impacts = relationship('Impact', backref='disruptionevent', lazy='joined')
+    impacts = relationship('Impact', backref='disruption_event', lazy='joined')
 
     def __init__(self, disruption_id=None, chaos_updated_at=None):
         self.disruption_id = disruption_id

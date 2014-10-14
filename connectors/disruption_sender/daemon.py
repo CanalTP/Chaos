@@ -36,6 +36,7 @@ import time
 import kombu
 from kombu.mixins import ConsumerMixin
 from google.protobuf.message import DecodeError
+from connectors.disruption_sender import sender
 
 
 class DisruptionSender(ConsumerMixin):
@@ -73,7 +74,7 @@ class DisruptionSender(ConsumerMixin):
     def handle_disruption(self, disruption):
         if disruption.IsInitialized():
             try:
-                self.adjustit.send_disruptions(disruption)
+                sender.send_disruption(disruption, self.adjustit)
             except (FunctionalError) as e:
                 logging.getLogger('disruption_sender').warn("error while preparing stats to save: {}".format(str(e)))
         else:
