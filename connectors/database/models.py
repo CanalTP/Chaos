@@ -39,8 +39,6 @@ class DisruptionEvent(Base):
     __tablename__ = 'disruption_event'
     # Chaos.disruption.id
     disruption_id = Column(Text, primary_key=True)
-    # Chaos.disruption.updated_at
-    chaos_updated_at = Column(DateTime, unique=False, nullable=True)
     # Adjustit.event.impacts
     impacts = relationship('Impact', backref='disruption_event', lazy='joined')
 
@@ -63,21 +61,24 @@ class DisruptionEvent(Base):
             self.impacts.remove(impact)
             Base.session.delete(impact)
 
+    def get_impact_by_new_id(self, chaos_new_id):
+        if self.impacts:
+            for impact in self.impacts:
+                if impact.chaos_new_id == chaos_new_id:
+                    return impact
+        return False
+
 
 class Impact(Base):
     __tablename__ = 'impact'
     # Chaos.disruption.id
     disruption_id = Column(Text, ForeignKey(DisruptionEvent.disruption_id))
-
     adjustit_impact_id = Column(Integer, unique=False)
     # chaos.ptobject.uri + chaos.impact.id
     chaos_new_id = Column(Text, primary_key=True)
-    #chaos.impact.updated_at
-    chaos_updated_at = Column(DateTime, unique=False, nullable=True)
 
-    def __init__(self, disruption_id=None, chaos_new_id=None, adjustit_impact_id=None, chaos_updated_at=None):
+    def __init__(self, disruption_id=None, chaos_new_id=None, adjustit_impact_id=None):
         self.disruption_id = disruption_id
-        self.chaos_updated_at = chaos_updated_at
         self.adjustit_impact_id = adjustit_impact_id
         self.chaos_new_id = chaos_new_id
 

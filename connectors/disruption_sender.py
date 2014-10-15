@@ -27,49 +27,15 @@
 # IRC #navitia on freenode
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
-
 import sys
-
 from disruption_sender.daemon import DisruptionSender
 from connectors.database.database import init_db
-import argparse
-import json
-import logging
-import logging.config
 
 
 def main():
-    """
-        main: ce charge d'interpreter les parametres de la ligne de commande
-    """
-    parser = argparse.ArgumentParser(description="DisruptionSender se charge "
-                                     "d'envoyer les perturabations a Adjustit")
-    parser.add_argument('config_file', type=str)
-    config_file = ""
-    try:
-        args = parser.parse_args()
-        config_file = args.config_file
-    except argparse.ArgumentTypeError:
-        print("Bad usage, learn how to use me with %s -h" % sys.argv[0])
-        sys.exit(1)
-    try:
-        config_data = json.loads(open(config_file).read())
-        if 'logger' in config_data:
-            logging.config.dictConfig(config_data['logger'])
-        else: # Default is std out
-            handler = logging.StreamHandler(stream=sys.stdout)
-            logging.getLogger().addHandler(handler)
-            logging.getLogger().setLevel('INFO')
-    except ValueError as e:
-        print("Bad config file, %s" % str(e))
-        sys.exit(1)
-    except IOError as e:
-        print("Bad config file, %s" % str(e))
-        sys.exit(1)
 
-    init_db(config_data)
-
-    daemon = DisruptionSender(config_data)
+    init_db()
+    daemon = DisruptionSender()
     daemon.run()
 
     sys.exit(0)

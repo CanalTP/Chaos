@@ -35,6 +35,73 @@ from connectors.database.database import Base
 from connectors.disruption_sender.utils import is_valid_response
 from sqlalchemy.orm.exc import NoResultFound
 import logging
+from connectors.disruption_sender.utils import is_impacts_with_pt_object
+
+
+def delete_event(adjustit, event, local_event):
+    request_response = adjustit.delete_event(event)
+    if request_response.status_code == 200:
+        response = parse_response(request_response)
+        if is_valid_response(response):
+            local_event.delete_impacts()
+            Base.session.delete(local_event)
+    else:
+        logging.getLogger('send_disruption').\
+            debug("The event {external_code} not deleted, Adjustit response_code = {code}.".
+                  format(external_code=event.external_code, code=request_response.status_code))
+
+
+def update_event(adjustit, event_pb, local_event):
+    # Call update event in adjustit
+    request_response = adjustit.update_event(event_pb, local_event)
+    if request_response.status_code == 200:
+        # Parse response adjustit
+        response = parse_response(request_response)
+        if is_valid_response(response):
+            at_impact_list = []
+            if "impacts" in response:
+                for resp_impact in response["impacts"]:
+                    impact_adjustit = event_pb.get_impact_by_pt_object(resp_impact["pt_object_uri"])
+                    chaos_new_id = "".join([impact_adjustit.pt_object.external_code, impact_adjustit.id])
+                    at_impact_list.append(chaos_new_id)
+                    local_impact = local_event.get_impact_by_new_id(chaos_new_id)
+                    if not local_impact:
+                        impact = models.Impact(event_pb.external_code,
+                                               chaos_new_id,
+                                               resp_impact["impact_id"])
+                        local_event.impacts.append(impact)
+            Base.session.commit()
+            for local_impact in local_event.impacts:
+                if local_impact.chaos_new_id not in at_impact_list:
+                    request_response = adjustit.delete_impact(local_event, local_impact.adjustit_impact_id)
+                    if request_response.status_code == 200:
+                        local_event.impacts.remove(local_impact)
+                        Base.session.commit()
+    else:
+        logging.getLogger('send_disruption').\
+            debug("The event {external_code} not updated, Adjustit response_code = {code}.".
+                  format(external_code=event_pb.external_code, code=request_response.status_code))
+
+
+def add_event(adjustit, event):
+    request_response = adjustit.add_event(event)
+    if request_response.status_code == 200:
+        response = parse_response(request_response)
+        if is_valid_response(response):
+            local_event = models.DisruptionEvent(event.external_code)
+            if "impacts" in response:
+                for resp_impact in response["impacts"]:
+                    impact_adjustit = event.get_impact_by_pt_object(resp_impact["pt_object_uri"])
+                    impact = models.Impact(event.external_code,
+                                               impact_adjustit.pt_object.uri + resp_impact["impact_id"],
+                                               resp_impact["impact_id"])
+                    local_event.impacts.append(impact)
+            Base.session.add(local_event)
+            Base.session.commit()
+    else:
+        logging.getLogger('send_disruption').\
+            debug("The event {external_code} not added, Adjustit response_code = {code}.".
+                  format(external_code=event.external_code, code=request_response.status_code))
 
 
 def send_disruption(disruption, adjustit):
@@ -42,55 +109,23 @@ def send_disruption(disruption, adjustit):
     Method to consume disruption element from rabbitMQ and to send it to Adjustit.
     """
     events = get_events(disruption)
-    for event in events:
+    for event_pb in events:
         local_event = None
         try:
-            local_event = models.DisruptionEvent.get(event.external_code)
+            local_event = models.DisruptionEvent.get(event_pb.external_code)
         except NoResultFound:
             logging.getLogger('send_disruption').debug("The event {external_code} not exist in database.".
-                                                       format(external_code=event.external_code))
-        if event.is_deleted:
-            # Close the event
-            request_response = adjustit.close_event(event)
-            if request_response.status_code == 200:
-                response = parse_response(request_response)
-                if is_valid_response(response):
-                    # Delete Event
-                    request_response = adjustit.delete_event(event)
-                    if request_response.status_code == 200:
-                        response = parse_response(request_response)
-                        if is_valid_response(response):
-                            local_event.delete_impacts()
-                            Base.session.delete(local_event)
-                    else:
-                        logging.getLogger('delete_event').\
-                            debug("The event {external_code} not deleted, Adjustit response_code = {code}.".
-                                  format(external_code=event.external_code, code=request_response.status_code))
-            else:
-                logging.getLogger('close_event').\
-                    debug("The event {external_code} not closed, Adjustit response_code = {code}.".
-                          format(external_code=event.external_code, code=request_response.status_code))
+                                                       format(external_code=event_pb.external_code))
+        if event_pb.is_deleted:
+            delete_event(adjustit, event_pb, local_event)
         else:
+            if not is_impacts_with_pt_object(event_pb.impacts):
+                logging.getLogger('send_disruption').\
+                    debug("The event {external_code} is not valid, impact without ptobject.".
+                          format(external_code=event_pb.external_code))
+                continue
+
             if local_event:
-                request_response = adjustit.update_event(event)
-                if request_response.status_code == 200:
-                    response = parse_response(request_response)
-                    if is_valid_response(response):
-                        local_event.chaos_updated_at = event.modification_date
-                        Base.session.commit()
-                else:
-                    logging.getLogger('update_event').\
-                        debug("The event {external_code} not updated, Adjustit response_code = {code}.".
-                              format(external_code=event.external_code, code=request_response.status_code))
+                update_event(adjustit, event_pb, local_event)
             else:
-                request_response = adjustit.add_event(event)
-                if request_response.status_code == 200:
-                    response = parse_response(request_response)
-                    if is_valid_response(response):
-                        local_event = models.DisruptionEvent(event.external_code)
-                        Base.session.add(local_event)
-                        Base.session.commit()
-                else:
-                    logging.getLogger('add_event').\
-                        debug("The event {external_code} not added, Adjustit response_code = {code}.".
-                              format(external_code=event.external_code, code=request_response.status_code))
+                add_event(adjustit, event_pb)

@@ -29,8 +29,30 @@
 
 from datetime import datetime
 import re
+from connectors.disruption_sender import chaos_pb2, gtfs_realtime_pb2
 
 format_date = "%Y|%m|%d|%H|%M|%S"
+format_time = "%H|%M|%S"
+
+
+def pt_object_type_to_string(pt_object_type):
+    collection = {
+        chaos_pb2.PtObject.network: "Network",
+        chaos_pb2.PtObject.stop_area: "StopArea",
+        chaos_pb2.PtObject.line: "Line",
+        chaos_pb2.PtObject.route: "Route"
+    }
+    if pt_object_type in collection:
+        return collection[pt_object_type]
+    return None
+
+def convert_to_adjusitit_time(value):
+    str = None
+    try:
+        str = value.strftime(format_time)
+    except TypeError:
+        raise TypeError("The argument value is not valid, you gave: {}".format(value))
+    return str
 
 
 def convert_to_adjusitit_date(value):
@@ -53,6 +75,20 @@ def get_min_start_period(periods):
 
 def is_valid_response(resp):
 
-    if resp and ("status" in resp) and re.search("ok", resp["status"], re.IGNORECASE):
+    if resp and ("event_status" in resp) and re.search("ok", resp["event_status"], re.IGNORECASE):
         return True
     return False
+
+
+def is_impacts_with_pt_object(impacts):
+    """
+    :param impacts:  list of impact
+    :return: True : if all impacts with ptobject
+    """
+    if not impacts:
+        return True
+    else:
+        for impact in impacts:
+            if not impact.pt_object:
+                return False
+    return True

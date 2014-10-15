@@ -35,15 +35,25 @@ import logging
 def parse_response(response):
 
     root = et.fromstring(response.content)
+    result = {}
     try:
         event = root.find("Event")
-        event_id = event.get("EventID")
-        event_external_code = (root.find("./Event/EventExternalCode")).text
-        status_action = (root.find("./Event/EventStatusAction")).text
+        result["event_id"] = event.get("EventID")
+        result["event_external_code"] = (root.find("./Event/EventExternalCode")).text
+        result["event_status"] = (root.find("./Event/EventStatusAction")).text
+        impact_list = root.find("./Event/ImpactList")
+        if impact_list:
+            impacts = impact_list.findall("Impact")
+            result["impacts"] = []
+            for i in range(len(impact_list)):
+                impact = {}
+                impact["impact_id"] = impacts[i].get("ImpactID")
+                impact["impact_status"] = (impacts[i].find("ImpactStatusAction")).text
+                object_tc = impacts[i].find('TCObjectRef')
+                impact["pt_object_uri"] = (object_tc.find("TCObjectRefExternalCode")).text
+                result["impacts"].append(impact)
     except AttributeError, e:
         logging.getLogger('parse_response').debug("response invalid, raison={raison} :".format(raison=str(e)))
         raise
 
-    return {"event_id": event_id,
-            "event_external_code": event_external_code,
-            "status": status_action}
+    return result

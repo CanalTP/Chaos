@@ -29,39 +29,48 @@
 # www.navitia.io
 
 import requests
-from utils import convert_to_adjusitit_date
+from utils import convert_to_adjusitit_date,\
+    convert_to_adjusitit_time
 from exceptions import RequestsException
+from connectors import connector_config
 
 separator = "&"
 
 actions = {
-    "deleteevent": separator.join(["{url}/api?action=deleteevent",
-                                   "providerextcode={provider}",
+
+    "getevent": separator.join(["{url}/api?action=getevent",
+                                   "providerextcode={event.provider}",
                                    "interface={interface}",
-                                   "eventextcode={eventextcode}"]),
+                                   "eventextcode={event.external_code}"]),
+
+    "deleteevent": separator.join(["{url}/api?action=deleteevent",
+                                   "providerextcode={event.provider}",
+                                   "interface={interface}",
+                                   "eventextcode={event.external_code}",
+                                   "forcedelete=true"]),
 
     "addevent": separator.join(["{url}/api?action=addevent",
-                                "providerextcode={provider}",
+                                "providerextcode={event.provider}",
                                 "interface={interface}",
-                                "eventextcode={eventextcode}",
-                                "eventtitle={title}",
+                                "eventextcode={event.external_code}",
+                                "eventtitle={event.title}",
                                 "publicationStartDate={start}",
                                 "publicationEndDate={end}",
-                                "eventlevelid={eventlevelid}"]),
+                                "eventlevelid={event.event_level_id}"]),
 
     "updateevent": separator.join(["{url}/api?action=updateevent",
-                            "providerextcode={provider}",
+                            "providerextcode={event.provider}",
                             "interface={interface}",
-                            "eventextcode={eventextcode}",
-                            "eventtitle={title}",
+                            "eventextcode={event.external_code}",
+                            "eventtitle={event.title}",
                             "publicationStartDate={start}",
                             "publicationEndDate={end}",
-                            "eventlevelid={eventlevelid}"]),
+                            "eventlevelid={event.event_level_id}"]),
 
     "closeevent": separator.join(["{url}/api?action=closeevent",
-                            "providerextcode={provider}",
+                            "providerextcode={event.provider}",
                             "interface={interface}",
-                            "eventextcode={eventextcode}",
+                            "eventextcode={event.external_code}",
                             "forceclose=true"]),
 
     "deleteimpact": separator.join(["{url}/api?action=deleteimpact",
@@ -70,21 +79,46 @@ actions = {
                                 "impactid={impactid}"])
 }
 
+impact_separator="|-|"
+message_separator="|.|"
+messages_separator="||"
+
+Impact_format = {
+    "impact": impact_separator.join(["ImpactStartDate={start}",
+                                     "ImpactEndDate={end}",
+                                     "DailyStartTime={daily_start_time}",
+                                     "DailyEndTime={daily_end_time}",
+                                     "Duration={impact.duration}",
+                                     "TCOExtCode={impact.pt_object.external_code}",
+                                     "TCOType={impact.pt_object.type}",
+                                     "State={impact.status}",
+                                     "ImpactActiveDays=1111111" #???
+                                     ])
+}
 
 class AdjustIt(object):
 
-    def __init__(self, config):
-        self.eventlevel = config["eventlevel"]
-        self.timeout = config["adjustit"]["timeout"]
-        self.url = config["adjustit"]["url"]
-        self.provider = config["adjustit"]["provider"]
-        self.interface = config["adjustit"]["interface"]
+    def __init__(self):
+        self.timeout = connector_config["adjustit"]["timeout"]
+        self.url = connector_config["adjustit"]["url"]
+        self.interface = connector_config["adjustit"]["interface"]
+        self.provider = connector_config["other"]["provider"]
+
+    def get_event(self, event):
+        url = actions["getevent"].format(url=self.url,
+                                            interface=self.interface,
+                                            event=event)
+        try:
+            response = requests.get(url, timeout=self.timeout)
+        except requests.exceptions.RequestException as e:
+            raise RequestsException(str(e))
+            response = None
+        return response
 
     def delete_event(self, event):
         url = actions["deleteevent"].format(url=self.url,
-                                            provider=self.provider,
                                             interface=self.interface,
-                                            eventextcode=event.external_code)
+                                            event=event)
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
@@ -94,13 +128,10 @@ class AdjustIt(object):
 
     def add_event(self, event):
         url = actions["addevent"].format(url=self.url,
-                                         provider=self.provider,
                                          interface=self.interface,
-                                         eventextcode=event.external_code,
-                                         title=event.title,
+                                         event=event,
                                          start=convert_to_adjusitit_date(event.publication_start_date),
-                                         end=convert_to_adjusitit_date(event.publication_end_date),
-                                         eventlevelid=self.eventlevel)
+                                         end=convert_to_adjusitit_date(event.publication_end_date))
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
@@ -108,15 +139,32 @@ class AdjustIt(object):
             response = None
         return response
 
-    def update_event(self, event):
+    def update_event(self, event_pb, local_event):
         url = actions["updateevent"].format(url=self.url,
-                                            provider=self.provider,
                                             interface=self.interface,
-                                            eventextcode=event.external_code,
-                                            title=event.title,
-                                            start=convert_to_adjusitit_date(event.publication_start_date),
-                                            end=convert_to_adjusitit_date(event.publication_end_date),
-                                            eventlevelid=self.eventlevel)
+                                            event=event_pb,
+                                            start=convert_to_adjusitit_date(event_pb.publication_start_date),
+                                            end=convert_to_adjusitit_date(event_pb.publication_end_date))
+        if event_pb.impacts:
+            count = 1
+            for impact in event_pb.impacts:
+                local_impact = local_event.get_impact_by_new_id(impact.pt_object.external_code + impact.id)
+                if len(event_pb.impacts) == 1:
+                    str_impact = "impact="
+                else:
+                    str_impact = "impact" + str(count) + "="
+                if local_impact:
+                    str_impact = str_impact + "ImpactID=" + str(local_impact.adjustit_impact_id) + impact_separator
+
+                str_impact = str_impact + Impact_format["impact"].\
+                    format(impact=impact,
+                           start=convert_to_adjusitit_date(impact.application_start_date),
+                           end=convert_to_adjusitit_date(impact.application_end_date),
+                           daily_start_time=convert_to_adjusitit_time(impact.daily_start_time),
+                           daily_end_time=convert_to_adjusitit_time(impact.daily_end_time))
+                url = separator.join([url, str_impact])
+
+                count = count + 1
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
@@ -124,19 +172,7 @@ class AdjustIt(object):
             response = None
         return response
 
-    def close_event(self, event):
-        url = actions["closeevent"].format(url=self.url,
-                                            provider=self.provider,
-                                            interface=self.interface,
-                                            eventextcode=event.external_code)
-        try:
-            response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException as e:
-            raise RequestsException(str(e))
-            response = None
-        return response
-
-    def delete_impact(self, adjustit_impact_id):
+    def delete_impact(self, event, adjustit_impact_id):
         url = actions["deleteimpact"].format(url=self.url,
                                              provider=self.provider,
                                              interface=self.interface,

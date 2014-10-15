@@ -30,6 +30,9 @@
 
 from connectors.disruption_sender import chaos_pb2
 from connectors.disruption_sender.utils import get_max_end_period, get_min_start_period
+from datetime import time
+from connectors import connector_config
+from connectors.disruption_sender.utils import pt_object_type_to_string
 
 
 class MsgMedia(object):
@@ -59,12 +62,14 @@ class Provider(object):
 class Impact(object):
     def __init__(self):
         self.external_code = None
+        self.id = None
         self.creation_date = None
         self.modification_date = None
         self.application_start_date = None
         self.application_end_date = None
-        self.daily_start_date = None
-        self.daily_end_date = None
+        self.daily_start_time = time(hour=0, minute=0, second=0)
+        self.daily_end_time = time(hour=23, minute=59, second=59)
+        self.duration = 0
         self.status = None
         self.pt_object = None
         self.impact_broad_casts = []
@@ -88,7 +93,14 @@ class Event(object):
         self.publication_start_date = None
         self.publication_end_date = None
         self.impacts = []
-        self.provider = None
+        self.provider = connector_config["other"]["provider"]
+        self.event_level_id = connector_config["other"]["eventlevel"]
+
+    def get_impact_by_pt_object(self, uri):
+        for impact in self.impacts:
+            if impact.pt_object.external_code == uri:
+                return impact
+        return None
 
     def fill_event(self, entity):
 
@@ -110,12 +122,14 @@ class Event(object):
                     impact = Impact()
                     impact.creation_date = impact_pb.created_at
                     impact.modification_date = impact_pb.updated_at
+                    impact.status = connector_config["severities"][impact_pb.severity.effect]
                     impact.fill_message(impact_pb.messages)
                     impact.application_start_date = get_min_start_period(impact_pb.application_periods)
                     impact.application_end_date = get_max_end_period(impact_pb.application_periods)
                     impact.pt_object = TObjectRef()
                     impact.pt_object.external_code = pt_object.uri
-                    impact.pt_object.type = pt_object.pt_object_type
+                    impact.id = impact_pb.id
+                    impact.pt_object.type = pt_object_type_to_string(pt_object.pt_object_type)
                     self.impacts.append(impact)
 
 

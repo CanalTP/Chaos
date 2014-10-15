@@ -27,3 +27,16 @@
 # IRC #navitia on freenode
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
+
+import connectors.default_settings
+import logging
+import logging.config
+import sys
+
+connector_config = connectors.default_settings.CONFIG
+if 'logger' in connector_config:
+    logging.config.dictConfig(connector_config['logger'])
+else: # Default is std out
+    handler = logging.StreamHandler(stream=sys.stdout)
+    logging.getLogger().addHandler(handler)
+    logging.getLogger().setLevel('INFO')

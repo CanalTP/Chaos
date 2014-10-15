@@ -31,18 +31,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
+from connectors import connector_config
 
 
 Base = declarative_base()
 
 
-def init_db(config):
+def init_db():
     # import all modules here that might define models so that
     # they will be registered properly on the metadata.  Otherwise
     # you will have to import them first before calling init_db()
 
     import connectors.database.models
-    engine = create_engine(config["database"])
+    engine = create_engine(connector_config["database"]["filename"])
     Base.metadata.create_all(bind=engine)
     Base.session = scoped_session(sessionmaker(autocommit=False,
                                 autoflush=False,
