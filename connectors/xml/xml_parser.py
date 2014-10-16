@@ -52,6 +52,16 @@ def parse_response(response):
                 object_tc = impacts[i].find('TCObjectRef')
                 impact["pt_object_uri"] = (object_tc.find("TCObjectRefExternalCode")).text
                 result["impacts"].append(impact)
+                message_list = impacts[i].find("BroadcastList")
+                if message_list:
+                    messages = message_list.findall("Broadcast")
+                    impact["messages"] = []
+                    for j in range(len(message_list)):
+                        message = {}
+                        message["media_id"] = messages[j].get("MediaID")
+                        message["message_status"] = (messages[j].find("BroadcastStatusAction")).text
+                        impact["messages"].append(message)
+
     except AttributeError, e:
         logging.getLogger('parse_response').debug("response invalid, raison={raison} :".format(raison=str(e)))
         raise
