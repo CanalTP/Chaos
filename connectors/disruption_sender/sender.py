@@ -120,9 +120,10 @@ def add_event(adjustit, event):
                     local_event.impacts.append(impact)
             Base.session.add(local_event)
             Base.session.commit()
-        logging.getLogger('send_disruption').\
-            debug("The event {external_code} not added, Adjustit response_code = {code}.".
-                  format(external_code=event.external_code, code=request_response.status_code))
+        else:
+            logging.getLogger('send_disruption').\
+                debug("The event {external_code} not added, Adjustit response_code = {code}.".
+                      format(external_code=event.external_code, code=request_response.status_code))
     else:
         logging.getLogger('send_disruption').\
             debug("The event {external_code} not added, Adjustit response_code = {code}.".
