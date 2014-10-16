@@ -33,6 +33,7 @@ from utils import convert_to_adjusitit_date,\
     convert_to_adjusitit_time
 from exceptions import RequestsException
 from connectors import connector_config
+import logging
 
 separator = "&"
 
@@ -93,7 +94,11 @@ Impact_format = {
                                      "TCOType={impact.pt_object.type}",
                                      "State={impact.status}",
                                      "ImpactActiveDays=1111111" #???
-                                     ])
+                                     ]),
+    "message": message_separator.join(["impacttitle={message.title}",
+                                       "pushdate={push_date}",
+                                       "mediaid={message.msg_media.id}",
+                                       "freemsg={message.msg}"])
 }
 
 class AdjustIt(object):
@@ -146,13 +151,15 @@ class AdjustIt(object):
                                             start=convert_to_adjusitit_date(event_pb.publication_start_date),
                                             end=convert_to_adjusitit_date(event_pb.publication_end_date))
         if event_pb.impacts:
-            count = 1
+            # Impacts
+            impact_count = 1
+            str_impact = ''
             for impact in event_pb.impacts:
                 local_impact = local_event.get_impact_by_new_id(impact.pt_object.external_code + impact.id)
                 if len(event_pb.impacts) == 1:
                     str_impact = "impact="
                 else:
-                    str_impact = "impact" + str(count) + "="
+                    str_impact = str_impact + "impact" + str(impact_count) + "="
                 if local_impact:
                     str_impact = str_impact + "ImpactID=" + str(local_impact.adjustit_impact_id) + impact_separator
 
@@ -163,16 +170,34 @@ class AdjustIt(object):
                            daily_start_time=convert_to_adjusitit_time(impact.daily_start_time),
                            daily_end_time=convert_to_adjusitit_time(impact.daily_end_time))
                 url = separator.join([url, str_impact])
+                impact_count = impact_count + 1
+                # Messages
+                msg_count = 1
+                if impact.impact_broad_casts:
+                    str_message = ''
+                    for message in impact.impact_broad_casts:
+                        if len(impact.impact_broad_casts) == 1:
+                            str_message = "broadcast="
+                        else:
+                            str_message = str_message + "broadcast" + str(msg_count) + "="
+                        str_message = str_message +\
+                                      Impact_format["message"].format(
+                                          message=message,
+                                          push_date=convert_to_adjusitit_date(message.push_date))
+                        if msg_count != len(impact.impact_broad_casts):
+                            str_message = str_message + messages_separator
+                        msg_count = msg_count + 1
 
-                count = count + 1
+                    url = url + impact_separator + str_message
         try:
+            logging.getLogger('update_event').debug(url)
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
             raise RequestsException(str(e))
             response = None
         return response
 
-    def delete_impact(self, event, adjustit_impact_id):
+    def delete_impact(self, adjustit_impact_id):
         url = actions["deleteimpact"].format(url=self.url,
                                              provider=self.provider,
                                              interface=self.interface,

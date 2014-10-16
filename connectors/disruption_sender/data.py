@@ -37,6 +37,7 @@ from connectors.disruption_sender.utils import pt_object_type_to_string
 
 class MsgMedia(object):
     def __init__(self):
+        self.id = None
         self.language = None
         self.media = None
 
@@ -46,7 +47,7 @@ class ImpactBroadCast(object):
         self.msg_media = None
         self.title = None
         self.msg = None
-
+        self.push_date = None
 
 class TObjectRef(object):
     def __init__(self):
@@ -77,9 +78,17 @@ class Impact(object):
     def fill_message(self, messages):
         for message in messages:
             msg = ImpactBroadCast()
-            msg.title = message.text
+            msg.title = message.channel.name
+            msg.msg = message.text
             msg.msg_media = MsgMedia()
             msg.msg_media.media = message.channel.name
+            channel_conf = connector_config["channels"]
+            if message.channel.name in channel_conf:
+                msg.msg_media.id = channel_conf[message.channel.name]
+            else:
+                msg.msg_media.id = channel_conf["internet"]
+            if message.channel.id != channel_conf["internet"]:
+                msg.push_date = self.application_start_date
             self.impact_broad_casts.append(msg)
 
 
@@ -123,9 +132,9 @@ class Event(object):
                     impact.creation_date = impact_pb.created_at
                     impact.modification_date = impact_pb.updated_at
                     impact.status = connector_config["severities"][impact_pb.severity.effect]
-                    impact.fill_message(impact_pb.messages)
                     impact.application_start_date = get_min_start_period(impact_pb.application_periods)
                     impact.application_end_date = get_max_end_period(impact_pb.application_periods)
+                    impact.fill_message(impact_pb.messages)
                     impact.pt_object = TObjectRef()
                     impact.pt_object.external_code = pt_object.uri
                     impact.id = impact_pb.id

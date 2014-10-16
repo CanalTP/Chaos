@@ -58,12 +58,14 @@ def update_event(adjustit, event_pb, local_event):
         # Parse response adjustit
         response = parse_response(request_response)
         if is_valid_response(response):
-            at_impact_list = []
+            temp_impact_list = []
             if "impacts" in response:
                 for resp_impact in response["impacts"]:
-                    impact_adjustit = event_pb.get_impact_by_pt_object(resp_impact["pt_object_uri"])
-                    chaos_new_id = "".join([impact_adjustit.pt_object.external_code, impact_adjustit.id])
-                    at_impact_list.append(chaos_new_id)
+                    # Get Impact from protocol buffer
+                    impact_pb = event_pb.get_impact_by_pt_object(resp_impact["pt_object_uri"])
+                    chaos_new_id = "".join([impact_pb.pt_object.external_code, impact_pb.id])
+                    temp_impact_list.append(chaos_new_id)
+                    #Get local impact
                     local_impact = local_event.get_impact_by_new_id(chaos_new_id)
                     if not local_impact:
                         impact = models.Impact(event_pb.external_code,
@@ -71,9 +73,10 @@ def update_event(adjustit, event_pb, local_event):
                                                resp_impact["impact_id"])
                         local_event.impacts.append(impact)
             Base.session.commit()
+            # Delete all impacts not in protocol buffer and exists in local database
             for local_impact in local_event.impacts:
-                if local_impact.chaos_new_id not in at_impact_list:
-                    request_response = adjustit.delete_impact(local_event, local_impact.adjustit_impact_id)
+                if local_impact.chaos_new_id not in temp_impact_list:
+                    request_response = adjustit.delete_impact(local_impact.adjustit_impact_id)
                     if request_response.status_code == 200:
                         local_event.impacts.remove(local_impact)
                         Base.session.commit()
