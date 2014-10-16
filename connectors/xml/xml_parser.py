@@ -42,7 +42,7 @@ def parse_response(response):
         result["event_external_code"] = (root.find("./Event/EventExternalCode")).text
         result["event_status"] = (root.find("./Event/EventStatusAction")).text
         impact_list = root.find("./Event/ImpactList")
-        if impact_list:
+        if impact_list is not None:
             impacts = impact_list.findall("Impact")
             result["impacts"] = []
             for i in range(len(impact_list)):
@@ -53,7 +53,7 @@ def parse_response(response):
                 impact["pt_object_uri"] = (object_tc.find("TCObjectRefExternalCode")).text
                 result["impacts"].append(impact)
                 message_list = impacts[i].find("BroadcastList")
-                if message_list:
+                if message_list is not None:
                     messages = message_list.findall("Broadcast")
                     impact["messages"] = []
                     for j in range(len(message_list)):

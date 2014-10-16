@@ -58,28 +58,43 @@ def update_event(adjustit, event_pb, local_event):
         # Parse response adjustit
         response = parse_response(request_response)
         if is_valid_response(response):
-            temp_impact_list = []
+            temp_impact_list = {}
             if "impacts" in response:
                 for resp_impact in response["impacts"]:
                     # Get Impact from protocol buffer
                     impact_pb = event_pb.get_impact_by_pt_object(resp_impact["pt_object_uri"])
-                    chaos_new_id = "".join([impact_pb.pt_object.external_code, impact_pb.id])
-                    temp_impact_list.append(chaos_new_id)
+                    chaos_new_id = impact_pb.get_local_impact_id()
+                    temp_impact_list[chaos_new_id] = []
                     #Get local impact
                     local_impact = local_event.get_impact_by_new_id(chaos_new_id)
                     if not local_impact:
-                        impact = models.Impact(event_pb.external_code,
-                                               chaos_new_id,
-                                               resp_impact["impact_id"])
-                        local_event.impacts.append(impact)
-            Base.session.commit()
+                        local_impact = models.Impact(event_pb.external_code,
+                                                     chaos_new_id,
+                                                     resp_impact["impact_id"])
+                        local_event.impacts.append(local_impact)
+                    # Messages
+                    if "messages" in resp_impact:
+                        for resp_message in resp_impact["messages"]:
+                            local_message = local_impact.get_message_by_media_id(resp_message["media_id"])
+                            temp_impact_list[chaos_new_id].append(resp_message["media_id"])
+                            if not local_message:
+                                local_message = models.Message(resp_message["media_id"], resp_impact["impact_id"])
+                                local_impact.messages.append(local_message)
+
             # Delete all impacts not in protocol buffer and exists in local database
             for local_impact in local_event.impacts:
                 if local_impact.chaos_new_id not in temp_impact_list:
                     request_response = adjustit.delete_impact(local_impact.adjustit_impact_id)
                     if request_response.status_code == 200:
                         local_event.impacts.remove(local_impact)
-                        Base.session.commit()
+                else:
+                    for local_message in local_impact.messages:
+                        if local_message.media_id not in temp_impact_list[local_impact.chaos_new_id]:
+                            request_response = adjustit.delete_broad_cast(local_impact.adjustit_impact_id,
+                                                                          local_message.media_id)
+                            if request_response.status_code == 200:
+                                local_impact.messages.remove(local_message)
+            Base.session.commit()
     else:
         logging.getLogger('send_disruption').\
             debug("The event {external_code} not updated, Adjustit response_code = {code}.".
@@ -94,13 +109,20 @@ def add_event(adjustit, event):
             local_event = models.DisruptionEvent(event.external_code)
             if "impacts" in response:
                 for resp_impact in response["impacts"]:
-                    impact_adjustit = event.get_impact_by_pt_object(resp_impact["pt_object_uri"])
+                    impact_pb = event.get_impact_by_pt_object(resp_impact["pt_object_uri"])
                     impact = models.Impact(event.external_code,
-                                               impact_adjustit.pt_object.uri + resp_impact["impact_id"],
+                                               impact_pb.get_local_impact_id(),
                                                resp_impact["impact_id"])
+                    if "messages" in resp_impact:
+                        for resp_message in resp_impact["messages"]:
+                            message = models.Message(resp_message["media_id"], resp_impact["impact_id"])
+                            impact.messages.append(message)
                     local_event.impacts.append(impact)
             Base.session.add(local_event)
             Base.session.commit()
+        logging.getLogger('send_disruption').\
+            debug("The event {external_code} not added, Adjustit response_code = {code}.".
+                  format(external_code=event.external_code, code=request_response.status_code))
     else:
         logging.getLogger('send_disruption').\
             debug("The event {external_code} not added, Adjustit response_code = {code}.".

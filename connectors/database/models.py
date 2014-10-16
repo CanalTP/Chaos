@@ -33,6 +33,7 @@ from sqlalchemy import Column, Integer, ForeignKey, DateTime, Text
 from connectors.database.database import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.schema import PrimaryKeyConstraint
 
 
 class DisruptionEvent(Base):
@@ -57,16 +58,17 @@ class DisruptionEvent(Base):
             raise
 
     def delete_impacts(self):
-        for impact in self.impacts:
-            self.impacts.remove(impact)
-            Base.session.delete(impact)
+        if self.impacts:
+            for impact in self.impacts:
+                self.impacts.remove(impact)
+                Base.session.delete(impact)
 
     def get_impact_by_new_id(self, chaos_new_id):
         if self.impacts:
             for impact in self.impacts:
                 if impact.chaos_new_id == chaos_new_id:
                     return impact
-        return False
+        return None
 
 
 class Impact(Base):
@@ -76,6 +78,7 @@ class Impact(Base):
     adjustit_impact_id = Column(Integer, unique=False)
     # chaos.ptobject.uri + chaos.impact.id
     chaos_new_id = Column(Text, primary_key=True)
+    messages = relationship('Message', backref='impact', lazy='joined')
 
     def __init__(self, disruption_id=None, chaos_new_id=None, adjustit_impact_id=None):
         self.disruption_id = disruption_id
@@ -84,3 +87,26 @@ class Impact(Base):
 
     def __repr__(self):
         return '<Impact %r>' % (self.adjustit_impact_id)
+
+    def get_message_by_media_id(self, media_id):
+        if self.messages:
+            for message in self.messages:
+                if message.media_id == media_id:
+                    return message
+        return None
+
+
+class Message(Base):
+    __tablename__ = 'message'
+    # Adjustit.media.id
+    media_id = Column(Integer, unique=False)
+    impact_id = Column(Integer, ForeignKey(Impact.adjustit_impact_id))
+    __table_args__ = (PrimaryKeyConstraint('media_id', 'impact_id'),)
+
+
+    def __init__(self, media_id=None, impact_id=None):
+        self.media_id = media_id
+        self.impact_id = impact_id
+
+    def __repr__(self):
+        return '<Message %r>' % (self.media_id)

@@ -75,6 +75,10 @@ class Impact(object):
         self.pt_object = None
         self.impact_broad_casts = []
 
+    def get_local_impact_id(self):
+        return "".join([self.pt_object.external_code, self.id])
+
+
     def fill_message(self, messages):
         for message in messages:
             msg = ImpactBroadCast()
@@ -140,7 +144,6 @@ class Event(object):
                     impact.id = impact_pb.id
                     impact.pt_object.type = pt_object_type_to_string(pt_object.pt_object_type)
                     self.impacts.append(impact)
-
 
 def get_events(disruption):
     events = []

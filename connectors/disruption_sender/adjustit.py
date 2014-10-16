@@ -36,6 +36,9 @@ from connectors import connector_config
 import logging
 
 separator = "&"
+impact_separator = "|-|"
+message_separator = "|.|"
+messages_separator = "||"
 
 actions = {
 
@@ -77,12 +80,16 @@ actions = {
     "deleteimpact": separator.join(["{url}/api?action=deleteimpact",
                                 "providerextcode={provider}",
                                 "interface={interface}",
-                                "impactid={impactid}"])
+                                "impactid={impactid}"]),
+
+    "deletebroadcast": separator.join(["{url}/api?action=deletebroadcast",
+                                "providerextcode={provider}",
+                                "interface={interface}" +
+                                "broadcast=impactid={impactid}" +
+                                message_separator + "mediaid={mediaid}"])
+
 }
 
-impact_separator="|-|"
-message_separator="|.|"
-messages_separator="||"
 
 Impact_format = {
     "impact": impact_separator.join(["ImpactStartDate={start}",
@@ -100,6 +107,7 @@ Impact_format = {
                                        "mediaid={message.msg_media.id}",
                                        "freemsg={message.msg}"])
 }
+
 
 class AdjustIt(object):
 
@@ -202,6 +210,19 @@ class AdjustIt(object):
                                              provider=self.provider,
                                              interface=self.interface,
                                              impactid=adjustit_impact_id)
+        try:
+            response = requests.get(url, timeout=self.timeout)
+        except requests.exceptions.RequestException as e:
+            raise RequestsException(str(e))
+            response = None
+        return response
+
+    def delete_broad_cast(self,impact_id, media_id):
+        url = actions["deletebroadcast"].format(url=self.url,
+                                             provider=self.provider,
+                                             interface=self.interface,
+                                             impactid=impact_id,
+                                             mediaid=media_id)
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:
