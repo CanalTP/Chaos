@@ -30,12 +30,12 @@
 import sys
 from disruption_sender.daemon import DisruptionSender
 from connectors.database.database import init_db
-
+from connectors import connector_config
 
 def main():
 
-    init_db()
-    daemon = DisruptionSender()
+    init_db(connector_config)
+    daemon = DisruptionSender(connector_config)
     daemon.run()
 
     sys.exit(0)

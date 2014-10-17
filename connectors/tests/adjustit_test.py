@@ -1,6 +1,7 @@
 from nose.tools import *
 from connectors.disruption_sender.adjustit import AdjustIt
 import datetime, time
+from connectors.tests.testing_settings import CONFIG
 
 
 class Obj(object):
@@ -50,14 +51,14 @@ def get_impact_by_new_id(id):
     return None
 
 def test_format_url_message():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     message = get_message()
     url = adjust_it.format_url_message(message)
     eq_(url, 'impacttitle=sms|.|pushdate=2014|10|16|15|12|00|.|mediaid=2|.|freemsg=message sms')
 
 
 def test_format_url_impact_without_message():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     impact = get_impact()
     url = adjust_it.format_url_impact(impact)
     eq_(url, 'ImpactStartDate=2014|01|16|15|12|00|-|ImpactEndDate=2014|03|16|15|12|00|-|DailyStartTime=00|00|00|-|'
@@ -65,7 +66,7 @@ def test_format_url_impact_without_message():
 
 
 def test_format_url_impact_with_one_message():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     impact = get_impact()
     message = get_message()
     impact.impact_broad_casts.append(message)
@@ -77,7 +78,7 @@ def test_format_url_impact_with_one_message():
 
 
 def test_format_url_impact_with_two_messages():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     impact = get_impact()
     message = get_message()
     impact.impact_broad_casts.append(message)
@@ -93,7 +94,7 @@ def test_format_url_impact_with_two_messages():
 
 
 def test_format_url_event_without_impact():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     local_event = Obj()
     event = Obj()
     event.impacts = []
@@ -103,7 +104,7 @@ def test_format_url_event_without_impact():
 
 
 def test_format_url_event_whit_one_impact():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     local_event = Obj()
     local_event.get_impact_by_new_id = get_impact_by_new_id
     event = Obj()
@@ -118,7 +119,7 @@ def test_format_url_event_whit_one_impact():
 
 
 def test_format_url_event_whit_two_impacts():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     local_event = Obj()
     local_event.get_impact_by_new_id = get_impact_by_new_id
     event = Obj()
@@ -138,7 +139,7 @@ def test_format_url_event_whit_two_impacts():
 
 
 def test_format_url_event_whit_one_impact_one_message():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     local_event = Obj()
     local_event.get_impact_by_new_id = get_impact_by_new_id
     event = Obj()
@@ -156,7 +157,7 @@ def test_format_url_event_whit_one_impact_one_message():
 
 
 def test_format_url_event_whit_two_impact_two_message():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     local_event = Obj()
     local_event.get_impact_by_new_id = get_impact_by_new_id
     event = Obj()
@@ -182,7 +183,7 @@ def test_format_url_event_whit_two_impact_two_message():
 
 
 def test_format_date():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     date = datetime.datetime(year=2014, month=4, day=12, hour=16, minute=52)
     eq_(adjust_it.datetime_to_string(int(time.mktime(date.timetuple()))), '2014|04|12|16|52|00')
 
@@ -192,5 +193,5 @@ def test_format_date():
 
 @raises(TypeError)
 def test_format_date():
-    adjust_it = AdjustIt()
+    adjust_it = AdjustIt(CONFIG)
     eq_(adjust_it.datetime_to_string("aaa"), '2014|04|12')

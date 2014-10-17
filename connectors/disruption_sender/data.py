@@ -106,8 +106,8 @@ class Event(object):
         self.publication_start_date = None
         self.publication_end_date = None
         self.impacts = []
-        self.provider = connector_config["other"]["provider"]
-        self.event_level_id = connector_config["other"]["eventlevel"]
+        self.provider = connector_config["adjustit"]["provider"]
+        self.event_level_id = connector_config["adjustit"]["eventlevel"]
 
     def get_impact_by_pt_object(self, uri):
         for impact in self.impacts:
@@ -144,6 +144,7 @@ class Event(object):
                     impact.id = impact_pb.id
                     impact.pt_object.type = pt_object_type_to_string(pt_object.pt_object_type)
                     self.impacts.append(impact)
+
 
 def get_events(disruption):
     events = []

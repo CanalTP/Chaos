@@ -29,7 +29,6 @@
 # www.navitia.io
 
 import requests
-from connectors import connector_config
 import logging
 from datetime import datetime
 import re
@@ -110,11 +109,11 @@ Impact_format = {
 
 class AdjustIt(object):
 
-    def __init__(self):
+    def __init__(self, connector_config):
         self.timeout = connector_config["adjustit"]["timeout"]
         self.url = connector_config["adjustit"]["url"]
         self.interface = connector_config["adjustit"]["interface"]
-        self.provider = connector_config["other"]["provider"]
+        self.provider = connector_config["adjustit"]["provider"]
         self.format_date = "%Y|%m|%d|%H|%M|%S"
         self.format_time = "%H|%M|%S"
 
@@ -227,10 +226,10 @@ class AdjustIt(object):
 
     def delete_broad_cast(self, impact_id, media_id):
         url = actions["deletebroadcast"].format(url=self.url,
-                                             provider=self.provider,
-                                             interface=self.interface,
-                                             impactid=impact_id,
-                                             mediaid=media_id)
+                                                provider=self.provider,
+                                                interface=self.interface,
+                                                impactid=impact_id,
+                                                mediaid=media_id)
         return self.call_adjustit(url)
 
     def call_adjustit(self, url):

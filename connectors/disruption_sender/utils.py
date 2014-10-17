@@ -49,17 +49,3 @@ def get_max_end_period(periods):
 
 def get_min_start_period(periods):
     return min([dt.start for dt in periods])
-
-
-def is_impacts_with_pt_object(impacts):
-    """
-    :param impacts:  list of impact
-    :return: True : if all impacts with ptobject
-    """
-    if not impacts:
-        return True
-    else:
-        for impact in impacts:
-            if not impact.pt_object:
-                return False
-    return True

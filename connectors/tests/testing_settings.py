@@ -91,5 +91,5 @@ CONFIG = {
     },
     "database": {
         "filename": "sqlite:///data.db"
-    },
+    }
 }

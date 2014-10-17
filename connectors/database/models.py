@@ -48,7 +48,7 @@ class DisruptionEvent(Base):
         self.chaos_updated_at = chaos_updated_at
 
     def __repr__(self):
-        return '<DisruptionEvent %r>' % (self.disruption_id)
+        return '<DisruptionEvent {id}>'.format(id=self.disruption_id)
 
     @classmethod
     def get(cls, disruption_id):
@@ -86,7 +86,7 @@ class Impact(Base):
         self.chaos_new_id = chaos_new_id
 
     def __repr__(self):
-        return '<Impact %r>' % (self.adjustit_impact_id)
+        return '<Impact {id}>'.format(id=self.adjustit_impact_id)
 
     def get_message_by_media_id(self, media_id):
         if self.messages:
@@ -109,4 +109,4 @@ class Message(Base):
         self.impact_id = impact_id
 
     def __repr__(self):
-        return '<Message %r>' % (self.media_id)
+        return '<Message {id}>'.format(id=self.media_id)

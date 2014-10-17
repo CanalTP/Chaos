@@ -37,7 +37,6 @@ import kombu
 from kombu.mixins import ConsumerMixin
 from google.protobuf.message import DecodeError
 from connectors.disruption_sender import sender
-from connectors import connector_config
 
 
 class DisruptionSender(ConsumerMixin):
@@ -45,24 +44,25 @@ class DisruptionSender(ConsumerMixin):
     Ce service permet d'envoyer des perturbations a Adjustit a partir de rabbitmq
     """
 
-    def __init__(self):
+    def __init__(self, connector_config):
         self.connection = None
         self.exchange = None
         self.queues = []
-        self.adjustit = AdjustIt()
+        self.adjustit = AdjustIt(connector_config)
+        self.connector_config = connector_config
         self._init_rabbitmq()
 
     def _init_rabbitmq(self):
         """
         connect to rabbitmq and init the queues
         """
-        self.connection = kombu.Connection(connector_config["rabbitmq"]['broker-url'])
-        exchange_name = connector_config["rabbitmq"]['exchange-name']
+        self.connection = kombu.Connection(self.connector_config["rabbitmq"]['broker-url'])
+        exchange_name = self.connector_config["rabbitmq"]['exchange-name']
         exchange = kombu.Exchange(exchange_name, type="topic")
         logging.getLogger('disruption_sender').info("listen following exchange: %s", exchange_name)
 
-        for topic in connector_config["rabbitmq"]["rt_topics"]:
-            queue = kombu.Queue(connector_config["rabbitmq"]['queue-name'] + ':' + topic,
+        for topic in self.connector_config["rabbitmq"]["rt_topics"]:
+            queue = kombu.Queue(self.connector_config["rabbitmq"]['queue-name'] + ':' + topic,
                                 exchange=exchange,
                                 durable=True,
                                 routing_key=topic)

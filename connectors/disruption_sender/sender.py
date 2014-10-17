@@ -32,17 +32,15 @@ from data import get_events
 from connectors.xml.xml_parser import parse_response
 from connectors.database import models
 from connectors.database.database import Base
-from connectors.disruption_sender.utils import is_valid_response
 from sqlalchemy.orm.exc import NoResultFound
 import logging
-from connectors.disruption_sender.utils import is_impacts_with_pt_object
 
 
 def delete_event(adjustit, event, local_event):
     request_response = adjustit.delete_event(event)
     if request_response.status_code == 200:
         response = parse_response(request_response)
-        if is_valid_response(response):
+        if adjustit.is_valid_response(response):
             local_event.delete_impacts()
             Base.session.delete(local_event)
     else:
@@ -57,7 +55,7 @@ def update_event(adjustit, event_pb, local_event):
     if request_response.status_code == 200:
         # Parse response adjustit
         response = parse_response(request_response)
-        if is_valid_response(response):
+        if adjustit.is_valid_response(response):
             temp_impact_list = {}
             if "impacts" in response:
                 for resp_impact in response["impacts"]:
@@ -105,7 +103,7 @@ def add_event(adjustit, event):
     request_response = adjustit.add_event(event)
     if request_response.status_code == 200:
         response = parse_response(request_response)
-        if is_valid_response(response):
+        if adjustit.is_valid_response(response):
             local_event = models.DisruptionEvent(event.external_code)
             if "impacts" in response:
                 for resp_impact in response["impacts"]:
@@ -145,12 +143,6 @@ def send_disruption(disruption, adjustit):
         if event_pb.is_deleted:
             delete_event(adjustit, event_pb, local_event)
         else:
-            if not is_impacts_with_pt_object(event_pb.impacts):
-                logging.getLogger('send_disruption').\
-                    debug("The event {external_code} is not valid, impact without ptobject.".
-                          format(external_code=event_pb.external_code))
-                continue
-
             if local_event:
                 update_event(adjustit, event_pb, local_event)
             else:
