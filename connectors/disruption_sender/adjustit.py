@@ -166,13 +166,13 @@ class AdjustIt(object):
     def format_url_message(self, message):
         return Impact_format["message"].format(
             message=message,
-        push_date=convert_to_adjusitit_date(message.push_date))
+            push_date=convert_to_adjusitit_date(message.push_date))
 
     # Actions AdjustIt
     def get_event(self, event):
         url = actions["getevent"].format(url=self.url,
-                                            interface=self.interface,
-                                            event=event)
+                                         interface=self.interface,
+                                         event=event)
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException as e:

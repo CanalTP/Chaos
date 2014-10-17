@@ -4,12 +4,12 @@ from connectors.disruption_sender.data import get_events
 import datetime, time
 
 
-def get_date(_year, _month, _day, _hour, _minute):
-    t = datetime.datetime(year=_year,
-                          month=_month,
-                          day=_day,
-                          hour=_hour,
-                          minute=_minute)
+def get_date(year, month, day, hour, minute):
+    t = datetime.datetime(year=year,
+                          month=month,
+                          day=day,
+                          hour=hour,
+                          minute=minute)
     return int(time.mktime(t.timetuple()))
 
 
