@@ -29,7 +29,6 @@
 # www.navitia.io
 
 import requests
-from exceptions import RequestsException
 from connectors import connector_config
 import logging
 from datetime import datetime
@@ -123,19 +122,19 @@ class AdjustIt(object):
     def format_url_impacts_event(self, event, local_event):
         impacts = ''
         if event.impacts:
-            impact_count = 1
+            enum_impacts = list(enumerate(event.impacts, start=1))
             impact_list = []
-            for impact in event.impacts:
+            for enum_impact in enum_impacts:
                 str_one_url = ''
-                local_impact = local_event.get_impact_by_new_id(impact.pt_object.external_code + impact.id)
+                local_impact = local_event.get_impact_by_new_id(enum_impact[1].pt_object.external_code +
+                                                                enum_impact[1].id)
                 if len(event.impacts) == 1:
                     str_one_url = "impact="
                 else:
-                    str_one_url = "impact" + str(impact_count) + "="
+                    str_one_url = "impact" + str(enum_impact[0]) + "="
                 if local_impact:
                     str_one_url = str_one_url + "ImpactID=" + str(local_impact.adjustit_impact_id) + impact_separator
-                impact_list.append(str_one_url + self.format_url_impact(impact))
-                impact_count = impact_count + 1
+                impact_list.append(str_one_url + self.format_url_impact(enum_impact[1]))
 
             impacts = separator.join(impact_list)
         return impacts
@@ -149,16 +148,15 @@ class AdjustIt(object):
                    daily_end_time=self.convert_to_adjusitit_time(impact.daily_end_time))
         messages = ''
         if impact.impact_broad_casts:
-            msg_count = 1
             message_list = []
-            for message in impact.impact_broad_casts:
+            enum_messages = list(enumerate(impact.impact_broad_casts, start=1))
+            for enum_message in enum_messages:
                 str_one_url = ''
                 if len(impact.impact_broad_casts) == 1:
                     str_one_url = "broadcast="
                 else:
-                    str_one_url = "broadcast" + str(msg_count) + "="
-                message_list.append(str_one_url + self.format_url_message(message))
-                msg_count = msg_count + 1
+                    str_one_url = "broadcast" + str(enum_message[0]) + "="
+                message_list.append(str_one_url + self.format_url_message(enum_message[1]))
 
             messages = messages_separator.join(message_list)
         if messages:
@@ -196,26 +194,16 @@ class AdjustIt(object):
         return False
 
     # Actions AdjustIt
-    def get_event(self, event):
-        url = actions["getevent"].format(url=self.url,
-                                         interface=self.interface,
-                                         event=event)
-        try:
-            response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException as e:
-            raise RequestsException(str(e))
-            response = None
-        return response
-
     def delete_event(self, event):
         url = actions["deleteevent"].format(url=self.url,
                                             interface=self.interface,
                                             event=event)
         try:
             response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException as e:
-            raise RequestsException(str(e))
-            response = None
+        except requests.exceptions.RequestException:
+            logging.getLogger(__name__).exception('delete_event failed, url :' + url)
+            #currently we reraise the previous exceptions
+            raise
         return response
 
     def add_event(self, event):
@@ -226,9 +214,10 @@ class AdjustIt(object):
                                          end=self.convert_to_adjusitit_date(event.publication_end_date))
         try:
             response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException as e:
-            raise RequestsException(str(e))
-            response = None
+        except requests.exceptions.RequestException:
+            logging.getLogger(__name__).exception('add_event failed, url :' + url)
+            #currently we reraise the previous exceptions
+            raise
         return response
 
     def update_event(self, event_pb, local_event):
@@ -243,9 +232,10 @@ class AdjustIt(object):
         try:
             logging.getLogger('update_event').debug(url)
             response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException as e:
-            raise RequestsException(str(e))
-            response = None
+        except requests.exceptions.RequestException:
+            logging.getLogger(__name__).exception('update_event failed, url :' + url)
+            #currently we reraise the previous exceptions
+            raise
         return response
 
     def delete_impact(self, adjustit_impact_id):
@@ -255,9 +245,10 @@ class AdjustIt(object):
                                              impactid=adjustit_impact_id)
         try:
             response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException as e:
-            raise RequestsException(str(e))
-            response = None
+        except requests.exceptions.RequestException:
+            logging.getLogger(__name__).exception('delete_impact failed, url :' + url)
+            #currently we reraise the previous exceptions
+            raise
         return response
 
     def delete_broad_cast(self,impact_id, media_id):
@@ -268,7 +259,8 @@ class AdjustIt(object):
                                              mediaid=media_id)
         try:
             response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException as e:
-            raise RequestsException(str(e))
-            response = None
+        except requests.exceptions.RequestException:
+            logging.getLogger(__name__).exception('delete_broad_cast failed, url :' + url)
+            #currently we reraise the previous exceptions
+            raise
         return response

@@ -76,7 +76,8 @@ class DisruptionSender(ConsumerMixin):
             try:
                 sender.send_disruption(disruption, self.adjustit)
             except (FunctionalError) as e:
-                logging.getLogger('disruption_sender').warn("error while preparing stats to save: {}".format(str(e)))
+                logging.getLogger('disruption_sender').warn("error while preparing disruption to send to adjustit: {}".
+                                                            format(str(e)))
         else:
             logging.getLogger('disruption_sender').warn("protobuff query not initialized")
 
