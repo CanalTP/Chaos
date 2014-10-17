@@ -117,6 +117,58 @@ class AdjustIt(object):
         self.interface = connector_config["adjustit"]["interface"]
         self.provider = connector_config["other"]["provider"]
 
+    # formatting URLs
+    def format_url_impacts_event(self, event, local_event):
+        impacts = ''
+        if event.impacts:
+            impact_count = 1
+            impact_list = []
+            for impact in event.impacts:
+                str_one_url = ''
+                local_impact = local_event.get_impact_by_new_id(impact.pt_object.external_code + impact.id)
+                if len(event.impacts) == 1:
+                    str_one_url = "impact="
+                else:
+                    str_one_url = "impact" + str(impact_count) + "="
+                if local_impact:
+                    str_one_url = str_one_url + "ImpactID=" + str(local_impact.adjustit_impact_id) + impact_separator
+                impact_list.append(str_one_url + self.format_url_impact(impact))
+                impact_count = impact_count + 1
+
+            impacts = separator.join(impact_list)
+        return impacts
+
+    def format_url_impact(self, impact):
+        impact_url = Impact_format["impact"].\
+            format(impact=impact,
+                   start=convert_to_adjusitit_date(impact.application_start_date),
+                   end=convert_to_adjusitit_date(impact.application_end_date),
+                   daily_start_time=convert_to_adjusitit_time(impact.daily_start_time),
+                   daily_end_time=convert_to_adjusitit_time(impact.daily_end_time))
+        messages = ''
+        if impact.impact_broad_casts:
+            msg_count = 1
+            message_list = []
+            for message in impact.impact_broad_casts:
+                str_one_url = ''
+                if len(impact.impact_broad_casts) == 1:
+                    str_one_url = "broadcast="
+                else:
+                    str_one_url = "broadcast" + str(msg_count) + "="
+                message_list.append(str_one_url + self.format_url_message(message))
+                msg_count = msg_count + 1
+
+            messages = messages_separator.join(message_list)
+        if messages:
+            return impact_separator.join([impact_url, messages])
+        return impact_url
+
+    def format_url_message(self, message):
+        return Impact_format["message"].format(
+            message=message,
+        push_date=convert_to_adjusitit_date(message.push_date))
+
+    # Actions AdjustIt
     def get_event(self, event):
         url = actions["getevent"].format(url=self.url,
                                             interface=self.interface,
@@ -158,45 +210,9 @@ class AdjustIt(object):
                                             event=event_pb,
                                             start=convert_to_adjusitit_date(event_pb.publication_start_date),
                                             end=convert_to_adjusitit_date(event_pb.publication_end_date))
-        if event_pb.impacts:
-            # Impacts
-            impact_count = 1
-            str_impact = ''
-            for impact in event_pb.impacts:
-                local_impact = local_event.get_impact_by_new_id(impact.pt_object.external_code + impact.id)
-                if len(event_pb.impacts) == 1:
-                    str_impact = "impact="
-                else:
-                    str_impact = str_impact + "impact" + str(impact_count) + "="
-                if local_impact:
-                    str_impact = str_impact + "ImpactID=" + str(local_impact.adjustit_impact_id) + impact_separator
-
-                str_impact = str_impact + Impact_format["impact"].\
-                    format(impact=impact,
-                           start=convert_to_adjusitit_date(impact.application_start_date),
-                           end=convert_to_adjusitit_date(impact.application_end_date),
-                           daily_start_time=convert_to_adjusitit_time(impact.daily_start_time),
-                           daily_end_time=convert_to_adjusitit_time(impact.daily_end_time))
-                url = separator.join([url, str_impact])
-                impact_count = impact_count + 1
-                # Messages
-                msg_count = 1
-                if impact.impact_broad_casts:
-                    str_message = ''
-                    for message in impact.impact_broad_casts:
-                        if len(impact.impact_broad_casts) == 1:
-                            str_message = "broadcast="
-                        else:
-                            str_message = str_message + "broadcast" + str(msg_count) + "="
-                        str_message = str_message +\
-                                      Impact_format["message"].format(
-                                          message=message,
-                                          push_date=convert_to_adjusitit_date(message.push_date))
-                        if msg_count != len(impact.impact_broad_casts):
-                            str_message = str_message + messages_separator
-                        msg_count = msg_count + 1
-
-                    url = url + impact_separator + str_message
+        impacts = self.url_formatting.format_url_impacts_event(event_pb, local_event)
+        if impacts:
+            url = separator.join([url, impacts])
         try:
             logging.getLogger('update_event').debug(url)
             response = requests.get(url, timeout=self.timeout)
