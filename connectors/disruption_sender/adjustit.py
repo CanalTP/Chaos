@@ -212,7 +212,7 @@ class AdjustIt(object):
                                             event=event_pb,
                                             start=self.datetime_to_string(event_pb.publication_start_date),
                                             end=self.datetime_to_string(event_pb.publication_end_date))
-        impacts = self.url_formatting.format_url_impacts_event(event_pb, local_event)
+        impacts = self.format_url_impacts_event(event_pb, local_event)
         if impacts:
             url = separator.join([url, impacts])
         return self.call_adjustit(url)
