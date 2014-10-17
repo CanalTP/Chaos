@@ -179,3 +179,17 @@ def test_format_url_event_whit_two_impact_two_message():
              'DailyStartTime=00|00|00|-|DailyEndTime=23|59|59|-|Duration=0|-|TCOExtCode=uri1|-|'
              'TCOType=Network|-|State=Information|-|ImpactActiveDays=1111111|-|broadcast=impacttitle=sms|.|'
              'pushdate=2014|10|16|15|12|00|.|mediaid=2|.|freemsg=message sms')
+
+
+def test_format_date():
+    adjust_it = AdjustIt()
+    date = datetime.datetime(year=2014, month=4, day=12, hour=16, minute=52)
+    eq_(adjust_it.convert_to_adjusitit_date(int(time.mktime(date.timetuple()))), '2014|04|12|16|52|00')
+
+    date = datetime.datetime(year=2014, month=4, day=2, hour=16, minute=52)
+    eq_(adjust_it.convert_to_adjusitit_date(int(time.mktime(date.timetuple()))), '2014|04|02|16|52|00')
+
+@raises(TypeError)
+def test_format_date():
+    adjust_it = AdjustIt()
+    eq_(adjust_it.convert_to_adjusitit_date("aaa"), '2014|04|12')

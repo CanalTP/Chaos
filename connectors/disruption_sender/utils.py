@@ -27,12 +27,8 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from datetime import datetime
-import re
-from connectors.disruption_sender import chaos_pb2, gtfs_realtime_pb2
 
-format_date = "%Y|%m|%d|%H|%M|%S"
-format_time = "%H|%M|%S"
+from connectors.disruption_sender import chaos_pb2
 
 
 def pt_object_type_to_string(pt_object_type):
@@ -46,24 +42,6 @@ def pt_object_type_to_string(pt_object_type):
         return collection[pt_object_type]
     return None
 
-def convert_to_adjusitit_time(value):
-    str = None
-    try:
-        str = value.strftime(format_time)
-    except TypeError:
-        raise TypeError("The argument value is not valid, you gave: {}".format(value))
-    return str
-
-
-def convert_to_adjusitit_date(value):
-    str = None
-    try:
-        date = datetime.fromtimestamp(value)
-        str = date.strftime(format_date)
-    except TypeError:
-        raise TypeError("The argument value is not valid, you gave: {}".format(value))
-    return str
-
 
 def get_max_end_period(periods):
     return max([dt.end for dt in periods])
@@ -71,13 +49,6 @@ def get_max_end_period(periods):
 
 def get_min_start_period(periods):
     return min([dt.start for dt in periods])
-
-
-def is_valid_response(resp):
-
-    if resp and ("event_status" in resp) and re.search("ok", resp["event_status"], re.IGNORECASE):
-        return True
-    return False
 
 
 def is_impacts_with_pt_object(impacts):

@@ -41,7 +41,6 @@ def get_resp_update_impact_valid():
 def test_get_event_with_Impact():
     response = get_resp_update_impact_valid()
     resp = parse_response(response)
-    print resp
     eq_(resp["event_status"], 'Ok')
     eq_(resp["event_id"], '8')
     eq_(resp["event_external_code"], '5c694822-5512-11e4-8324-e82aeab22767')

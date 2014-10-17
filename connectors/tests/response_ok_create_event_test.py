@@ -2,6 +2,7 @@ from nose.tools import *
 from connectors.xml.xml_parser import parse_response
 from connectors.disruption_sender import utils
 
+
 class Obj(object):
     pass
 
@@ -158,15 +159,11 @@ def test_create_event_valid():
     eq_(resp["event_external_code"], '886a36ca-5085-11e4-9ff2-e82aeab22765')
 
 
-def test_valid_resp_valid():
-    response = get_resp_create_event_valid()
-    resp = parse_response(response)
-    eq_(utils.is_valid_response(resp), True)
-
 @raises(AttributeError)
 def test_create_event_invalid():
     response = get_resp_create_event_invalid()
     parse_response(response)
+
 
 def test_update_event_valid():
     response = get_resp_update_event_with_Impact()
