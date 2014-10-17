@@ -197,13 +197,7 @@ class AdjustIt(object):
         url = actions["deleteevent"].format(url=self.url,
                                             interface=self.interface,
                                             event=event)
-        try:
-            response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('delete_event failed, url :{}'.format(url))
-            #currently we reraise the previous exceptions
-            raise
-        return response
+        return self.call_adjustit(url)
 
     def add_event(self, event):
         url = actions["addevent"].format(url=self.url,
@@ -211,13 +205,7 @@ class AdjustIt(object):
                                          event=event,
                                          start=self.datetime_to_string(event.publication_start_date),
                                          end=self.datetime_to_string(event.publication_end_date))
-        try:
-            response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('add_event failed, url :{}'.format(url))
-            #currently we reraise the previous exceptions
-            raise
-        return response
+        return self.call_adjustit(url)
 
     def update_event(self, event_pb, local_event):
         url = actions["updateevent"].format(url=self.url,
@@ -228,38 +216,28 @@ class AdjustIt(object):
         impacts = self.url_formatting.format_url_impacts_event(event_pb, local_event)
         if impacts:
             url = separator.join([url, impacts])
-        try:
-            logging.getLogger('update_event').debug(url)
-            response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('update_event failed, url :{}'.format(url))
-            #currently we reraise the previous exceptions
-            raise
-        return response
+        return self.call_adjustit(url)
 
     def delete_impact(self, adjustit_impact_id):
         url = actions["deleteimpact"].format(url=self.url,
                                              provider=self.provider,
                                              interface=self.interface,
                                              impactid=adjustit_impact_id)
-        try:
-            response = requests.get(url, timeout=self.timeout)
-        except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('delete_impact failed, url :{}'.format(url))
-            #currently we reraise the previous exceptions
-            raise
-        return response
+        return self.call_adjustit(url)
 
-    def delete_broad_cast(self,impact_id, media_id):
+    def delete_broad_cast(self, impact_id, media_id):
         url = actions["deletebroadcast"].format(url=self.url,
                                              provider=self.provider,
                                              interface=self.interface,
                                              impactid=impact_id,
                                              mediaid=media_id)
+        return self.call_adjustit(url)
+
+    def call_adjustit(self, url):
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('delete_broad_cast failed, url :{}'.format(url))
+            logging.getLogger(__name__).exception('call_adjustit failed, url :{}'.format(url))
             #currently we reraise the previous exceptions
             raise
         return response
