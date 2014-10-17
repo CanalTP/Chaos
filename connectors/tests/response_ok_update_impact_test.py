@@ -38,6 +38,7 @@ def get_resp_update_impact_valid():
                         '</ActionEvent>'
     return response
 
+
 def test_get_event_with_Impact():
     response = get_resp_update_impact_valid()
     resp = parse_response(response)

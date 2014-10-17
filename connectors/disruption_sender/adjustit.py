@@ -237,7 +237,7 @@ class AdjustIt(object):
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('call_adjustit failed, url :{}'.format(url))
+            logging.getLogger('call_adjustit').exception('call_adjustit failed, url :{}'.format(url))
             #currently we reraise the previous exceptions
             raise
         return response

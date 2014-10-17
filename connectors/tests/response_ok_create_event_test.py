@@ -6,6 +6,7 @@ from connectors.disruption_sender import utils
 class Obj(object):
     pass
 
+
 def get_resp_create_event_valid():
     response = Obj()
     response.content = '<ActionEvent><Event EventID="193"><EventLevel EventLevelID="1">' \
@@ -22,6 +23,7 @@ def get_resp_create_event_valid():
                '</ImpactList></Event></ActionEvent>'
     return response
 
+
 def get_resp_create_event_invalid():
     response = Obj()
     response.content = '<ActionEvent><EventAA EventID="193"><EventLevel EventLevelID="1">' \
@@ -37,6 +39,7 @@ def get_resp_create_event_invalid():
                '<ImpactList Count="0" ImpactScenario="">' \
                '</ImpactList></EventAA></ActionEvent>'
     return response
+
 
 def get_resp_update_event_with_Impact():
     response = Obj()
@@ -105,6 +108,7 @@ def get_resp_update_event_with_Impact():
                        '</ActionEvent>'
     return response
 
+
 def get_resp_get_event_with_Impact():
     response = Obj()
     response.content = '<ActionEvent>' \
@@ -142,6 +146,7 @@ def get_resp_get_event_with_Impact():
                        '</ActionEvent>'
     return response
 
+
 def test_get_event_with_Impact():
     response = get_resp_get_event_with_Impact()
     resp = parse_response(response)
@@ -149,6 +154,7 @@ def test_get_event_with_Impact():
     eq_(resp["event_id"], '157')
     eq_(resp["event_external_code"], 'ifremery-2140304083721-198')
     eq_(len(resp["impacts"]), 1)
+
 
 def test_create_event_valid():
     response = get_resp_create_event_valid()
