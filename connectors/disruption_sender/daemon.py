@@ -86,7 +86,7 @@ class DisruptionSender(ConsumerMixin):
         feed_message = gtfs_realtime_pb2.FeedMessage()
         try:
             feed_message.ParseFromString(body)
-            logging.getLogger('disruption_sender').debug('query received: {}'.format(str(feed_message)))
+            logging.getLogger('disruption_sender').debug('query received: %s' % str(feed_message))
         except DecodeError as e:
             logging.getLogger('disruption_sender').warn("message is not a valid "
                                                         "protobuf task: {}".format(str(e)))
