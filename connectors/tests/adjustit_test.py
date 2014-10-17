@@ -184,12 +184,13 @@ def test_format_url_event_whit_two_impact_two_message():
 def test_format_date():
     adjust_it = AdjustIt()
     date = datetime.datetime(year=2014, month=4, day=12, hour=16, minute=52)
-    eq_(adjust_it.convert_to_adjusitit_date(int(time.mktime(date.timetuple()))), '2014|04|12|16|52|00')
+    eq_(adjust_it.datetime_to_string(int(time.mktime(date.timetuple()))), '2014|04|12|16|52|00')
 
     date = datetime.datetime(year=2014, month=4, day=2, hour=16, minute=52)
-    eq_(adjust_it.convert_to_adjusitit_date(int(time.mktime(date.timetuple()))), '2014|04|02|16|52|00')
+    eq_(adjust_it.datetime_to_string(int(time.mktime(date.timetuple()))), '2014|04|02|16|52|00')
+
 
 @raises(TypeError)
 def test_format_date():
     adjust_it = AdjustIt()
-    eq_(adjust_it.convert_to_adjusitit_date("aaa"), '2014|04|12')
+    eq_(adjust_it.datetime_to_string("aaa"), '2014|04|12')

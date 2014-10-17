@@ -142,10 +142,10 @@ class AdjustIt(object):
     def format_url_impact(self, impact):
         impact_url = Impact_format["impact"].\
             format(impact=impact,
-                   start=self.convert_to_adjusitit_date(impact.application_start_date),
-                   end=self.convert_to_adjusitit_date(impact.application_end_date),
-                   daily_start_time=self.convert_to_adjusitit_time(impact.daily_start_time),
-                   daily_end_time=self.convert_to_adjusitit_time(impact.daily_end_time))
+                   start=self.datetime_to_string(impact.application_start_date),
+                   end=self.datetime_to_string(impact.application_end_date),
+                   daily_start_time=self.time_to_string(impact.daily_start_time),
+                   daily_end_time=self.time_to_string(impact.daily_end_time))
         messages = ''
         if impact.impact_broad_casts:
             message_list = []
@@ -166,10 +166,10 @@ class AdjustIt(object):
     def format_url_message(self, message):
         return Impact_format["message"].format(
             message=message,
-            push_date=self.convert_to_adjusitit_date(message.push_date))
+            push_date=self.datetime_to_string(message.push_date))
 
     # Utils AdjustIt
-    def convert_to_adjusitit_time(self, value):
+    def time_to_string(self, value):
         str = None
         try:
             str = value.strftime(self.format_time)
@@ -177,8 +177,7 @@ class AdjustIt(object):
             raise TypeError("The argument value is not valid, you gave: {}".format(value))
         return str
 
-
-    def convert_to_adjusitit_date(self, value):
+    def datetime_to_string(self, value):
         str = None
         try:
             date = datetime.fromtimestamp(value)
@@ -210,8 +209,8 @@ class AdjustIt(object):
         url = actions["addevent"].format(url=self.url,
                                          interface=self.interface,
                                          event=event,
-                                         start=self.convert_to_adjusitit_date(event.publication_start_date),
-                                         end=self.convert_to_adjusitit_date(event.publication_end_date))
+                                         start=self.datetime_to_string(event.publication_start_date),
+                                         end=self.datetime_to_string(event.publication_end_date))
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException:
@@ -224,8 +223,8 @@ class AdjustIt(object):
         url = actions["updateevent"].format(url=self.url,
                                             interface=self.interface,
                                             event=event_pb,
-                                            start=self.convert_to_adjusitit_date(event_pb.publication_start_date),
-                                            end=self.convert_to_adjusitit_date(event_pb.publication_end_date))
+                                            start=self.datetime_to_string(event_pb.publication_start_date),
+                                            end=self.datetime_to_string(event_pb.publication_end_date))
         impacts = self.url_formatting.format_url_impacts_event(event_pb, local_event)
         if impacts:
             url = separator.join([url, impacts])
