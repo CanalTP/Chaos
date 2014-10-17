@@ -63,7 +63,7 @@ def parse_response(response):
                         impact["messages"].append(message)
 
     except AttributeError, e:
-        logging.getLogger('parse_response').debug("response invalid, raison={raison} :".format(raison=str(e)))
+        logging.getLogger('parse_response').debug("response invalid, cause={cause} :".format(cause=str(e)))
         raise
 
     return result
