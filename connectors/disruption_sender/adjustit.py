@@ -201,7 +201,7 @@ class AdjustIt(object):
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('delete_event failed, url :' + url)
+            logging.getLogger(__name__).exception('delete_event failed, url :{}'.format(url))
             #currently we reraise the previous exceptions
             raise
         return response
@@ -215,7 +215,7 @@ class AdjustIt(object):
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('add_event failed, url :' + url)
+            logging.getLogger(__name__).exception('add_event failed, url :{}'.format(url))
             #currently we reraise the previous exceptions
             raise
         return response
@@ -233,7 +233,7 @@ class AdjustIt(object):
             logging.getLogger('update_event').debug(url)
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('update_event failed, url :' + url)
+            logging.getLogger(__name__).exception('update_event failed, url :{}'.format(url))
             #currently we reraise the previous exceptions
             raise
         return response
@@ -246,7 +246,7 @@ class AdjustIt(object):
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('delete_impact failed, url :' + url)
+            logging.getLogger(__name__).exception('delete_impact failed, url :{}'.format(url))
             #currently we reraise the previous exceptions
             raise
         return response
@@ -260,7 +260,7 @@ class AdjustIt(object):
         try:
             response = requests.get(url, timeout=self.timeout)
         except requests.exceptions.RequestException:
-            logging.getLogger(__name__).exception('delete_broad_cast failed, url :' + url)
+            logging.getLogger(__name__).exception('delete_broad_cast failed, url :{}'.format(url))
             #currently we reraise the previous exceptions
             raise
         return response
