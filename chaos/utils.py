@@ -37,6 +37,7 @@ from chaos.formats import id_format
 from jsonschema import ValidationError
 import time
 from chaos.populate_pb import populate_pb
+from chaos.exceptions import ClientAbsent
 import chaos
 
 def make_pager(resultset, endpoint, **kwargs):
@@ -282,3 +283,9 @@ def get_uuid(value, name):
 def send_disruption_to_navitia(disruption):
     feed_entity = populate_pb(disruption)
     chaos.publisher.publish(feed_entity.SerializeToString(), chaos.publisher._contributor)
+
+def get_client_code(request):
+    if 'X-Customer-Id' in request.headers:
+        return request.headers['X-Customer-Id']
+    raise ClientAbsent("The parameter X-Customer-Id does not exist in the header")
+

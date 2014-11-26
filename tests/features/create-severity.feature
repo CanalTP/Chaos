@@ -1,10 +1,20 @@
 Feature: Create severity
 
+    Scenario: we cannot create severity without client
+        When I post to "/severities" with:
+        """
+        {"wording": "foo"}
+        """
+        Then the status code should be "400"
+
     Scenario: wording is required
+        I fill in header "X-Customer-Id" with "5"
         When I post to "/severities"
         Then the status code should be "400"
 
+
     Scenario: creation of severity
+        I fill in header "X-Customer-Id" with "5"
         When I post to "/severities" with:
         """
         {"wording": "foo"}
@@ -15,6 +25,7 @@ Feature: Create severity
         And the field "severity.color" should be null
 
     Scenario: Severity are created
+        I fill in header "X-Customer-Id" with "5"
         Given I post to "/severities" with:
         """
         {"wording": "foo"}
@@ -27,6 +38,7 @@ Feature: Create severity
         And the field "severities.0.color" should be null
 
     Scenario: We can create a severity with a color
+        I fill in header "X-Customer-Id" with "5"
         When I post to "/severities" with:
         """
         {"wording": "foo", "color": "#123456"}
@@ -37,6 +49,7 @@ Feature: Create severity
         And the field "severity.color" should be "#123456"
 
     Scenario: We can create a severity with a priority
+        I fill in header "X-Customer-Id" with "5"
         When I post to "/severities" with:
         """
         {"wording": "foo", "color": "#123456", "priority": 2, "effect": null}
@@ -54,6 +67,7 @@ Feature: Create severity
         And the field "severities.0.priority" should be "2"
 
     Scenario: We can create a blocking severity
+        I fill in header "X-Customer-Id" with "5"
         When I post to "/severities" with:
         """
         {"wording": "foo", "color": "#123456", "priority": 2, "effect": "blocking"}

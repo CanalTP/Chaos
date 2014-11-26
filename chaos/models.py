@@ -59,6 +59,18 @@ SeverityEffect = db.Enum('blocking', name='severity_effect')
 ImpactStatus = db.Enum('published', 'archived', name='impact_status')
 PtObjectType = db.Enum('network', 'stop_area', 'line', 'line_section', 'route', name='pt_object_type')
 
+class Client(TimestampMixin, db.Model):
+    __tablename__ = 'client'
+    id = db.Column(UUID, primary_key=True)
+    client_code = db.Column(db.Text, unique=True, nullable=False)
+
+    def __init__(self, code=None):
+        self.id = str(uuid.uuid1())
+        self.client_code = code
+
+    @classmethod
+    def get_by_code(cls, code):
+        return cls.query.filter_by(client_code=code).first()# .first_or_404()
 
 class Severity(TimestampMixin, db.Model):
     """
@@ -70,6 +82,8 @@ class Severity(TimestampMixin, db.Model):
     is_visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
     priority = db.Column(db.Integer, unique=False, nullable=True)
     effect = db.Column(SeverityEffect, nullable=True)
+    client_id = db.Column(UUID, db.ForeignKey(Client.id))
+    client = db.relationship('Client', backref='severity', lazy='joined')
 
     def __init__(self):
         self.id = str(uuid.uuid1())
@@ -78,12 +92,17 @@ class Severity(TimestampMixin, db.Model):
         return '<Severity %r>' % self.id
 
     @classmethod
-    def all(cls):
-        return cls.query.filter_by(is_visible=True).order_by(cls.priority).all()
+    def all(cls, client_id):
+        return cls.query.filter_by(client_id=client_id, is_visible=True).order_by(cls.priority).all()
+
+    @classmethod
+    def get_by_client_id(cls, id, client_id):
+        return cls.query.filter_by(id=id, client_id=client_id, is_visible=True).first_or_404()
 
     @classmethod
     def get(cls, id):
         return cls.query.filter_by(id=id, is_visible=True).first_or_404()
+
 
 
 class Cause(TimestampMixin, db.Model):

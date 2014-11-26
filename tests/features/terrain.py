@@ -21,7 +21,8 @@ def setup_db(feature):
 @before.each_scenario
 def setup_tester(scenario):
     world.client = chaos.app.test_client()
-
+    world.headers = {}
+    world.headers['content-type'] = 'application/json'
 
 @after.each_feature
 def teardown_db(feature):

@@ -39,3 +39,8 @@ class ObjectUnknown(Exception):
 
     def __init__(self, message=''):
         self.message = message
+
+class ClientAbsent(Exception):
+
+    def __init__(self, message=''):
+        self.message = message

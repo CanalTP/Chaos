@@ -4,7 +4,7 @@ import json
 from chaos import db
 from chaos.models import Disruption, Severity, Cause, Impact, PTobject, Channel, Message, ApplicationPeriods, Tag,\
     associate_impact_pt_object, associate_disruption_tag, LineSection, associate_line_section_route_object,\
-    associate_line_section_via_object
+    associate_line_section_via_object, Client
 import chaos
 
 model_classes = {'disruption': Disruption,
@@ -22,7 +22,9 @@ model_classes = {'disruption': Disruption,
                'applicationperiods':ApplicationPeriods,
                'tag': Tag,
                'tags': Tag,
-               'line_section' : LineSection
+               'line_section' : LineSection,
+               'clients': Client,
+               'client': Client
 }
 
 associations = {'associate_impact_pt_object': associate_impact_pt_object,
@@ -53,8 +55,15 @@ def when_i_post_to(step, method, url):
         data = step.multiline
     else:
         data = None
-    headers = {'content-type': 'application/json'}
+    if hasattr(world, 'headers'):
+        headers = world.headers
+    else:
+        headers = {'content-type': 'application/json'}
     world.response = world.client.open(path=url, method=method, data=data, headers=headers)
+
+@step('I fill in header "(.*?)" with "(.*?)"')
+def i_fill_in_header(step, field_name, value):
+    world.headers[field_name] = value
 
 @step(u'Then the status code should be "(\d+)"')
 def then_the_status_code_should_be(step, status_code):
