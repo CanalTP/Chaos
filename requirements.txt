@@ -4,7 +4,7 @@ six==1.5.2
 blinker==1.3
 mock==1.0.1
 nose==1.3.3
--e git+https://github.com/l-vincent-l/flask-restful.git@febae72ecf16820612ea56fb90058aebcc063086#egg=Flask_RESTful-master
+git+https://github.com/l-vincent-l/flask-restful.git@febae72ecf16820612ea56fb90058aebcc063086#egg=Flask_RESTful-master
 Flask-SQLAlchemy==1.0
 Flask-Script==0.6.6
 Jinja2==2.7.2
