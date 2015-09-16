@@ -352,3 +352,14 @@ def test_pattern_input_format_without_time_zone_invalid():
 def test_pattern_input_format_with_time_zone_invalid():
     json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"application_period_patterns":[{"start_date":"2015-02-01T16:52:00Z","end_date":"2015-02-06T16:52:00Z","weekly_pattern":"1111100","time_zone":"europe/paris","time_slots":[{"begin": "07:45", "end": "09:30"}, {"begin": "17:30", "end": "20:30"}]}]}
     validate(json, formats.pattern_input_format)
+
+@raises(ValidationError)
+def test_impact_with_send_notifications_not_boolean():
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
+            "send_notifications": 1}
+    validate(json, formats.impact_input_format)
+
+def test_impact_with_send_notifications_boolean():
+    json = {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},
+            "send_notifications": True}
+    validate(json, formats.impact_input_format)

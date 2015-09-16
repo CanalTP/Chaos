@@ -254,7 +254,8 @@ impact_input_format = {
         'application_period_patterns': {'type': 'array',
                                         'items': pattern_input_format,
                                         'uniqueItems': True
-        }
+        },
+        'send_notifications': {'type': 'boolean'}
     },
     'required': ['severity']
 }

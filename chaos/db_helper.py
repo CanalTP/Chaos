@@ -235,6 +235,9 @@ def create_or_update_impact(disruption, json_impact, navitia, impact_id=None):
         impact_bd = models.Impact()
         impact_bd.severity = models.Severity.get(json_impact['severity']['id'], disruption.client.id)
     impact_bd.disruption_id = disruption.id
+    if 'send_notifications' in json_impact:
+        impact_bd.send_notifications = json_impact['send_notifications']
+
     db.session.add(impact_bd)
     #The ptobject is not added in the database before commit. If we have duplicate ptobject
     #in the json we have to handle it by using a dictionary. Each time we add a ptobject, we also

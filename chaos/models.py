@@ -447,6 +447,7 @@ class Impact(TimestampMixin, db.Model):
 
     def __init__(self, objects=None):
         self.id = str(uuid.uuid1())
+        self.send_notifications = False
 
     def archive(self):
         """

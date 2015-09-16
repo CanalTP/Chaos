@@ -41,6 +41,7 @@ def get_disruption(with_via=True, with_routes=True):
     impact.severity.wording = "SeverityTest"
     impact.severity.color = "#FFFF00"
     impact.severity.effect = "no_service"
+    impact.status = "published"
 
     # ApplicationPeriods
     application_period = chaos.models.ApplicationPeriods()
@@ -132,7 +133,6 @@ def get_disruption(with_via=True, with_routes=True):
     message.channel.name = "email"
     message.channel.max_size = 250
     message.channel.content_type = "html"
-    impact.status = "published"
     channel_type = chaos.models.ChannelType()
     channel_type.name = 'web'
     message.channel.channel_types.append(channel_type)
@@ -141,6 +141,52 @@ def get_disruption(with_via=True, with_routes=True):
     message.channel.channel_types.append(channel_type)
 
     impact.messages.append(message)
+
+    disruption.impacts.append(impact)
+
+    # Impacts with send_notifications
+    impact = chaos.models.Impact()
+    impact.severity = chaos.models.Severity()
+    impact.severity.wording = "SeverityTest"
+    impact.severity.color = "#FFFF00"
+    impact.severity.effect = "no_service"
+    impact.status = "published"
+    impact.send_notifications = True
+
+    # ApplicationPeriods
+    application_period = chaos.models.ApplicationPeriods()
+    application_period.start_date = parse_datetime("2014-04-12T16:52:00").replace(tzinfo=None)
+    application_period.end_date = parse_datetime("2015-04-12T16:52:00").replace(tzinfo=None)
+    impact.application_periods.append(application_period)
+
+    # PTobject
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "stop_area:125"
+    ptobject.type = "stop_area"
+    impact.objects.append(ptobject)
+
+    disruption.impacts.append(impact)
+
+    # Impacts with send_notifications false
+    impact = chaos.models.Impact()
+    impact.severity = chaos.models.Severity()
+    impact.severity.wording = "SeverityTest"
+    impact.severity.color = "#FFFF00"
+    impact.severity.effect = "no_service"
+    impact.status = "published"
+    impact.send_notifications = False
+
+    # ApplicationPeriods
+    application_period = chaos.models.ApplicationPeriods()
+    application_period.start_date = parse_datetime("2014-04-12T16:52:00").replace(tzinfo=None)
+    application_period.end_date = parse_datetime("2015-04-12T16:52:00").replace(tzinfo=None)
+    impact.application_periods.append(application_period)
+
+    # PTobject
+    ptobject = chaos.models.PTobject()
+    ptobject.uri = "stop_area:124"
+    ptobject.type = "stop_area"
+    impact.objects.append(ptobject)
 
     disruption.impacts.append(impact)
 
@@ -172,7 +218,7 @@ def test_disruption():
     eq_(disruption_pb.tags[1].name,  disruption.tags[1].name)
 
 
-    eq_(len(disruption_pb.impacts),  1)
+    eq_(len(disruption_pb.impacts),  3)
     eq_(disruption_pb.impacts[0].severity.wording,  "SeverityTest")
     eq_(disruption_pb.impacts[0].severity.color,  "#FFFF00")
     eq_(disruption_pb.impacts[0].severity.effect, chaos.gtfs_realtime_pb2.Alert.NO_SERVICE)
@@ -234,6 +280,12 @@ def test_disruption():
     eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
     eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
 
+    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
+    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
+    eq_(disruption_pb.impacts[1].send_notifications, True)
+    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
+
+
 
 def test_disruption_without_via():
     disruption = get_disruption(False)
@@ -250,7 +302,7 @@ def test_disruption_without_via():
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
 
 
-    eq_(len(disruption_pb.impacts), 1)
+    eq_(len(disruption_pb.impacts), 3)
     eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
@@ -309,6 +361,10 @@ def test_disruption_without_via():
     eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
     eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
 
+    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
+    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
+    eq_(disruption_pb.impacts[1].send_notifications, True)
+    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_without_routes():
     disruption = get_disruption(True, False)
@@ -379,7 +435,10 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
     eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
 
-
+    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
+    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
+    eq_(disruption_pb.impacts[1].send_notifications, True)
+    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_without_routes():
     disruption = get_disruption(False, False)
@@ -396,7 +455,7 @@ def test_disruption_without_routes():
     eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
 
 
-    eq_(len(disruption_pb.impacts), 1)
+    eq_(len(disruption_pb.impacts), 3)
     eq_(disruption_pb.impacts[0].severity.wording, "SeverityTest")
     eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
 
@@ -450,6 +509,10 @@ def test_disruption_without_routes():
     eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
     eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
 
+    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
+    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
+    eq_(disruption_pb.impacts[1].send_notifications, True)
+    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
 
 def test_disruption_is_deleted():
     disruption = get_disruption()
