@@ -126,6 +126,7 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
     """
     ptobject = models.PTobject()
     mapper.fill_from_json(ptobject, pt_object_json, mapper.object_mapping)
+    ptobject.uri = ":".join(ptobject.uri.split(':')[:-1])
     ptobject.uri = ":".join((ptobject.uri, impact_id))
 
     #Here we treat all the objects in line_section like line, start_point, end_point
@@ -160,20 +161,6 @@ def fill_and_add_line_section(navitia, impact_id, all_objects, pt_object_json):
                 line_section.routes.append(route_object)
             except exceptions.ObjectUnknown:
                 raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(route['type'], route['id']))
-
-    #Here we manage via in line_section
-    #"via":[{"id":"stop_area:MTD:9", "type": "stop_area"}, {"id":"stop_area:MTD:Nav23", "type": "stop_area"}]
-    if 'via' in line_section_json:
-        for via in line_section_json["via"]:
-            try:
-                via_object = fill_and_get_pt_object(navitia, all_objects, via, True)
-                line_section.via.append(via_object)
-            except exceptions.ObjectUnknown:
-                raise exceptions.ObjectUnknown('{} {} doesn\'t exist'.format(via['type'], via['id']))
-
-    #Fill sens from json
-    if 'sens' in line_section_json:
-        line_section.sens = line_section_json["sens"]
 
     ptobject.insert_line_section(line_section)
     return ptobject
