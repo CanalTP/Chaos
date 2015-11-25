@@ -7,7 +7,7 @@ See [Documentation](./documentation/index.md)
 
 ## Installation instruction
 
-After clonning, get submodules
+After cloning, get submodules
 ```
 git submodule init
 git submodule update
