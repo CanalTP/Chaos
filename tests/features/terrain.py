@@ -11,8 +11,8 @@ migrate = Migrate(chaos.app, chaos.db)
 migration_dir = 'migrations' if os.path.isdir('migrations') else '../migrations'
 
 
-@before.each_feature
-def setup_db(feature):
+@before.all
+def setup_db():
     logging.getLogger('alembic').setLevel(logging.ERROR)
     with chaos.app.app_context():
         flask_migrate.upgrade(directory=migration_dir)
@@ -24,8 +24,8 @@ def setup_tester(scenario):
     world.headers = {}
     world.headers['content-type'] = 'application/json'
 
-@after.each_feature
-def teardown_db(feature):
+@after.all
+def teardown_db(total):
     with chaos.app.app_context():
         flask_migrate.downgrade(revision='base', directory=migration_dir)
 
