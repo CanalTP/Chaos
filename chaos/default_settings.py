@@ -13,7 +13,7 @@ RABBITMQ_CONNECTION_STRING='pyamqp://guest:guest@localhost:5672//?heartbeat=60'
 #amqp exhange used for sending disruptions
 EXCHANGE='navitia'
 
-ENABLE_RABBITMQ=True
+ENABLE_RABBITMQ=False
 
 #Log Level available
 # - DEBUG
