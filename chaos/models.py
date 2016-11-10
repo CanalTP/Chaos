@@ -541,7 +541,7 @@ class Disruption(TimestampMixin, db.Model):
                 query_line_section = query_line_section.filter(or_(*filters))
                 query = query.union_all(query_line_section)
 
-        return query.order_by(cls.end_publication_date)
+        return query.order_by(cls.end_publication_date.desc())
 
     @property
     def publication_status(self):
