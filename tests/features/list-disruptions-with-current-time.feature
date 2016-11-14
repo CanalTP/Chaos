@@ -58,9 +58,9 @@ Feature: list disruptions with current time
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
-        And the field "disruptions.0.publication_status" should be "ongoing"
+        And the field "disruptions.0.publication_status" should be "coming"
         And the field "disruptions.1.publication_status" should be "coming"
-        And the field "disruptions.2.publication_status" should be "coming"
+        And the field "disruptions.2.publication_status" should be "ongoing"
 
     Scenario: Use current time to display disruptions : 1 past, 1 ongoing and 1 coming
 
@@ -89,9 +89,9 @@ Feature: list disruptions with current time
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
-        And the field "disruptions.0.publication_status" should be "past"
+        And the field "disruptions.0.publication_status" should be "coming"
         And the field "disruptions.1.publication_status" should be "ongoing"
-        And the field "disruptions.2.publication_status" should be "coming"
+        And the field "disruptions.2.publication_status" should be "past"
 
     Scenario: Use current time to display disruptions : 2 past and 1 ongoing
 
@@ -120,9 +120,9 @@ Feature: list disruptions with current time
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
-        And the field "disruptions.0.publication_status" should be "past"
+        And the field "disruptions.0.publication_status" should be "ongoing"
         And the field "disruptions.1.publication_status" should be "past"
-        And the field "disruptions.2.publication_status" should be "ongoing"
+        And the field "disruptions.2.publication_status" should be "past"
 
     Scenario: Use current time to display disruptions : all past
 

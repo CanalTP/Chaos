@@ -158,9 +158,9 @@ Feature: Manipulate tags in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
         And the field "disruptions.0.tags" should have a size of 1
-        And the field "disruptions.0.tags.0.name" should be "rer"
+        And the field "disruptions.0.tags.0.name" should be "meteo"
         And the field "disruptions.1.tags" should have a size of 1
-        And the field "disruptions.1.tags.0.name" should be "meteo"
+        And the field "disruptions.1.tags.0.name" should be "rer"
 
 
     Scenario: Display tag in a disruption filter by tag.name=rer or tag.name=meteo or tag.name=probleme
@@ -203,11 +203,11 @@ Feature: Manipulate tags in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
         And the field "disruptions.0.tags" should have a size of 1
-        And the field "disruptions.0.tags.0.name" should be "rer"
+        And the field "disruptions.0.tags.0.name" should be "meteo"
         And the field "disruptions.1.tags" should have a size of 1
         And the field "disruptions.1.tags.0.name" should be "probleme"
         And the field "disruptions.2.tags" should have a size of 1
-        And the field "disruptions.2.tags.0.name" should be "meteo"
+        And the field "disruptions.2.tags.0.name" should be "rer"
 
     Scenario: Display tag in a disruption not filter by tag
 
@@ -249,11 +249,11 @@ Feature: Manipulate tags in a Disruption
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
         And the field "disruptions.0.tags" should have a size of 1
-        And the field "disruptions.0.tags.0.name" should be "rer"
+        And the field "disruptions.0.tags.0.name" should be "meteo"
         And the field "disruptions.1.tags" should have a size of 1
         And the field "disruptions.1.tags.0.name" should be "probleme"
         And the field "disruptions.2.tags" should have a size of 1
-        And the field "disruptions.2.tags.0.name" should be "meteo"
+        And the field "disruptions.2.tags.0.name" should be "rer"
 
     Scenario: Display tag in a disruption filter by tag.id not exist
 

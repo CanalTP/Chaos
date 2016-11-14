@@ -56,9 +56,9 @@ Feature: list disruptions with filter publication_status
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
-        And the field "disruptions.0.publication_period.begin" should be "2014-04-03T15:00:00Z"
+        And the field "disruptions.0.publication_period.begin" should be "2014-04-02T14:00:00Z"
         And the field "disruptions.1.publication_period.begin" should be "2014-05-02T14:00:00Z"
-        And the field "disruptions.2.publication_period.begin" should be "2014-04-02T14:00:00Z"
+        And the field "disruptions.2.publication_period.begin" should be "2014-04-03T15:00:00Z"
 
 
     Scenario: Filter current_time=2014-05-02T14:00:00Z&publication_status[]='past'&publication_status[]='coming'
@@ -89,8 +89,8 @@ Feature: list disruptions with filter publication_status
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
-        And the field "disruptions.0.publication_period.begin" should be "2014-04-03T10:00:00Z"
-        And the field "disruptions.1.publication_period.begin" should be "2014-06-02T11:00:00Z"
+        And the field "disruptions.0.publication_period.begin" should be "2014-06-02T11:00:00Z"
+        And the field "disruptions.1.publication_period.begin" should be "2014-04-03T10:00:00Z"
 
     Scenario: Filter current_time=2014-05-02T14:00:00Z&publication_status[]='ongoing'&publication_status[]='coming' with some archived disruptions.
 
@@ -121,5 +121,5 @@ Feature: list disruptions with filter publication_status
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
-        And the field "disruptions.0.publication_period.begin" should be "2014-06-03T11:00:00Z"
-        And the field "disruptions.1.publication_period.begin" should be "2014-04-02T14:00:00Z"
+        And the field "disruptions.0.publication_period.begin" should be "2014-04-02T14:00:00Z"
+        And the field "disruptions.1.publication_period.begin" should be "2014-06-03T11:00:00Z"

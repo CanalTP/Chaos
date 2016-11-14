@@ -95,9 +95,9 @@ Feature: list disruptions
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 2
         And the field "disruptions.0.publication_period.begin" should be "2014-04-02T14:00:00Z"
-        And the field "disruptions.0.publication_period.end" should be "2014-04-02T19:00:00Z"
+        And the field "disruptions.0.publication_period.end" should be null
         And the field "disruptions.1.publication_period.begin" should be "2014-04-02T14:00:00Z"
-        And the field "disruptions.1.publication_period.end" should be null
+        And the field "disruptions.1.publication_period.end" should be "2014-04-02T19:00:00Z"
 
     Scenario: Disruption by id
 
