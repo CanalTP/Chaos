@@ -648,7 +648,7 @@ Feature: traffic report api
         And the field "traffic_reports.0.stop_points.0.links.0.rel" should be "disruptions"
 
 
-        Scenario: 2 impacts on network, current_time between start publication period and end application period
+        Scenario: 2 impacts on network & line, current_time between start publication period and end application period
 #
 #                       |                       01-01-2014                                  02-02-2014
 #  publication_period   |                   +------------------------------------------------------------------------+
@@ -658,6 +658,7 @@ Feature: traffic report api
 #  application_period   |                                                                   +------------------+
 #                       |
 # PtObject: network:JDR:1
+# PtObject: line:JDR:M1
 #
 #                                                                               TEST2
 #
@@ -685,11 +686,12 @@ Feature: traffic report api
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         |
             | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | line      | line:JDR:M1            | 2014-04-04T23:53:12 | 2014-04-06T22:53:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b7       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
             | 1ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |
-            | 1ffab232-3d48-4eea-aa2c-22f8680230b6       | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |
+            | 1ffab232-3d48-4eea-aa2c-22f8680230b7       | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |
 
 
         Given I have the following applicationperiods in my database:
@@ -713,11 +715,14 @@ Feature: traffic report api
         And the field "disruptions.1.disruption_id" should be "7ffab230-3d48-4eea-aa2c-22f8680230b6"
         And the field "traffic_reports.0.network.id" should be "network:JDR:1"
         And the field "traffic_reports.0.network.name" should be "RATP"
-        And the field "traffic_reports.0.network.links" should have a size of 2
+        And the field "traffic_reports.0.lines.0.id" should be "line:JDR:M1"
+        And the field "traffic_reports.0.lines.0.name" should be "Château de Vincennes - La Défense"
+        And the field "traffic_reports.0.network.links" should have a size of 1
+        And the field "traffic_reports.0.lines.0.links" should have a size of 1
         And the field "traffic_reports.0.network.links.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
         And the field "traffic_reports.0.network.links.0.rel" should be "disruptions"
-        And the field "traffic_reports.0.network.links.1.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b7"
-        And the field "traffic_reports.0.network.links.1.rel" should be "disruptions"
+        And the field "traffic_reports.0.lines.0.links.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b7"
+        And the field "traffic_reports.0.lines.0.links.0.rel" should be "disruptions"
 
 
         Scenario: 2 disruptions with an impacts on the same network, current_time between start publication period and end application period
