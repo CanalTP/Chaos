@@ -442,6 +442,7 @@ application_period_pattern_fields = {
 
 impact_fields = {
     'id': fields.Raw,
+    'status': fields.Raw,
     'created_at': FieldDateTime,
     'updated_at': FieldDateTime,
     'objects': fields.List(fields.Nested(objectTC_fields, display_null=False)),
