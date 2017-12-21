@@ -115,6 +115,18 @@ docker-compose logs -f
 Chaos will be accessible on http://chaos_ws_1.docker if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
 The database will be accessible at 'chaos_database_1.docker' and default RabbitMQ interface at 'http://chaos_rabbitmq_1.docker:15672'.
 
+## Security (optional)
+
+If you want to add more security, you can add a file chaos/clients_tokens.json with the client name and navitia tokens like:
+```
+{
+   "client_name": [
+     "navitia_token1",
+     "navitia_token2"
+   ]
+ }
+```
+
 ## Tests
 
 The following commands for tests are also working in Docker environment, you just have to run before: 
