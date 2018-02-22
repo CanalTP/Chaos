@@ -27,15 +27,16 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-__all__ = ['disruptions_input_format', 'publication_status_values',
-           'severity_input_format', 'id_format', 'cause_input_format',
-           'disruption_status_values']
 import re
 import pytz
 # see http://json-schema.org/
 
-datetime_pattern = '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
-date_pattern = '^\d{4}-\d{2}-\d{2}$'
+__all__ = ['disruptions_input_format', 'publication_status_values',
+           'severity_input_format', 'id_format', 'cause_input_format',
+           'disruption_status_values']
+
+datetime_pattern = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+date_pattern = r'^\d{4}-\d{2}-\d{2}$'
 id_format_text = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 id_format = re.compile(id_format_text)
 pt_object_type_values = [
@@ -48,7 +49,7 @@ pt_object_type_values = [
 ]
 # Here Order of values is strict and is used to create query filters.
 publication_status_values = ["past", "ongoing", "coming"]
-time_pattern = '^\d{2}:\d{2}$'
+time_pattern = r'^\d{2}:\d{2}$'
 week_pattern = '^[0-1]{7,7}$'
 channel_type_values = [
     "web",
