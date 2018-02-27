@@ -635,9 +635,8 @@ def get_clients_tokens(file_path):
 
     # If the configuration doesn't exist, allow the action (backward compatibility)
     if not path.exists(file_path):
-        logging.getLogger(__name__).warning('Unable to find file %s', file_path)
-
         return None
+    logging.getLogger(__name__).info('Security enabled')
 
     with open(file_path, 'r') as tokens_file:
         clients_tokens = json.load(tokens_file)
