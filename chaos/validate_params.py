@@ -137,11 +137,8 @@ class validate_id(object):
 
 class validate_client_token(object):
     def __init__(self, file_name='clients_tokens.json'):
-
         current_dir_path = path.dirname(path.realpath(__file__))
-        file_path = path.join(current_dir_path, file_name)
-
-        self.clients_tokens = get_clients_tokens(file_path)
+        self.clients_tokens = get_clients_tokens(path.join(current_dir_path, file_name))
 
     def __call__(self, func):
         @wraps(func)
