@@ -144,6 +144,11 @@ cd tests
 cd tests
 honcho run nosetests
 ```
+If you want to see the code coverage
+```
+pip install coverage
+honcho run nosetests --with-coverage --cover-html --cover-package=chaos --cover-erase  --cover-branches
+```
 
 ### Functional tests
 ```
