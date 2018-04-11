@@ -3,8 +3,6 @@ import os
 # postgresql://<user>:<password>@<host>:<port>/<dbname>
 # http://docs.sqlalchemy.org/en/rel_0_9/dialects/postgresql.html#psycopg2
 SQLALCHEMY_DATABASE_URI = str(os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://navitia:navitia@localhost/chaos'))
-#SQLALCHEMY_ECHO = True
-DATABASE_QUERY_TIMEOUT = 0.01
 
 DEBUG = (os.getenv('DEBUG', 1) == 1)
 

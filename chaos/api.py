@@ -107,19 +107,11 @@ def error_handler(exception):
     app.logger.exception('')
 
 
-@app.after_request
-def after_request(response):
-    for query in get_debug_queries():
-        if query.duration >= api.app.config.get('DATABASE_QUERY_TIMEOUT'):
-            app.logger.warning("SLOW QUERY: %s\nParameters: %s\nDuration: %fs\nContext: %s\n" % (query.statement, query.parameters, query.duration, query.context))
-    return response
-
 if api.app.config.get('ACTIVATE_PROFILING'):
     api.app.logger.warning('=======================================================')
     api.app.logger.warning('activation of the profiling, all query will be slow !')
     api.app.logger.warning('=======================================================')
     from werkzeug.contrib.profiler import ProfilerMiddleware, MergeStream
-    from flask_sqlalchemy import get_debug_queries
     import sys
 
     api.app.config['PROFILE'] = True
