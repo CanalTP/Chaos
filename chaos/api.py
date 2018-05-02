@@ -111,7 +111,10 @@ if api.app.config.get('ACTIVATE_PROFILING'):
     api.app.logger.warning('=======================================================')
     api.app.logger.warning('activation of the profiling, all query will be slow !')
     api.app.logger.warning('=======================================================')
-    from werkzeug.contrib.profiler import ProfilerMiddleware
+    from werkzeug.contrib.profiler import ProfilerMiddleware, MergeStream
+    import sys
+
     api.app.config['PROFILE'] = True
     f = open('/tmp/profiler.log', 'a+')
-    api.app.wsgi_app = ProfilerMiddleware(api.app.wsgi_app, f, restrictions=[80], profile_dir='/tmp/profile')
+    stream = MergeStream(sys.stdout, f)
+    api.app.wsgi_app = ProfilerMiddleware(api.app.wsgi_app, stream, restrictions=[80], profile_dir='/tmp/profile', sort_by=('time', 'calls'))
