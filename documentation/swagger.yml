@@ -1275,7 +1275,7 @@
 
     /disruptions/_search:
       post:
-        description: Return filtered disruptions
+        description: Return filtered disruptions and impacts
         parameters:
         - $ref: "#/parameters/header_authorization"
         - $ref: "#/parameters/header_coverage"
@@ -2272,8 +2272,21 @@
           description: Number of items per page
           type: integer
           default: 20
+        application_status:
+          description: Filter by application_status (on impact)
+          default:
+            - past
+            - ongoing
+            - coming
+          type: array
+          items:
+            type: string
+            enum:
+              - past
+              - ongoing
+              - coming
         publication_status:
-          description: Filter by publication_status
+          description: Filter by publication_status (on disruption)
           default:
             - past
             - ongoing
