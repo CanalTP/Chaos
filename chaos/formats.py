@@ -47,6 +47,7 @@ pt_object_type_values = [
     "stop_point"
 ]
 # Here Order of values is strict and is used to create query filters.
+application_status_values = ["past", "ongoing", "coming"]
 publication_status_values = ["past", "ongoing", "coming"]
 time_pattern = '^\d{2}:\d{2}$'
 week_pattern = '^[0-1]{7,7}$'
@@ -408,6 +409,11 @@ disruptions_search_input_format = {
                 },
                 'required': ['id']
             },
+            'uniqueItems': True
+        },
+        'application_status': {
+            'type': 'array',
+            'items': {'enum': application_status_values},
             'uniqueItems': True
         },
         'publication_status': {
