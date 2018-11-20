@@ -440,7 +440,7 @@ class Disruption(TimestampMixin, db.Model):
     )
     start_publication_date = db.Column(db.DateTime(), nullable=True)
     end_publication_date = db.Column(db.DateTime(), nullable=True)
-    impacts = db.relationship('Impact', backref='disruption', lazy='joined', cascade='delete')
+    impacts = db.relationship('Impact', backref='disruption', lazy='joined', cascade='delete', innerjoin=True)
     cause_id = db.Column(UUID, db.ForeignKey(Cause.id))
     cause = db.relationship('Cause', backref='disruption', lazy='joined')
     tags = db.relationship("Tag", secondary=associate_disruption_tag, backref="disruptions", lazy='joined')
@@ -561,14 +561,15 @@ class Disruption(TimestampMixin, db.Model):
         application_status = set(application_status)
         if len(application_status) != len(application_status_values):
             query = query.join(cls.impacts)
+            query = query.filter(Impact.status == 'published')
+            query = query.join(Impact.application_periods)
             application_availlable_filters = {
                 'past': ApplicationPeriods.end_date < get_current_time(),
-                'ongoing': and_(ApplicationPeriods.start_date >= get_current_time(), ApplicationPeriods.end_date <= get_current_time()),
+                'ongoing': and_(ApplicationPeriods.start_date <= get_current_time(), ApplicationPeriods.end_date >= get_current_time()),
                 'coming': ApplicationPeriods.start_date > get_current_time()
             }
             filters = [application_availlable_filters[status] for status in application_status]
             query = query.filter(or_(*filters))
-
         return query.order_by(cls.end_publication_date, cls.id)
 
     @classmethod

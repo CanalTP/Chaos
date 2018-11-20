@@ -499,6 +499,7 @@ class DisruptionsSearch(flask_restful.Resource):
             ptObjectFilter=json.get('ptObjectFilter', None),
             cause_category_id=json.get('cause_category_id', None)
         )
+        utils.filter_disruptions_impacts_by_application_status(result.items, json.get('application_status', application_status_values))
         response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
 
         '''

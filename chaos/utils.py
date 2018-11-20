@@ -722,3 +722,37 @@ def filter_disruptions_by_ptobjects(disruptions, filter):
             if disruption_is_deleted:
                 disruptions.remove(disruption)
                 break
+
+def filter_disruptions_impacts_by_application_status(disruptions, application_status = ['past', 'ongoing', 'coming']):
+    """
+        Do filter in disruptions impacts.
+
+        :param disruptions: Sequence of disruption (Database object)
+        :param application_status: array
+        :return: Nothing
+        :rtype: Void
+    """
+    if len(application_status) != 3:
+        result = []
+        for disruption in disruptions[:]:
+            disruption_is_deleted = False
+            for impact in (i for i in disruption.impacts if i.status == 'published'):
+                impact_is_deleted = True
+                for application_period in impact.application_periods:
+                    if 'past' in application_status:
+                        if application_period.end_date < get_current_time():
+                            impact_is_deleted = False
+                            break
+                    if 'ongoing' in application_status:
+                        if application_period.start_date <= get_current_time() and application_period.end_date >= get_current_time():
+                            impact_is_deleted = False
+                            break
+                    if 'coming' in application_status:
+                        if application_period.start_date > get_current_time():
+                            impact_is_deleted = False
+                            break
+                if impact_is_deleted:
+                    disruption.impacts.remove(impact)
+                    break
+            result.append(disruption)
+        disruptions = result
