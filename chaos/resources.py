@@ -44,7 +44,7 @@ import chaos
 import json
 from sqlalchemy.exc import IntegrityError
 import logging
-from utils import make_pager, option_value
+from utils import make_pager, option_value, get_current_time
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token
 
@@ -461,7 +461,6 @@ class DisruptionsSearch(flask_restful.Resource):
         parser_post.add_argument("items_per_page", type=int, default=20, location='json')
         parser_post.add_argument("ends_after_date", type=utils.get_datetime, location='json')
         parser_post.add_argument("ends_before_date", type=utils.get_datetime, location='json')
-        parser_post.add_argument("uri", type=str, location='json')
         parser_post.add_argument("line_section", type=types.boolean, default=False, location='json')
         parser_post.add_argument("current_time", type=utils.get_datetime, location='json')
         parser_post.add_argument("depth", type=int, default=1, location='json')
@@ -484,22 +483,36 @@ class DisruptionsSearch(flask_restful.Resource):
 
         g.current_time = args['current_time']
         g.display_impacts = args['depth'] > 1
+        current_time=get_current_time()
+        application_status=json.get('application_status', application_status_values)
+        uri=json.get('uri', None)
+        ptObjectFilter=json.get('ptObjectFilter', None)
         result = models.Disruption.all_with_post_filter(
             page_index=args['start_page'],
             items_per_page=args['items_per_page'],
             contributor_id=contributor.id,
-            application_status=json.get('application_status', application_status_values),
+            application_status=application_status,
             publication_status=json.get('publication_status', publication_status_values),
             ends_after_date=args['ends_after_date'],
             ends_before_date=args['ends_before_date'],
             tags=json.get('tag', None),
-            uri=args['uri'],
+            uri=uri,
             line_section=args['line_section'],
             statuses=json.get('status', disruption_status_values),
-            ptObjectFilter=json.get('ptObjectFilter', None),
-            cause_category_id=json.get('cause_category_id', None)
+            ptObjectFilter=ptObjectFilter,
+            cause_category_id=json.get('cause_category_id', None),
+            current_time=current_time
         )
-        utils.filter_disruptions_impacts_by_application_status(result.items, json.get('application_status', application_status_values))
+        logging.getLogger(__name__).info(result.items)
+        utils.filter_disruptions_on_impacts(
+            disruptions=result.items,
+            current_time=current_time,
+            uri=uri,
+            pt_object_filter=ptObjectFilter,
+            application_status=application_status
+        )
+        if len(result.items) == 0:
+            result.total=0
         response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
 
         '''

@@ -181,7 +181,7 @@ def get_current_time():
         Get current time global variable
         :return: DateTime format '2014-04-31T16:52:00'
     """
-    if 'current_time' in g and g.current_time:
+    if g and 'current_time' in g and g.current_time:
         return g.current_time
     return datetime.utcnow().replace(microsecond=0)
 
@@ -723,36 +723,98 @@ def filter_disruptions_by_ptobjects(disruptions, filter):
                 disruptions.remove(disruption)
                 break
 
-def filter_disruptions_impacts_by_application_status(disruptions, application_status = ['past', 'ongoing', 'coming']):
+def uri_is_not_in_pt_object_filter(uri=None, pt_object_filter=None):
+    result = not bool(uri and pt_object_filter)
+    if not result:
+        for key in pt_object_filter:
+            if uri in pt_object_filter[key]:
+                result = True
+                break
+    return not result
+
+
+def has_impact_deleted_by_application_status(application_status, application_periods, current_time=get_current_time()):
+    """
+        Return if an impact should be deleted by his application_period.
+
+        :param application_status: array
+        :param application_periods: Sequence of application_period (Database object)
+        :param current_time: DateTime
+        :return: True if the impact does not activate in a certain time status ['past', 'ongoing', 'coming']
+        :rtype: bool
+    """
+    impact_is_deleted = True
+    for application_period in application_periods:
+        if 'past' in application_status:
+            if application_period.end_date < current_time:
+                impact_is_deleted = False
+                break
+        if 'ongoing' in application_status:
+            if application_period.start_date <= current_time and application_period.end_date >= current_time:
+                impact_is_deleted = False
+                break
+        if 'coming' in application_status:
+            if application_period.start_date > current_time:
+                impact_is_deleted = False
+                break
+    return impact_is_deleted
+
+def has_impact_deleted_by_pt_objects(pt_objects, uri=None, pt_object_filter=None):
+    """
+        Return if an impact should be deleted by his pt_objects.
+
+        :param pt_objects: Sequence of pt_object (Database object)
+        :param uri: string
+        :param pt_object_filter: json
+        :return: True if the impact does not contain a specific pt_object
+        :rtype: bool
+    """
+    impact_is_deleted = bool(uri or pt_object_filter)
+    if impact_is_deleted:
+        for pt_object in pt_objects:
+            pt_object_type = pt_object.type
+            pt_object_uri = pt_object.uri
+            if pt_object_type == 'line_section':
+                pt_object_type = 'line'
+                pt_object_uri = pt_object.uri[:-37]
+            if (uri and pt_object_uri == uri and (not pt_object_filter or pt_object_filter.get(pt_object_type + 's', []) and uri in pt_object_filter[pt_object_type + 's'])) or \
+                (not uri and pt_object_filter and pt_object_filter.get(pt_object_type + 's', []) and pt_object_uri in pt_object_filter[pt_object_type + 's']):
+                impact_is_deleted = False
+                break
+    return impact_is_deleted
+
+def filter_disruptions_on_impacts(
+    disruptions,
+    pt_object_filter=None,
+    uri=None,
+    current_time=get_current_time(),
+    application_status = ['past', 'ongoing', 'coming']
+    ):
     """
         Do filter in disruptions impacts.
 
         :param disruptions: Sequence of disruption (Database object)
+        :param pt_object_filter: json
+        :param uri: string
+        :param current_time: DateTime
         :param application_status: array
         :return: Nothing
         :rtype: Void
     """
     if len(application_status) != 3:
-        result = []
         for disruption in disruptions[:]:
-            disruption_is_deleted = False
+            deleted_impacts = []
             for impact in (i for i in disruption.impacts if i.status == 'published'):
-                impact_is_deleted = True
-                for application_period in impact.application_periods:
-                    if 'past' in application_status:
-                        if application_period.end_date < get_current_time():
-                            impact_is_deleted = False
-                            break
-                    if 'ongoing' in application_status:
-                        if application_period.start_date <= get_current_time() and application_period.end_date >= get_current_time():
-                            impact_is_deleted = False
-                            break
-                    if 'coming' in application_status:
-                        if application_period.start_date > get_current_time():
-                            impact_is_deleted = False
-                            break
-                if impact_is_deleted:
-                    disruption.impacts.remove(impact)
-                    break
-            result.append(disruption)
-        disruptions = result
+                if has_impact_deleted_by_application_status(
+                    application_status=application_status,
+                    application_periods=impact.application_periods,
+                    current_time=current_time) or \
+                    has_impact_deleted_by_pt_objects(
+                        pt_objects=impact.objects,
+                        uri=uri,
+                        pt_object_filter=pt_object_filter):
+                    deleted_impacts.append(impact)
+            for deleted_impact in deleted_impacts:
+                disruption.impacts.remove(deleted_impact)
+            if len(disruption.impacts) == 0:
+                disruptions.remove(disruption)
