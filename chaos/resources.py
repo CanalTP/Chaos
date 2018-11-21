@@ -503,7 +503,6 @@ class DisruptionsSearch(flask_restful.Resource):
             cause_category_id=json.get('cause_category_id', None),
             current_time=current_time
         )
-        logging.getLogger(__name__).info(result.items)
         utils.filter_disruptions_on_impacts(
             disruptions=result.items,
             current_time=current_time,
@@ -511,8 +510,6 @@ class DisruptionsSearch(flask_restful.Resource):
             pt_object_filter=ptObjectFilter,
             application_status=application_status
         )
-        if len(result.items) == 0:
-            result.total=0
         response = {'disruptions': result.items, 'meta': make_pager(result, 'disruption')}
 
         '''
