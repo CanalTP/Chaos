@@ -494,7 +494,6 @@ class Disruption(TimestampMixin, db.Model):
     def get_query_with_args(
             cls,
             contributor_id,
-            application_status,
             publication_status,
             ends_after_date,
             ends_before_date,
@@ -502,6 +501,7 @@ class Disruption(TimestampMixin, db.Model):
             uri,
             line_section,
             statuses,
+            application_status=application_status_values,
             query=None,
             cause_category_id=None,
             current_time=get_current_time()):
