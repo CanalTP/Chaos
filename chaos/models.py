@@ -504,7 +504,8 @@ class Disruption(TimestampMixin, db.Model):
             application_status=application_status_values,
             query=None,
             cause_category_id=None,
-            current_time=get_current_time()):
+            current_time=None):
+        if current_time is None: current_time = get_current_time()
         if (query is None):
             query = cls.query
 
@@ -589,7 +590,8 @@ class Disruption(TimestampMixin, db.Model):
             statuses,
             ptObjectFilter,
             cause_category_id,
-            current_time=get_current_time()):
+            current_time=None):
+        if current_time is None: current_time = get_current_time()
         query = cls.query
         object_types = []
         uris = []

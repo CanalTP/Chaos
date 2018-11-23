@@ -733,7 +733,7 @@ def uri_is_not_in_pt_object_filter(uri=None, pt_object_filter=None):
     return not result
 
 
-def has_impact_deleted_by_application_status(application_status, application_periods, current_time=get_current_time()):
+def has_impact_deleted_by_application_status(application_status, application_periods, current_time=None):
     """
         Return if an impact should be deleted by his application_period.
 
@@ -743,6 +743,7 @@ def has_impact_deleted_by_application_status(application_status, application_per
         :return: True if the impact does not activate in a certain time status ['past', 'ongoing', 'coming']
         :rtype: bool
     """
+    if current_time is None: current_time = get_current_time()
     impact_is_deleted = True
     for application_period in application_periods:
         if 'past' in application_status:
@@ -787,7 +788,7 @@ def filter_disruptions_on_impacts(
     disruptions,
     pt_object_filter=None,
     uri=None,
-    current_time=get_current_time(),
+    current_time=None,
     application_status = ['past', 'ongoing', 'coming']
     ):
     """
@@ -801,6 +802,7 @@ def filter_disruptions_on_impacts(
         :return: Nothing
         :rtype: Void
     """
+    if current_time is None: current_time = get_current_time()
     if len(application_status) != 3:
         for disruption in disruptions[:]:
             deleted_impacts = []
