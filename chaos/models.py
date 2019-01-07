@@ -734,7 +734,7 @@ class Disruption(TimestampMixin, db.Model):
             uriFilter = []
             uriFilter.append('po.uri IN :pt_objects_uris')
             if line_section and 'lines' in ptObjectFilter:
-                uriFilter.append('(po.type = :po_type_line_section AND po.uri SIMILAR TO :po_line_section_lines)')
+                uriFilter.append('(po.type = :po_type_line_section AND po.uri ~ :po_line_section_lines)')
             andwheres.append('('+' OR '.join(uriFilter)+')')
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
@@ -865,7 +865,7 @@ class Disruption(TimestampMixin, db.Model):
                 stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
                 po_line_section_lines = '|'.join([id + ':' for id in ptObjectFilter['lines']])
-                vars['po_line_section_lines'] = '('+po_line_section_lines+')%'
+                vars['po_line_section_lines'] = '^('+po_line_section_lines+').*'
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
@@ -977,7 +977,7 @@ class Disruption(TimestampMixin, db.Model):
                 stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
                 po_line_section_lines = '|'.join([id + ':' for id in ptObjectFilter['lines']])
-                vars['po_line_section_lines'] = '('+po_line_section_lines+')%'
+                vars['po_line_section_lines'] = '^('+po_line_section_lines+').*'
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
             stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
@@ -1144,7 +1144,7 @@ class Disruption(TimestampMixin, db.Model):
                 stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
                 vars['po_type_line_section'] = 'line_section'
                 po_line_section_lines = '|'.join([id + ':' for id in ptObjectFilter['lines']])
-                vars['po_line_section_lines'] = '('+po_line_section_lines+')%'
+                vars['po_line_section_lines'] = '^('+po_line_section_lines+').*'
 
         if ends_after_date:
             stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
