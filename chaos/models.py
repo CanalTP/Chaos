@@ -38,6 +38,7 @@ from formats import publication_status_values, application_status_values
 from sqlalchemy import or_, and_, between, bindparam
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import text
+import logging
 
 #force the server to use UTC time for each connection checkouted from the pool
 import sqlalchemy
@@ -661,7 +662,8 @@ class Disruption(TimestampMixin, db.Model):
         )
 
     @classmethod
-    def get_disruption_search_native_query(cls,
+    def generate_disruption_search_query_args(cls,
+            contributor_id,
             application_status,
             publication_status,
             ends_after_date,
@@ -669,15 +671,124 @@ class Disruption(TimestampMixin, db.Model):
             tags,
             uri,
             line_section,
+            statuses,
             ptObjectFilter,
             cause_category_id,
             application_period,
-            current_time=None,
-            query_parts = []):
-        if uri_is_not_in_pt_object_filter(uri=uri, pt_object_filter=ptObjectFilter):
-            return ''
-
+            current_time=None):
         if current_time is None: current_time = get_current_time()
+
+        andwheres = []
+        vars = {}
+        bindparams = {}
+
+        andwheres.append('d.contributor_id = :contributor_id')
+        vars['contributor_id'] = contributor_id
+        bindparams['contributor_id'] = db.String
+
+        andwheres.append('d.status IN :disruption_status')
+        vars['disruption_status'] = tuple(statuses)
+        bindparams['disruption_status'] = db.String
+
+        andwheres.append('i.status = :impact_status')
+        vars['impact_status'] = 'published'
+        bindparams['impact_status'] = db.String
+
+        andwheres.append('c.is_visible = :cause_is_visisble')
+        vars['cause_is_visisble'] = True
+        bindparams['cause_is_visisble'] = db.Boolean
+
+        if isinstance(uri, basestring) and uri:
+            uri_filters = []
+            uri_filters.append('po.uri = :uri')
+            bindparams['uri'] = db.String
+            bindparams['uri_like'] = db.String
+            vars['uri'] = uri
+            vars['uri_like'] = uri + ':%'
+
+            if line_section:
+                uri_filters.append('po.type = :po_type_line_section AND po.uri LIKE :uri_like')
+                bindparams['po_type_line_section'] = db.String
+                vars['po_type_line_section'] = 'line_section'
+            andwheres.append('('+' OR '.join(uri_filters)+')')
+        elif ptObjectFilter is not None:
+            uri_filters = []
+            uri_filters.append('po.uri IN :pt_objects_uris')
+            bindparams['pt_objects_uris'] = db.String
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+
+            if line_section and 'lines' in ptObjectFilter:
+                uri_filters.append('(po.type = :po_type_line_section AND po_line.uri IN :po_line_section_lines)')
+                bindparams['po_type_line_section'] = db.String
+                bindparams['po_line_section_lines'] = db.String
+                vars['po_type_line_section'] = 'line_section'
+                vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
+            andwheres.append('('+' OR '.join(uri_filters)+')')
+
+        if isinstance(cause_category_id, basestring) and cause_category_id:
+            andwheres.append('c.category_id = :cause_category_id')
+            bindparams['cause_category_id'] = db.String
+            vars['cause_category_id'] = cause_category_id
+
+        if isinstance(tags, list) and tags:
+            andwheres.append('t.id IN :tag_ids')
+            bindparams['tag_ids'] = db.String
+            vars['tag_ids'] = tuple(tags)
+
+        if ends_after_date:
+            andwheres.append('d.end_publication_date >=:ends_after_date')
+            bindparams['ends_after_date'] = db.Date
+            vars['ends_after_date'] = ends_after_date
+
+        if ends_before_date:
+            andwheres.append('d.end_publication_date <=:ends_before_date')
+            bindparams['ends_before_date'] = db.Date
+            vars['ends_before_date'] = ends_before_date
+
+        application_status = set(application_status)
+        if len(application_status) != len(application_status_values):
+            application_availlable_filters = {
+                'past': 'ap.end_date < :current_time ',
+                'ongoing': '(ap.start_date <= :current_time AND ap.end_date >= :current_time) ',
+                'coming': 'ap.start_date > :current_time '
+            }
+            app_status_filters = [application_availlable_filters[status] for status in application_status]
+            andwheres.append('('+' OR '.join(app_status_filters)+')')
+            bindparams['current_time'] = db.Date
+            vars['current_time'] = current_time
+
+        publication_status = set(publication_status)
+        if len(publication_status) != len(publication_status_values):
+            publication_availlable_filters = {
+                'past': 'd.end_publication_date IS NOT NULL AND d.end_publication_date < :current_time',
+                'ongoing': '(d.start_publication_date <= :current_time AND (d.end_publication_date IS NULL OR d.end_publication_date >= :current_time)) ',
+                'coming': 'd.start_publication_date > :current_time',
+            }
+            publicationFilters = [publication_availlable_filters[status] for status in publication_status]
+            andwheres.append('('+' OR '.join(publicationFilters)+')')
+            bindparams['current_time'] = db.Date
+            vars['current_time'] = current_time
+
+        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
+            app_period_filters = []
+            app_period_filters.append('(ap.start_date >= :ap_start_date AND ap.start_date <= :ap_end_date)')
+            app_period_filters.append('(ap.end_date >= :ap_start_date AND ap.end_date <= :ap_end_date)')
+            app_period_filters.append('(ap.start_date <= :ap_start_date AND ap.end_date >= :ap_end_date)')
+            apDateFilter = ' OR '.join(app_period_filters)
+            andwheres.append('('+apDateFilter+')')
+            bindparams['ap_start_date'] = db.Date
+            bindparams['ap_end_date'] = db.Date
+            vars['ap_start_date'] = application_period['begin']
+            vars['ap_end_date'] = application_period['end']
+
+        return {
+            'and_wheres': andwheres,
+            'bindparams': bindparams,
+            'vars': vars
+        }
+
+    @classmethod
+    def get_disruption_search_native_query(cls, query_parts = []):
 
         join_tables = []
         join_tables.append('disruption AS d')
@@ -718,63 +829,6 @@ class Disruption(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
 
         andwheres = [] if 'and_wheres' not in query_parts else query_parts['and_wheres']
-        andwheres.append('d.contributor_id = :contributor_id')
-        andwheres.append('d.status IN :disruption_status')
-        andwheres.append('i.status = :impact_status')
-        andwheres.append('c.is_visible = :cause_is_visisble')
-
-        if isinstance(uri, basestring) and uri:
-            uriFilter = []
-            uriFilter.append('po.uri = :uri')
-            if line_section:
-                uriFilter.append('po.type = :po_type_line_section AND po.uri LIKE :uri_like')
-            andwheres.append('('+' OR '.join(uriFilter)+')')
-        elif ptObjectFilter is not None:
-            uriFilter = []
-            uriFilter.append('po.uri IN :pt_objects_uris')
-            if line_section and 'lines' in ptObjectFilter:
-                uriFilter.append('(po.type = :po_type_line_section AND po_line.uri IN :po_line_section_lines)')
-            andwheres.append('('+' OR '.join(uriFilter)+')')
-
-        if isinstance(cause_category_id, basestring) and cause_category_id:
-            andwheres.append('c.category_id = :cause_category_id')
-        if isinstance(tags, list) and tags:
-            andwheres.append('t.id IN :tag_ids')
-
-        if ends_after_date:
-            andwheres.append('d.end_publication_date >=:ends_after_date')
-
-        if ends_before_date:
-            andwheres.append('d.end_publication_date <=:ends_before_date')
-
-        application_status = set(application_status)
-        if len(application_status) != len(application_status_values):
-            application_availlable_filters = {
-                'past': 'ap.end_date < :current_time ',
-                'ongoing': '(ap.start_date <= :current_time AND ap.end_date >= :current_time) ',
-                'coming': 'ap.start_date > :current_time '
-            }
-            filters = [application_availlable_filters[status] for status in application_status]
-            andwheres.append('('+' OR '.join(filters)+')')
-
-        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
-            filters = []
-            filters.append('(ap.start_date >= :ap_start_date AND ap.start_date <= :ap_end_date)')
-            filters.append('(ap.end_date >= :ap_start_date AND ap.end_date <= :ap_end_date)')
-            filters.append('(ap.start_date <= :ap_start_date AND ap.end_date >= :ap_end_date)')
-            apDateFilter = ' OR '.join(filters)
-            andwheres.append('('+apDateFilter+')')
-
-        publication_status = set(publication_status)
-        if len(publication_status) != len(publication_status_values):
-            publication_availlable_filters = {
-                'past': 'd.end_publication_date IS NOT NULL AND d.end_publication_date < :current_time',
-                'ongoing': '(d.start_publication_date <= :current_time AND (d.end_publication_date IS NULL OR d.end_publication_date >= :current_time)) ',
-                'coming': 'd.start_publication_date > :current_time',
-            }
-
-            publicationFilters = [publication_availlable_filters[status] for status in publication_status]
-            andwheres.append('('+' OR '.join(publicationFilters)+')')
 
         columns = ','.join(query_parts['select_columns'])
         tables = ' '.join(join_tables)
@@ -813,10 +867,11 @@ class Disruption(TimestampMixin, db.Model):
             cause_category_id,
             application_period,
             current_time=None):
-        query_parts = {
-            'select_columns': ['COUNT(DISTINCT d.id) AS cnt']
-        }
-        query = cls.get_disruption_search_native_query(
+        if uri_is_not_in_pt_object_filter(uri=uri, pt_object_filter=ptObjectFilter):
+            return 0
+
+        query_parts = cls.generate_disruption_search_query_args(
+            contributor_id = contributor_id,
             application_status = application_status,
             publication_status = publication_status,
             ends_after_date = ends_after_date,
@@ -824,76 +879,26 @@ class Disruption(TimestampMixin, db.Model):
             tags = tags,
             uri = uri,
             line_section = line_section,
+            statuses = statuses,
             ptObjectFilter = ptObjectFilter,
             cause_category_id = cause_category_id,
             application_period = application_period,
-            current_time = current_time,
-            query_parts = query_parts)
+            current_time = current_time
+        )
+
+        query_parts['select_columns'] = ['COUNT(DISTINCT d.id) AS cnt']
+        query = cls.get_disruption_search_native_query(query_parts)
 
         if not query:
             return 0
 
         stmt = text(query)
-        stmt = stmt.bindparams(
-            bindparam('contributor_id', type_=db.String),
-            bindparam('disruption_status', type_=db.String),
-            bindparam('impact_status', type_=db.String),
-            bindparam('cause_is_visisble', type_=db.Boolean),
-        )
 
-        vars = {
-            'contributor_id': contributor_id,
-            'disruption_status': tuple(statuses),
-            'impact_status': 'published',
-            'cause_is_visisble': True
-        }
+        for param_name, param_type in query_parts['bindparams'].iteritems():
+            stmt = stmt.bindparams(bindparam(param_name, type_=param_type))
 
-        if isinstance(uri, basestring) and uri:
-            stmt = stmt.bindparams(bindparam('uri', type_=db.String))
-            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
-            vars['uri'] = uri
-            vars['uri_like'] = uri+':%'
-            if line_section:
-                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
-                vars['po_type_line_section'] = 'line_section'
-        elif ptObjectFilter is not None:
-            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
-            if line_section and 'lines' in ptObjectFilter:
-                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
-                stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
-                vars['po_type_line_section'] = 'line_section'
-                vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
+        result = db.engine.execute(stmt, query_parts['vars']).fetchone()
 
-        if isinstance(cause_category_id, basestring) and cause_category_id:
-            stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
-            vars['cause_category_id'] = cause_category_id
-
-        if isinstance(tags, list) and tags:
-            stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
-            vars['tag_ids'] = tuple(tags)
-
-        if ends_after_date:
-            stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
-            vars['ends_after_date'] = ends_after_date
-
-        if ends_before_date:
-            stmt = stmt.bindparams(bindparam('ends_before_date', type_=db.Date))
-            vars['ends_before_date'] = ends_before_date
-
-        application_status = set(application_status)
-        publication_status = set(publication_status)
-        if len(application_status) != len(application_status_values) or len(publication_status) != len(publication_status_values):
-            stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
-            vars['current_time'] = current_time
-
-        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
-            stmt = stmt.bindparams(bindparam('ap_start_date', type_=db.Date))
-            stmt = stmt.bindparams(bindparam('ap_end_date', type_=db.Date))
-            vars['ap_start_date'] = application_period['begin']
-            vars['ap_end_date'] = application_period['end']
-
-        result = db.engine.execute(stmt, vars).fetchone()
         return result['cnt']
 
     @classmethod
@@ -914,98 +919,45 @@ class Disruption(TimestampMixin, db.Model):
             cause_category_id,
             application_period,
             current_time=None):
-        query_parts = {
-            'select_columns': ['DISTINCT d.id, d.end_publication_date'],
-            'order_by': ['d.end_publication_date','d.id'],
-            'limit': ':limit',
-            'offset': ':offset'
-        }
 
-        query = cls.get_disruption_search_native_query(
-            application_status,
-            publication_status,
-            ends_after_date,
-            ends_before_date,
-            tags,
-            uri,
-            line_section,
-            ptObjectFilter,
-            cause_category_id,
-            application_period,
-            current_time,
-            query_parts)
+        query_parts = cls.generate_disruption_search_query_args(
+            contributor_id = contributor_id,
+            application_status = application_status,
+            publication_status = publication_status,
+            ends_after_date = ends_after_date,
+            ends_before_date = ends_before_date,
+            tags = tags,
+            uri = uri,
+            line_section = line_section,
+            statuses = statuses,
+            ptObjectFilter = ptObjectFilter,
+            cause_category_id = cause_category_id,
+            application_period = application_period,
+            current_time = current_time
+        )
+        query_parts['select_columns'] = ['DISTINCT d.id, d.end_publication_date']
+        query_parts['order_by'] = ['d.end_publication_date','d.id']
+        query_parts['limit'] = ':limit'
+        query_parts['offset'] = ':offset'
+
+        query = cls.get_disruption_search_native_query(query_parts)
 
         if not query:
             return []
 
         stmt = text(query)
-        stmt = stmt.bindparams(
-                               bindparam('contributor_id', type_=db.String),
-                               bindparam('disruption_status', type_=db.String),
-                               bindparam('impact_status', type_=db.String),
-                               bindparam('cause_is_visisble', type_=db.Boolean),
-                               bindparam('limit', type_=db.Integer),
+
+        for param_name, param_type in query_parts['bindparams'].iteritems():
+            stmt = stmt.bindparams(bindparam(param_name, type_=param_type))
+
+        stmt = stmt.bindparams(bindparam('limit', type_=db.Integer),
                                bindparam('offset', type_=db.Integer)
                                )
 
+        vars = query_parts['vars']
         offset = (max(1, page_index) - 1) * items_per_page
-
-        vars = {
-                'contributor_id': contributor_id,
-                'disruption_status': tuple(statuses),
-                'impact_status': 'published',
-                'cause_is_visisble': True,
-                'limit': items_per_page,
-                'offset': offset
-                }
-
-        if isinstance(uri, basestring) and uri:
-            stmt = stmt.bindparams(bindparam('uri', type_=db.String))
-            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
-            vars['uri'] = uri
-            vars['uri_like'] = uri+':%'
-            if line_section:
-                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
-                vars['po_type_line_section'] = 'line_section'
-        elif ptObjectFilter is not None:
-            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
-            if line_section and 'lines' in ptObjectFilter:
-                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
-                vars['po_type_line_section'] = 'line_section'
-                stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
-                vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
-
-        if isinstance(cause_category_id, basestring) and cause_category_id:
-            stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
-            vars['cause_category_id'] = cause_category_id
-
-        if isinstance(tags, list) and tags:
-            stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
-            vars['tag_ids'] = tuple(tags)
-
-        if ends_after_date:
-            stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
-            vars['ends_after_date'] = ends_after_date
-
-        if ends_before_date:
-            stmt = stmt.bindparams(bindparam('ends_before_date', type_=db.Date))
-            vars['ends_before_date'] = ends_before_date
-
-        stmt.bindparams(bindparam('limit', type_=db.Integer),
-                        bindparam('offset', type_=db.Integer))
-
-        application_status = set(application_status)
-        publication_status = set(publication_status)
-        if len(application_status) != len(application_status_values) or len(publication_status) != len(publication_status_values):
-            stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
-            vars['current_time'] = current_time
-
-        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
-            stmt = stmt.bindparams(bindparam('ap_start_date', type_=db.Date))
-            stmt = stmt.bindparams(bindparam('ap_end_date', type_=db.Date))
-            vars['ap_start_date'] = application_period['begin']
-            vars['ap_end_date'] = application_period['end']
+        vars['limit'] = items_per_page
+        vars['offset'] = offset
 
         return db.engine.execute(stmt, vars).fetchall()
 
@@ -1048,8 +1000,23 @@ class Disruption(TimestampMixin, db.Model):
         if not disruption_ids :
             return []
 
-        query_parts = {
-            'select_columns': [
+        query_parts = cls.generate_disruption_search_query_args(
+            contributor_id = contributor_id,
+            application_status = application_status,
+            publication_status = publication_status,
+            ends_after_date = ends_after_date,
+            ends_before_date = ends_before_date,
+            tags = tags,
+            uri = uri,
+            line_section = line_section,
+            statuses = statuses,
+            ptObjectFilter = ptObjectFilter,
+            cause_category_id = cause_category_id,
+            application_period = application_period,
+            current_time = current_time
+        )
+
+        query_parts['select_columns'] = [
                 'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
                 'd.start_publication_date', 'd.end_publication_date',
                 'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
@@ -1081,86 +1048,18 @@ class Disruption(TimestampMixin, db.Model):
                 'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
                 'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
                 'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
-            ],
-            'and_wheres' : ['d.id IN :disruption_ids'],
-            'order_by': ['d.end_publication_date','d.id', 'po.type','po.uri'],
-        }
+            ]
 
-        query = cls.get_disruption_search_native_query(
-            application_status,
-            publication_status,
-            ends_after_date,
-            ends_before_date,
-            tags,
-            uri,
-            line_section,
-            ptObjectFilter,
-            cause_category_id,
-            application_period,
-            current_time,
-            query_parts)
+        query_parts['order_by'] = ['d.end_publication_date','d.id', 'po.type','po.uri']
+        query_parts['and_wheres'].append('d.id IN :disruption_ids')
+
+        query = cls.get_disruption_search_native_query(query_parts)
 
         stmt = text(query)
-        stmt = stmt.bindparams(
-                               bindparam('contributor_id', type_=db.String),
-                               bindparam('disruption_status', type_=db.String),
-                               bindparam('disruption_ids', type_=db.String),
-                               bindparam('impact_status', type_=db.String),
-                               bindparam('cause_is_visisble', type_=db.Boolean)
-                               )
+        stmt = stmt.bindparams(bindparam('disruption_ids', type_=db.String))
 
-        vars = {
-                'contributor_id': contributor_id,
-                'disruption_status' : tuple(statuses),
-                'impact_status' : 'published',
-                'cause_is_visisble' : True,
-                'disruption_ids': tuple([d[0] for d in disruption_ids]),
-                }
-
-        if isinstance(cause_category_id, basestring) and cause_category_id:
-            stmt = stmt.bindparams(bindparam('cause_category_id', type_=db.String))
-            vars['cause_category_id'] = cause_category_id
-
-        if isinstance(tags, list) and tags:
-            stmt = stmt.bindparams(bindparam('tag_ids', type_=db.String))
-            vars['tag_ids'] = tuple(tags)
-
-        if isinstance(uri, basestring) and uri:
-            stmt = stmt.bindparams(bindparam('uri', type_=db.String))
-            stmt = stmt.bindparams(bindparam('uri_like', type_=db.String))
-            vars['uri'] = uri
-            vars['uri_like'] = uri+':%'
-            if line_section:
-                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
-                vars['po_type_line_section'] = 'line_section'
-        elif ptObjectFilter is not None:
-            stmt = stmt.bindparams(bindparam('pt_objects_uris', type_=db.String))
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
-            if line_section and 'lines' in ptObjectFilter:
-                stmt = stmt.bindparams(bindparam('po_type_line_section', type_=db.String))
-                vars['po_type_line_section'] = 'line_section'
-                stmt = stmt.bindparams(bindparam('po_line_section_lines', type_=db.String))
-                vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
-
-        if ends_after_date:
-            stmt = stmt.bindparams(bindparam('ends_after_date', type_=db.Date))
-            vars['ends_after_date'] = ends_after_date
-
-        if ends_before_date:
-            stmt = stmt.bindparams(bindparam('ends_before_date', type_=db.Date))
-            vars['ends_before_date'] = ends_before_date
-
-        application_status = set(application_status)
-        publication_status = set(publication_status)
-        if len(application_status) != len(application_status_values) or len(publication_status) != len(publication_status_values):
-            stmt = stmt.bindparams(bindparam('current_time', type_=db.Date))
-            vars['current_time'] = current_time
-
-        if isinstance(application_period, dict) and 'begin' in application_period and 'end' in application_period:
-            stmt = stmt.bindparams(bindparam('ap_start_date', type_=db.Date))
-            stmt = stmt.bindparams(bindparam('ap_end_date', type_=db.Date))
-            vars['ap_start_date'] = application_period['begin']
-            vars['ap_end_date'] = application_period['end']
+        vars = query_parts['vars']
+        vars['disruption_ids'] = tuple([d[0] for d in disruption_ids])
 
         return db.engine.execute(stmt, vars).fetchall()
 
