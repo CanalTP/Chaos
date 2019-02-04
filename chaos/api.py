@@ -28,9 +28,14 @@
 # www.navitia.io
 
 from chaos import resources
+from flask import request
 import flask_restful
+import new_relic
 
 from chaos import app
+
+# initialize new relic
+new_relic.init(app.config.get('NEWRELIC_CONFIG_PATH', None))
 
 # we always want pretty json
 flask_restful.representations.json.settings = {'indent': 4}
@@ -105,7 +110,11 @@ def error_handler(exception):
     log all exceptions not catch before
     """
     app.logger.exception('')
-
+    logger = app.logger.getLogger(__name__)
+    message = ""
+    error = '{} {} {}'.format(exception.__class__.__name__, message, request.url)
+    logger.debug(error)
+    new_relic.record_exception()
 
 if api.app.config.get('ACTIVATE_PROFILING'):
     api.app.logger.warning('=======================================================')
