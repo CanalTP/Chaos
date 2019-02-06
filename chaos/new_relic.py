@@ -39,13 +39,13 @@ except ImportError:
     logger.exception('failure while importing newrelic')
     agent = None
 
-def init(config):
-    if not agent or not config:
+def init(config_file, environment):
+    if not agent or not config_file:
         return
-    if os.path.exists(config):
-        agent.initialize(config)
+    if os.path.exists(config_file):
+        agent.initialize(config_file, environment)
     else:
-        logging.getLogger(__name__).error('%s doesn\'t exist, newrelic disabled', config)
+        logging.getLogger(__name__).error('%s doesn\'t exist, newrelic disabled', config_file)
 
 
 def record_exception():

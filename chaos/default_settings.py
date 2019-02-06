@@ -38,7 +38,9 @@ ENABLE_RABBITMQ = (os.getenv('RABBITMQ_ENABLED', 1) == 1)
 
 ACTIVATE_PROFILING = (os.getenv('PROFILING_ENABLED', 0) == 1)
 
-NEWRELIC_CONFIG_PATH = os.getenv('CHAOS_NEWRELIC_CONFIG_PATH', 'newrelic.ini')
+# config newrelic
+NEW_RELIC_ENVIRONMENT = 'development'
+NEW_RELIC_CONFIG_FILE = 'newrelic.ini'
 
 # Log Level available
 # - DEBUG

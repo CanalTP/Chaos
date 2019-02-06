@@ -35,7 +35,10 @@ import new_relic
 from chaos import app
 
 # initialize new relic
-new_relic.init(app.config.get('NEWRELIC_CONFIG_PATH', None))
+new_relic.init(
+    app.config.get('NEW_RELIC_CONFIG_FILE', None),
+    app.config.get('NEW_RELIC_ENVIRONMENT', 'development')
+)
 
 # we always want pretty json
 flask_restful.representations.json.settings = {'indent': 4}
