@@ -1,16 +1,18 @@
 import os, sys, logging, argparse, pytz, datetime
 import unicodecsv as csv
-from chaos import db, utils, default_settings
+from chaos import db, utils
 from chaos.models import Export, Client
 from chaos.navitia import Navitia
 
 class impactsExporter:
 
-    def __init__(self, client_id, coverage, token, time_zone = 'UTC'):
+    def __init__(self, client_id, navitia_url, coverage, token, folder, time_zone = 'UTC'):
         self.logger = logging.getLogger('impacts exporter')
         self.set_client_by_id(client_id)
+        self.set_navitia_url(navitia_url)
         self.set_coverage(coverage)
         self.set_token(token)
+        self.set_folder(folder)
         self.set_time_zone(time_zone)
 
     def set_client_by_id(self, id):
@@ -23,11 +25,17 @@ class impactsExporter:
 
         self.client = client
 
+    def set_navitia_url(self, navitia_url):
+        self.navitia_url = navitia_url
+
     def set_coverage(self, coverage):
         self.coverage = coverage
 
     def set_token(self, token):
         self.token = token
+
+    def set_folder(self, folder):
+        self.folder = folder
 
     def set_time_zone(self, time_zone):
         self.time_zone = pytz.timezone(time_zone)
@@ -71,7 +79,7 @@ class impactsExporter:
         end_date = utils.utc_to_local(item.end_date, self.time_zone).strftime(datePattern)
 
         fileName = '%s_impacts_export_%s_%s_%s.csv' % (self.client.client_code, start_date, end_date, item.id)
-        filePath = os.path.join(default_settings.IMPACT_EXPORT_DIR, fileName)
+        filePath = os.path.join(self.folder, fileName)
 
         return os.path.abspath(filePath)
 
@@ -120,7 +128,7 @@ class impactsExporter:
 
     def format_impacts(self, impacts):
 
-        navitia = Navitia(default_settings.NAVITIA_URL, self.coverage, self.token)
+        navitia = Navitia(self.navitia_url, self.coverage, self.token)
 
         columns = impacts.keys()
 
@@ -144,8 +152,10 @@ def get_command_arguments(argv):
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--client_id', help='Client UUID')
+    parser.add_argument('--navitia', help='Navitia url')
     parser.add_argument('--coverage', help='Navitia coverage')
     parser.add_argument('--token', help='Navitia token')
+    parser.add_argument('--folder', help='Export folder')
     parser.add_argument('--tz', help='Time zone')
 
     return parser.parse_args()
@@ -158,5 +168,5 @@ if __name__ == "__main__":
     if not tz:
         tz = 'UTC'
 
-    exporter = impactsExporter(args.client_id, args.coverage, args.token, tz)
+    exporter = impactsExporter(args.client_id, args.navitia, args.coverage, args.token, args.folder, tz)
     exporter.run()
