@@ -152,7 +152,7 @@ def get_command_arguments(argv):
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--client_id', help='Client UUID')
-    parser.add_argument('--navitia', help='Navitia url')
+    parser.add_argument('--navitia_url', help='Navitia url')
     parser.add_argument('--coverage', help='Navitia coverage')
     parser.add_argument('--token', help='Navitia token')
     parser.add_argument('--folder', help='Export folder')
@@ -168,5 +168,5 @@ if __name__ == "__main__":
     if not tz:
         tz = 'UTC'
 
-    exporter = impactsExporter(args.client_id, args.navitia, args.coverage, args.token, args.folder, tz)
+    exporter = impactsExporter(args.client_id, args.navitia_url, args.coverage, args.token, args.folder, tz)
     exporter.run()
