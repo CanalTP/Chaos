@@ -40,6 +40,8 @@ ACTIVATE_PROFILING = (os.getenv('PROFILING_ENABLED', 0) == 1)
 
 # Directory for store export files
 IMPACT_EXPORT_DIR = str(os.getenv('IMPACT_EXPORT_DIR', '/tmp'))
+# Path of python if problem with venv
+IMPACT_EXPORT_PYTHON = str(os.getenv('IMPACT_EXPORT_PYTHON', ''))
 
 # Log Level available
 # - DEBUG

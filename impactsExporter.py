@@ -1,6 +1,5 @@
 import os, sys, logging, argparse, pytz, datetime
 import unicodecsv as csv
-os.environ['CHAOS_CONFIG_FILE'] = "default_settings.py"
 from chaos import db, utils, default_settings
 from chaos.models import Export, Client
 from chaos.navitia import Navitia

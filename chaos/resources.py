@@ -1914,8 +1914,11 @@ class ImpactsExports(flask_restful.Resource):
 
         root_dir = path.abspath(path.join(__file__, "../.."))
         exporter_path = path.join(root_dir, 'impactsExporter.py')
+        python_exec = executable
+        if current_app.config['IMPACT_EXPORT_PYTHON'] != '':
+            python_exec = current_app.config['IMPACT_EXPORT_PYTHON']
 
-        Popen([executable, exporter_path, '--client_id', export.client_id, '--coverage', self.navitia.coverage, '--token', self.navitia.token, '--tz', export.time_zone], stdout=PIPE, env=environ.copy())
+        Popen([python_exec, exporter_path, '--client_id', export.client_id, '--coverage', self.navitia.coverage, '--token', self.navitia.token, '--tz', export.time_zone], stdout=PIPE, env=environ.copy())
 
 
     @validate_client()
