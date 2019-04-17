@@ -1063,7 +1063,7 @@ class Disruption(TimestampMixin, db.Model):
 
     @classmethod
     def get_history_by_id(cls, disruption_id):
-        query_parts = []
+        query_parts = {}
         query_parts['select_columns'] = [
             'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
             'd.start_publication_date', 'd.end_publication_date',
@@ -1107,8 +1107,8 @@ class Disruption(TimestampMixin, db.Model):
         ]
         join_tables = []
         join_tables.append('(SELECT * FROM (' \
-                           ' SELECT created_at, updated_at,id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status::text from public.disruption where public.disruption.id = \':disruption_id\' UNION' \
-                           ' SELECT created_at, updated_at,disruption_id as id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status from history.disruption where history.disruption.disruption_id = \':disruption_id\') as disruption_union' \
+                           ' SELECT created_at, updated_at,id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status::text from public.disruption where public.disruption.id = :disruption_id UNION' \
+                           ' SELECT created_at, updated_at,disruption_id as id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status from history.disruption where history.disruption.disruption_id = :disruption_id) as disruption_union' \
                            ' ORDER BY version, updated_at) AS d')
         join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
         join_tables.append('LEFT JOIN cause c ON (d.cause_id = c.id)')
