@@ -15,7 +15,12 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 def upgrade():
-    op.execute('CREATE SCHEMA IF NOT EXISTS history')
+    connection = op.get_bind()
+    result = connection.execute('select count(*) as nb from information_schema.schemata where schema_name = \'history\'')
+    for row in result:
+        # Schema history not exist in database
+        if row['nb'] == 0:
+            op.execute('CREATE SCHEMA history')
     op.create_table('disruption',
                     sa.Column('created_at', sa.DateTime(), nullable=False),
                     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -62,7 +67,6 @@ def upgrade():
 
 
 def downgrade():
-    op.execute('DROP TRIGGER last_disruption_changes')
-    op.execute('DROP FUNCTION IF EXISTS log_disruption_update')
-    op.drop_table('disruption')
-    op.execute('DROP SCHEMA IF EXISTS history')
+    op.execute('DROP TRIGGER last_disruption_changes on public.disruption')
+    op.execute('DROP FUNCTION IF EXISTS log_disruption_update()')
+    op.execute('DROP SCHEMA IF EXISTS history CASCADE')
