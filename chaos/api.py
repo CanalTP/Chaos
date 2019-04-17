@@ -50,6 +50,10 @@ api.add_resource(resources.ImpactsSearch,
                  '/impacts/_search',
                  endpoint='impacts_search')
 
+api.add_resource(resources.DisruptionsHistory,
+                 '/disruptions/<string:disruption_id>/history',
+                 endpoint='disruption_history')
+
 api.add_resource(resources.Disruptions,
                  '/disruptions',
                  '/disruptions/<string:id>',

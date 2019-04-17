@@ -1061,6 +1061,103 @@ class Disruption(TimestampMixin, db.Model):
 
         return db.engine.execute(stmt, vars).fetchall()
 
+    @classmethod
+    def get_history_by_id(cls, disruption_id):
+        query_parts = []
+        query_parts['select_columns'] = [
+            'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
+            'd.start_publication_date', 'd.end_publication_date',
+            'i.id AS impact_id', 'i.created_at AS impact_created_at', 'i.updated_at AS impact_updated_at',
+            'i.send_notifications AS impact_send_notifications', 'i.notification_date AS impact_notification_date',
+            'c.id AS cause_id', 'c.created_at AS cause_created_at', 'c.updated_at AS cause_updated_at',
+            'ctg.id AS cause_category_id', 'ctg.name AS cause_category_name',
+            'ctg.created_at AS cause_category_created_at',
+            'ctg.updated_at AS cause_category_updated_at', 'cw.id AS cause_wording_id', 'cw.key AS cause_wording_key',
+            'cw.value AS cause_wording_value', 's.created_at AS severity_created_at',
+            's.updated_at AS severity_updated_at',
+            's.id AS severity_id', 's.wording AS severity_wording', 's.color AS severity_color',
+            's.is_visible AS severity_is_visible',
+            's.priority AS severity_priority', 's.effect AS severity_effect', 's.client_id AS severity_client_id',
+            'sw.id AS severity_wording_id', 'sw.key AS severity_wording_key', 'sw.value AS severity_wording_value',
+            'contrib.contributor_code AS contributor_code', 't.id AS tag_id', 't.name AS tag_name',
+            't.created_at AS tag_created_at',
+            't.updated_at AS tag_updated_at', 'p.id AS property_id', 'p.key AS property_key', 'p.type AS property_type',
+            'adp.value AS property_value', 'p.created_at AS property_created_at', 'p.updated_at AS property_updated_at',
+            'localization.uri AS localization_uri', 'localization.type AS localization_type',
+            'localization.id AS localization_id',
+            'po.id AS pt_object_id', 'po.type AS pt_object_type', 'po.uri AS pt_object_uri',
+            'ap.id AS application_period_id',
+            'ap.start_date AS application_period_start_date', 'ap.end_date AS application_period_end_date',
+            'm.id AS message_id', 'm.created_at AS message_created_at', 'm.updated_at AS message_updated_at',
+            'm.text AS message_text', 'ch.id AS channel_id', 'ch.content_type AS channel_content_type',
+            'ch.created_at AS channel_created_at', 'ch.updated_at AS channel_updated_at',
+            'ch.max_size AS channel_max_size',
+            'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id',
+            'cht.name AS channel_type_name',
+            'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
+            'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
+            'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
+            'ls.id AS line_section_id, ls.sens AS line_section_sens',
+            'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
+            'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
+            'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
+            'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
+            'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
+            'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
+        ]
+        join_tables = []
+        join_tables.append('(SELECT * FROM (' \
+                           ' SELECT created_at, updated_at,id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status::text from public.disruption where public.disruption.id = \':disruption_id\' UNION' \
+                           ' SELECT created_at, updated_at,disruption_id as id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status from history.disruption where history.disruption.disruption_id = \':disruption_id\') as disruption_union' \
+                           ' ORDER BY version, updated_at) AS d')
+        join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
+        join_tables.append('LEFT JOIN cause c ON (d.cause_id = c.id)')
+        join_tables.append('LEFT JOIN category ctg ON (c.category_id = ctg.id)')
+        join_tables.append('LEFT JOIN associate_wording_cause awc ON (c.id = awc.cause_id)')
+        join_tables.append('LEFT JOIN severity AS s ON (s.id = i.severity_id)')
+        join_tables.append('LEFT JOIN wording AS cw ON (awc.wording_id = cw.id)')
+        join_tables.append('LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id)')
+        join_tables.append('LEFT JOIN wording AS sw ON (aws.wording_id = sw.id)')
+        join_tables.append('LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id)')
+        join_tables.append('LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id)')
+        join_tables.append('LEFT JOIN tag t ON (t.id = adt.tag_id)')
+        join_tables.append('LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id)')
+        join_tables.append('LEFT JOIN property AS p ON (p.id = adp.property_id)')
+        join_tables.append('LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id)')
+        join_tables.append('LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id)')
+        join_tables.append('LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id)')
+        join_tables.append('LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id)')
+        join_tables.append('LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id)')
+        join_tables.append('LEFT JOIN message AS m ON (m.impact_id = i.id)')
+        join_tables.append('LEFT JOIN channel AS ch ON (m.channel_id = ch.id)')
+        join_tables.append('LEFT JOIN channel_type AS cht ON (cht.channel_id = ch.id)')
+        join_tables.append('LEFT JOIN associate_message_meta AS amm ON (amm.message_id = m.id)')
+        join_tables.append('LEFT JOIN meta AS me ON (amm.meta_id = me.id)')
+        join_tables.append('LEFT JOIN pattern AS pa ON (pa.impact_id = i.id)')
+        join_tables.append('LEFT JOIN time_slot AS ts ON (ts.pattern_id = pa.id)')
+        join_tables.append('LEFT JOIN line_section AS ls ON (po.id = ls.object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_line ON (po_line.id = ls.line_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_start ON (po_start.id = ls.start_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS po_end ON (po_end.id = ls.end_object_id)')
+        join_tables.append('LEFT JOIN associate_line_section_route_object AS alsro ON (alsro.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
+        join_tables.append('LEFT JOIN associate_line_section_via_object AS alsvo ON (alsvo.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
+        join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
+        join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
+
+        columns = ','.join(query_parts['select_columns'])
+        tables = ' '.join(join_tables)
+
+        query = 'SELECT %s FROM %s' % (columns, tables)
+
+        stmt = text(query)
+        stmt = stmt.bindparams(bindparam('disruption_id', type_=db.String))
+        vars = {}
+        vars['disruption_id'] = disruption_id
+
+        return db.engine.execute(stmt, vars)
+
 
     @classmethod
     @paginate()

@@ -1998,3 +1998,48 @@ class ImpactsExportDownload(flask_restful.Resource):
                          mimetype="text/csv",
                          as_attachment=True
                          )
+
+class DisruptionsHistory(flask_restful.Resource):
+    def __init__(self):
+        self.navitia = None
+        self.parsers = {}
+        self.parsers["get"] = reqparse.RequestParser()
+        parser_get = self.parsers["get"]
+
+        parser_get.add_argument("start_page", type=int, default=1)
+        parser_get.add_argument("items_per_page", type=int, default=20)
+
+    def _validate_arguments_for_disruption_history(self, args):
+        if args['start_page'] == 0:
+            abort(400, message="page_index argument value is not valid")
+
+        if args['items_per_page'] == 0:
+            abort(400, message="items_per_page argument value is not valid")
+
+    @validate_navitia()
+    @validate_contributor()
+    @manage_navitia_error()
+    @validate_client_token()
+    def get(self, contributor, navitia, disruption_id):
+
+        if not id_format.match(disruption_id):
+            return marshal({'error': {'message': "disruption_id invalid"}},
+                           error_fields), 400
+        self.navitia = navitia
+        args = self.parsers['get'].parse_args()
+
+        self._validate_arguments_for_disruption_history(args)
+        page_index = args['start_page']
+        items_per_page = args['items_per_page']
+
+        results = models.Disruption.get_history_by_id(
+            disruption_id=disruption_id
+        )
+
+        return marshal({
+            'error': {'message': results}
+        }, error_fields), 404
+
+
+
+
