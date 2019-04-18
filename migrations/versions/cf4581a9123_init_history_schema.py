@@ -53,10 +53,11 @@ def upgrade():
                     schema='history'
                     )
     op.create_table('associate_disruption_property',
+                    sa.Column('value', sa.Text(), nullable=False),
                     sa.Column('disruption_id', postgresql.UUID(), nullable=False),
                     sa.Column('property_id', postgresql.UUID(), nullable=False),
                     sa.Column('version', sa.Integer(), nullable=False),
-                    sa.PrimaryKeyConstraint('disruption_id', 'property_id', 'version'),
+                    sa.PrimaryKeyConstraint('disruption_id', 'property_id', 'value', 'version'),
                     schema='history'
                     )
     op.execute('CREATE OR REPLACE FUNCTION log_disruption_update() \
@@ -73,8 +74,8 @@ def upgrade():
                  SELECT tag_id,disruption_id,OLD.version FROM public.associate_disruption_tag WHERE disruption_id = OLD.id; \
                  INSERT INTO history.associate_disruption_pt_object(disruption_id,pt_object_id,version) \
                  SELECT disruption_id,pt_object_id,OLD.version FROM public.associate_disruption_pt_object WHERE disruption_id = OLD.id; \
-                 INSERT INTO history.associate_disruption_property(disruption_id,property_id,version) \
-                 SELECT disruption_id,property_id,OLD.version FROM public.associate_disruption_property WHERE disruption_id = OLD.id; \
+                 INSERT INTO history.associate_disruption_property(value,disruption_id,property_id,version) \
+                 SELECT value,disruption_id,property_id,OLD.version FROM public.associate_disruption_property WHERE disruption_id = OLD.id; \
                  RETURN NEW; \
                 END; \
                 $BODY$\
