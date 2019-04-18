@@ -34,7 +34,10 @@ def teardown_db(feature):
 def truncate_db(scenario):
     with chaos.app.app_context():
         tables = [str(table) for table in chaos.db.metadata.sorted_tables]
+        history_tables = chaos.db.session.execute('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'history\';').fetchall()
         chaos.db.session.execute('TRUNCATE {} CASCADE;'.format(', '.join(tables)))
+        chaos.db.session.commit()
+        chaos.db.session.execute('TRUNCATE {} CASCADE;'.format(', '.join('history.'+table[0] for table in history_tables)))
         chaos.db.session.commit()
 
 
