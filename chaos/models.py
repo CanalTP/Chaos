@@ -1108,8 +1108,8 @@ class Disruption(TimestampMixin, db.Model):
         join_tables = []
         join_tables.append('(SELECT * FROM (' \
                            ' SELECT created_at, updated_at,id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status::text from public.disruption where public.disruption.id = :disruption_id UNION' \
-                           ' SELECT created_at, updated_at,disruption_id as id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status from history.disruption where history.disruption.disruption_id = :disruption_id) as disruption_union' \
-                           ' ORDER BY version, updated_at) AS d')
+                           ' SELECT created_at, updated_at,disruption_id as id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status from history.disruption where history.disruption.disruption_id = :disruption_id'\
+                           ') AS disruption_union ORDER BY version, updated_at) AS d')
         join_tables.append('LEFT JOIN impact i ON (i.disruption_id = d.id)')
         join_tables.append('LEFT JOIN cause c ON (d.cause_id = c.id)')
         join_tables.append('LEFT JOIN category ctg ON (c.category_id = ctg.id)')
@@ -1119,11 +1119,19 @@ class Disruption(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN associate_wording_severity aws ON (s.id = aws.severity_id)')
         join_tables.append('LEFT JOIN wording AS sw ON (aws.wording_id = sw.id)')
         join_tables.append('LEFT JOIN contributor AS contrib ON (contrib.id = d.contributor_id)')
-        join_tables.append('LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id)')
+        join_tables.append('LEFT JOIN (SELECT * FROM (' \
+                           ' SELECT tag_id, disruption_id, version FROM public.associate_disruption_tag INNER JOIN public.disruption ON (public.associate_disruption_tag.disruption_id = :disruption_id AND' \
+                           ' public.associate_disruption_tag.disruption_id = public.disruption.id) UNION' \
+                           ' SELECT tag_id, disruption_id, version FROM history.associate_disruption_tag where history.associate_disruption_tag.disruption_id = :disruption_id) AS disruption_tag_union' \
+                           ' ORDER BY version) AS adt ON (d.id = adt.disruption_id AND d.version=adt.version)')
         join_tables.append('LEFT JOIN tag t ON (t.id = adt.tag_id)')
         join_tables.append('LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id)')
         join_tables.append('LEFT JOIN property AS p ON (p.id = adp.property_id)')
-        join_tables.append('LEFT JOIN associate_disruption_pt_object AS adpo ON (adpo.disruption_id = d.id)')
+        join_tables.append('LEFT JOIN (SELECT * FROM (' \
+                           ' SELECT disruption_id, pt_object_id, version FROM public.associate_disruption_pt_object INNER JOIN public.disruption ON (public.associate_disruption_pt_object.disruption_id = :disruption_id AND' \
+                           ' public.associate_disruption_pt_object.disruption_id = public.disruption.id) UNION' \
+                           ' SELECT disruption_id, pt_object_id, version FROM history.associate_disruption_pt_object where history.associate_disruption_pt_object.disruption_id = :disruption_id) AS disruption_pt_object_union' \
+                           ' ORDER BY version) AS adpo ON (adpo.disruption_id = d.id AND d.version=adpo.version)')
         join_tables.append('LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id)')
         join_tables.append('LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id)')
         join_tables.append('LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id)')
