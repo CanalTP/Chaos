@@ -2004,17 +2004,16 @@ class DisruptionsHistory(flask_restful.Resource):
         self.navitia = None
         self.parsers = {}
         self.parsers["get"] = reqparse.RequestParser()
-        parser_get = self.parsers["get"]
 
-        parser_get.add_argument("start_page", type=int, default=1)
-        parser_get.add_argument("items_per_page", type=int, default=20)
-
-    def _validate_arguments_for_disruption_history(self, args):
-        if args['start_page'] == 0:
-            abort(400, message="page_index argument value is not valid")
-
-        if args['items_per_page'] == 0:
-            abort(400, message="items_per_page argument value is not valid")
+    def _get_publication_status(self, start_publication_date, end_publication_date):
+        current_time = utils.get_current_time()
+        if (end_publication_date != None) and (end_publication_date < current_time):
+            return "past"
+        if start_publication_date <= current_time\
+                and (end_publication_date == None or end_publication_date >= current_time):
+            return "ongoing"
+        if start_publication_date > current_time:
+            return "coming"
 
     @validate_navitia()
     @validate_contributor()
@@ -2026,20 +2025,314 @@ class DisruptionsHistory(flask_restful.Resource):
             return marshal({'error': {'message': "disruption_id invalid"}},
                            error_fields), 400
         self.navitia = navitia
-        args = self.parsers['get'].parse_args()
-
-        self._validate_arguments_for_disruption_history(args)
-        page_index = args['start_page']
-        items_per_page = args['items_per_page']
 
         results = models.Disruption.get_history_by_id(
             disruption_id=disruption_id
         )
 
-        return marshal({
-            'error': {'message': results}
-        }, error_fields), 404
+        disruptions = OrderedDict()
+        impacts = {}
+        tags = {}
+        cause_wordings = {}
+        severity_wordings = {}
+        impact_pt_objects = {}
+        properties = {}
+        localizations = {}
+        application_periods = {}
+        messages = {}
+        channel_types = {}
+        message_metas = {}
+        application_period_patterns = {}
+        time_slots = {}
+        line_section_metas = {}
+        line_section_via = {}
+        line_section_routes = {}
+
+        for r in results:
+            disruptionId = r.id
+            tagId = r.tag_id
+            wordingId = r.cause_wording_id
+            property_id = r.property_id
+            localization_id = r.localization_id
+            impact_id = r.impact_id
+            severity_id = r.severity_id
+            severity_wording_id = r.severity_wording_id
+            impact_pt_object_id = r.pt_object_id
+            application_period_id = r.application_period_id
+            message_id = r.message_id
+            channel_id = r.channel_id
+            channel_type_id = r.channel_type_id
+            message_meta_id = r.meta_id
+            application_period_patterns_id = r.pattern_id
+            time_slot_id = r.time_slot_id
+            line_section_id = r.line_section_id
+            version = r.version
 
 
+            if version not in impacts:
+                impacts[version] = {}
+                tags[version] = {}
+                cause_wordings[version] = {}
+                severity_wordings[version] = {}
+                impact_pt_objects[version] = {}
+                properties[version] = {}
+                localizations[version] = {}
+                application_periods[version] = {}
+                messages[version] = {}
+                channel_types[version] = {}
+                message_metas[version] = {}
+                application_period_patterns[version] = {}
+                time_slots[version] = {}
+                line_section_metas[version] = {}
+                line_section_via[version] = {}
+                line_section_routes[version] = {}
 
+            if impact_id is not None:
+                impacts[version][impact_id] = {
+                    'id': r.impact_id,
+                    'disruption_id': r.id,
+                    'created_at': r.impact_created_at,
+                    'updated_at': r.impact_updated_at,
+                    'send_notifications': r.impact_send_notifications,
+                    'notification_date': r.impact_notification_date
+                }
+                impacts[version][impact_id]['severity'] = {
+                    'id': r.severity_id,
+                    'client_id': r.severity_client_id,
+                    'effect': r.severity_effect,
+                    'priority': r.severity_priority,
+                    'is_visible': r.severity_is_visible,
+                    'color': r.severity_color,
+                    'wording': r.severity_wording,
+                    'updated_at': r.severity_updated_at,
+                    'created_at': r.severity_created_at
+                }
 
+            if impact_id not in application_period_patterns[version]:
+                application_period_patterns[version][impact_id] = {}
+            if application_period_patterns_id is not None:
+                application_period_patterns[version][impact_id][application_period_patterns_id] = {
+                    'id': r.pattern_id,
+                    'start_date': r.pattern_start_date,
+                    'end_date': r.pattern_end_date,
+                    'weekly_pattern': r.pattern_weekly_pattern
+                }
+            if application_period_patterns_id not in time_slots[version]:
+                time_slots[version][application_period_patterns_id] = {}
+            if application_period_patterns_id is not None:
+                time_slots[version][application_period_patterns_id][time_slot_id] = {
+                    'begin': r.time_slot_begin,
+                    'end': r.time_slot_end
+                }
+
+            if impact_id not in application_periods[version]:
+                application_periods[version][impact_id] = {}
+            if application_period_id is not None:
+                application_periods[version][impact_id][application_period_id] = {
+                    'start_date': r.application_period_start_date,
+                    'end_date': r.application_period_end_date
+                }
+
+            if impact_id not in messages[version]:
+                messages[version][impact_id] = {}
+
+            if message_id is not None:
+                messages[version][impact_id][message_id] = {
+                    'id': r.message_id,
+                    'created_at': r.message_created_at,
+                    'updated_at': r.message_updated_at,
+                    'text': r.message_text,
+                    'meta': [],
+                    'channel': {
+                        'id': channel_id,
+                        'content_type': r.channel_content_type,
+                        'created_at': r.channel_created_at,
+                        'updated_at': r.channel_updated_at,
+                        'max_size': r.channel_max_size,
+                        'name': r.channel_name,
+                        'required': r.channel_required
+                    }
+                }
+
+            if channel_id is not None and channel_id not in channel_types[version]:
+                channel_types[version][channel_id] = {}
+
+            if channel_type_id is not None:
+                if channel_type_id not in channel_types[version][channel_id]:
+                    channel_types[version][channel_id][channel_type_id] = {}
+                channel_types[version][channel_id][channel_type_id].update({
+                    'name': r.channel_type_name
+                })
+            if message_id not in message_metas[version]:
+                message_metas[version][message_id] = {}
+            if message_meta_id is not None:
+                message_metas[version][message_id][message_meta_id] = {
+                    'key': r.meta_key,
+                    'value': r.meta_value
+                }
+
+            if severity_id not in severity_wordings[version]:
+                severity_wordings[version][severity_id] = {}
+            if  severity_wording_id is not None:
+                severity_wordings[version][severity_id][severity_wording_id] = {
+                    'key': r.severity_wording_key,
+                    'value': r.severity_wording_value
+                }
+
+            if impact_id not in impact_pt_objects[version]:
+                impact_pt_objects[version][impact_id] = {}
+            if  impact_pt_object_id is not None:
+                impact_pt_objects[version][impact_id][impact_pt_object_id] = {
+                    'id': r.pt_object_id,
+                    'uri': r.pt_object_uri,
+                    'type': r.pt_object_type,
+                }
+                if line_section_id is not None:
+                    if impact_pt_object_id not in line_section_metas[version]:
+                        line_section_metas[version][impact_pt_object_id] = {}
+                    if impact_pt_object_id not in line_section_via[version]:
+                        line_section_via[version][impact_pt_object_id] = {}
+                    if impact_pt_object_id not in line_section_routes[version]:
+                        line_section_routes[version][impact_pt_object_id] = {}
+
+                    if r.awlsw_id is not None:
+                        line_section_metas[version][impact_pt_object_id][r.awlsw_id] = {
+                            'key': r.awlsw_key,
+                            'value': r.awlsw_value
+                        }
+                    if r.po_via_id is not None:
+                        line_section_via[version][impact_pt_object_id][r.po_via_id] = {
+                            'uri': r.po_via_uri,
+                            'type': r.po_via_type
+                        }
+                    if r.po_route_id is not None:
+                        line_section_routes[version][impact_pt_object_id][r.po_route_id] = {
+                            'uri': r.po_route_uri,
+                            'type': r.po_route_type
+                        }
+                    impact_pt_objects[version][impact_id][impact_pt_object_id]['line_section'] = {
+                        'line': {
+                            'uri': r.line_section_line_uri,
+                            'type': r.line_section_line_type
+                        },
+                        'start_point': {
+                            'uri': r.line_section_start_uri,
+                            'type': r.line_section_start_type
+                        },
+                        'end_point': {
+                            'uri': r.line_section_end_uri,
+                            'type': r.line_section_end_type
+                        },
+                        'sens': r.line_section_sens,
+                        'routes': [],
+                        'via': [],
+                        'metas': []
+                    }
+
+            if version not in localizations:
+                localizations[version] = {}
+            if localization_id is not None:
+                localizations[version][localization_id] = {
+                    'uri': r.localization_uri,
+                    'type': r.localization_type
+                }
+
+            if version not in properties:
+                properties[version] = {}
+            if property_id is not None:
+                properties[version][property_id] = {
+                    'id' : r.property_id,
+                    'key' : r.property_key,
+                    'type' : r.property_type,
+                    'value' : r.property_value,
+                    'created_at' : r.property_created_at,
+                    'updated_at' : r.property_updated_at
+                }
+
+            if version not in cause_wordings:
+                cause_wordings[version] = {}
+            cause_wordings[version][wordingId] = {
+                'key': r.cause_wording_key,
+                'value': r.cause_wording_value
+            }
+
+            if version not in tags:
+                tags[version] = {}
+            if tagId is not None:
+                tags[version][tagId] = {
+                    'id' : tagId,
+                    'name' : r.tag_name,
+                    'created_at' : r.tag_created_at,
+                    'updated_at' : r.tag_updated_at
+                }
+
+            if version not in disruptions:
+
+                disruption = {
+                    "id": disruptionId,
+                    "reference": r.reference,
+                    'note': r.note,
+                    'status': r.status,
+                    'version': r.version,
+                    'created_at': r.created_at,
+                    'updated_at': r.updated_at,
+                    'start_publication_date': r.start_publication_date,
+                    'end_publication_date': r.end_publication_date,
+                    'publication_status': self._get_publication_status(r.start_publication_date, r.end_publication_date),
+                    'contributor' : {
+                        'contributor_code' : r.contributor_code
+                    },
+                    'cause': {
+                        'id': r.cause_id,
+                        'created_at': r.cause_created_at,
+                        'updated_at': r.cause_updated_at,
+                        'wordings': [],
+                        'category': {
+                            'id': r.cause_category_id,
+                            'name': r.cause_category_name,
+                            'created_at': r.cause_category_created_at,
+                            'updated_at': r.cause_category_updated_at
+                        }
+                    },
+                    'tags' : [],
+                    'impacts' : [],
+                    'properties' : [],
+                    'localizations' : []
+                }
+                disruptions[version] = disruption
+
+        for disruption in disruptions.values():
+            disruptionVersion = disruption['version']
+            disruption['tags'] = tags[disruptionVersion].values()
+            disruption['cause']['wordings'] = cause_wordings[disruptionVersion].values()
+            disruption['properties'] = properties[disruptionVersion].values()
+            disruption['localizations'] = localizations[disruptionVersion].values()
+            disruption['impacts'] = impacts[disruptionVersion].values()
+            for impact in disruption['impacts']:
+                impact_id = impact['id']
+                impact['severity']['wordings'] = severity_wordings[disruptionVersion][impact['severity']['id']].values()
+                impact['objects'] = impact_pt_objects[disruptionVersion][impact_id].values()
+                impact['application_periods'] = application_periods[disruptionVersion][impact_id].values()
+                impact['messages'] = messages[disruptionVersion][impact_id].values()
+                impact['patterns'] = application_period_patterns[disruptionVersion][impact_id].values()
+
+                for message in impact['messages']:
+                    channel_id = message['channel']['id']
+                    message_id = message['id']
+                    message['channel']['channel_types'] = channel_types[disruptionVersion][channel_id].values()
+                    message['meta'] = message_metas[disruptionVersion][message_id].values()
+                for application_period_pattern in impact['patterns']:
+                    application_period_pattern_id = application_period_pattern['id']
+                    application_period_pattern['time_slots'] = time_slots[disruptionVersion][application_period_pattern_id].values()
+                for pt_object in impact['objects']:
+                    impact_pt_object_id = pt_object['id']
+                    if impact_pt_object_id in line_section_via[disruptionVersion]:
+                        pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
+                    if impact_pt_object_id in line_section_routes[disruptionVersion]:
+                        pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
+                    if impact_pt_object_id in line_section_metas[disruptionVersion]:
+                        pt_object['line_section']['wordings'] = line_section_metas[impact_pt_object_id].values()
+
+        rawData = {'disruptions': disruptions.values()}
+        result = marshal(rawData, disruptions_fields)
+        return result
