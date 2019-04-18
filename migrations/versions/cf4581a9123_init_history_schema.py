@@ -38,23 +38,43 @@ def upgrade():
                     sa.PrimaryKeyConstraint('id'),
                     schema='history'
                     )
+    op.create_table('associate_disruption_tag',
+                    sa.Column('tag_id', postgresql.UUID(), nullable=False),
+                    sa.Column('disruption_id', postgresql.UUID(), nullable=False),
+                    sa.Column('version', sa.Integer(), nullable=False),
+                    sa.PrimaryKeyConstraint('tag_id', 'disruption_id', 'version'),
+                    schema='history'
+                    )
+    op.create_table('associate_disruption_pt_object',
+                    sa.Column('disruption_id', postgresql.UUID(), nullable=False),
+                    sa.Column('pt_object_id', postgresql.UUID(), nullable=False),
+                    sa.Column('version', sa.Integer(), nullable=False),
+                    sa.PrimaryKeyConstraint('disruption_id', 'pt_object_id', 'version'),
+                    schema='history'
+                    )
+    op.create_table('associate_disruption_property',
+                    sa.Column('disruption_id', postgresql.UUID(), nullable=False),
+                    sa.Column('property_id', postgresql.UUID(), nullable=False),
+                    sa.Column('version', sa.Integer(), nullable=False),
+                    sa.PrimaryKeyConstraint('disruption_id', 'property_id', 'version'),
+                    schema='history'
+                    )
     op.execute('CREATE OR REPLACE FUNCTION log_disruption_update() \
                   RETURNS trigger AS \
                 $BODY$ \
                 BEGIN \
-                 IF NEW.reference <> OLD.reference OR NEW.note <> OLD.note \
-                    OR NEW.start_publication_date <> OLD.start_publication_date \
-                    OR NEW.end_publication_date <> OLD.end_publication_date \
-                    OR NEW.client_id <> OLD.client_id OR NEW.contributor_id <> OLD.contributor_id \
-                    OR NEW.cause_id <> OLD.cause_id OR NEW.status <> OLD.status \
-                    THEN \
                  INSERT INTO history.disruption(created_at,updated_at,disruption_id,reference,note,\
                     start_publication_date,end_publication_date,version,client_id,contributor_id,\
                     cause_id,status) \
                  VALUES(OLD.created_at,OLD.updated_at,OLD.id,OLD.reference,OLD.note,OLD.start_publication_date,\
                     OLD.end_publication_date,OLD.version,OLD.client_id,OLD.contributor_id,\
                     OLD.cause_id,OLD.status); \
-                 END IF; \
+                 INSERT INTO history.associate_disruption_tag(tag_id,disruption_id,version) \
+                 SELECT tag_id,disruption_id,OLD.version FROM public.associate_disruption_tag WHERE disruption_id = OLD.id; \
+                 INSERT INTO history.associate_disruption_pt_object(disruption_id,pt_object_id,version) \
+                 SELECT disruption_id,pt_object_id,OLD.version FROM public.associate_disruption_pt_object WHERE disruption_id = OLD.id; \
+                 INSERT INTO history.associate_disruption_property(disruption_id,property_id,version) \
+                 SELECT disruption_id,property_id,OLD.version FROM public.associate_disruption_property WHERE disruption_id = OLD.id; \
                  RETURN NEW; \
                 END; \
                 $BODY$\
