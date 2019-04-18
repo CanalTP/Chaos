@@ -1062,7 +1062,7 @@ class Disruption(TimestampMixin, db.Model):
         return db.engine.execute(stmt, vars).fetchall()
 
     @classmethod
-    def get_history_by_id(cls, disruption_id):
+    def __get_history_query_parts(cls):
         query_parts = {}
         query_parts['select_columns'] = [
             'd.id', 'd.reference', 'd.note', 'd.status', 'd.version', 'd.created_at', 'd.updated_at',
@@ -1105,6 +1105,11 @@ class Disruption(TimestampMixin, db.Model):
             'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
             'po_via.id AS po_via_id, po_via.uri AS po_via_uri, po_via.type AS po_via_type'
         ]
+        query_parts['order_by'] = ['d.version']
+        return query_parts
+
+    @classmethod
+    def __get_history_join_tables(cls):
         join_tables = []
         join_tables.append('(SELECT * FROM (' \
                            ' SELECT created_at, updated_at,id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status::text from public.disruption where public.disruption.id = :disruption_id UNION' \
@@ -1123,15 +1128,19 @@ class Disruption(TimestampMixin, db.Model):
                            ' SELECT tag_id, disruption_id, version FROM public.associate_disruption_tag INNER JOIN public.disruption ON (public.associate_disruption_tag.disruption_id = :disruption_id AND' \
                            ' public.associate_disruption_tag.disruption_id = public.disruption.id) UNION' \
                            ' SELECT tag_id, disruption_id, version FROM history.associate_disruption_tag where history.associate_disruption_tag.disruption_id = :disruption_id) AS disruption_tag_union' \
-                           ' ORDER BY version) AS adt ON (d.id = adt.disruption_id AND d.version=adt.version)')
+                           ') AS adt ON (d.id = adt.disruption_id AND d.version=adt.version)')
         join_tables.append('LEFT JOIN tag t ON (t.id = adt.tag_id)')
-        join_tables.append('LEFT JOIN associate_disruption_property AS adp ON (d.id = adp.disruption_id)')
+        join_tables.append('LEFT JOIN (SELECT * FROM (' \
+                           ' SELECT value, disruption_id, property_id, version FROM public.associate_disruption_property INNER JOIN public.disruption ON (public.associate_disruption_property.disruption_id = :disruption_id AND' \
+                           ' public.associate_disruption_property.disruption_id = public.disruption.id) UNION' \
+                           ' SELECT value, disruption_id, property_id, version FROM history.associate_disruption_property where history.associate_disruption_property.disruption_id = :disruption_id) AS disruption_tag_union' \
+                           ') AS adp ON (d.id = adp.disruption_id AND d.version=adp.version)')
         join_tables.append('LEFT JOIN property AS p ON (p.id = adp.property_id)')
         join_tables.append('LEFT JOIN (SELECT * FROM (' \
                            ' SELECT disruption_id, pt_object_id, version FROM public.associate_disruption_pt_object INNER JOIN public.disruption ON (public.associate_disruption_pt_object.disruption_id = :disruption_id AND' \
                            ' public.associate_disruption_pt_object.disruption_id = public.disruption.id) UNION' \
                            ' SELECT disruption_id, pt_object_id, version FROM history.associate_disruption_pt_object where history.associate_disruption_pt_object.disruption_id = :disruption_id) AS disruption_pt_object_union' \
-                           ' ORDER BY version) AS adpo ON (adpo.disruption_id = d.id AND d.version=adpo.version)')
+                           ') AS adpo ON (adpo.disruption_id = d.id AND d.version=adpo.version)')
         join_tables.append('LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id)')
         join_tables.append('LEFT JOIN associate_impact_pt_object AS aipto ON (aipto.impact_id = i.id)')
         join_tables.append('LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id)')
@@ -1153,11 +1162,17 @@ class Disruption(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN pt_object AS po_via ON (alsvo.stop_area_object_id = po_via.id)')
         join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
+        return join_tables
 
+    @classmethod
+    def get_history_by_id(cls, disruption_id):
+        query_parts = cls.__get_history_query_parts()
+        join_tables = cls.__get_history_join_tables()
         columns = ','.join(query_parts['select_columns'])
         tables = ' '.join(join_tables)
+        order = ','.join(query_parts['order_by'])
 
-        query = 'SELECT %s FROM %s' % (columns, tables)
+        query = 'SELECT %s FROM %s ORDER BY %s' % (columns, tables, order)
 
         stmt = text(query)
         stmt = stmt.bindparams(bindparam('disruption_id', type_=db.String))
