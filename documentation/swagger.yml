@@ -1268,7 +1268,7 @@
           type: string
           description: Entity identifier
         tags:
-          - WIP
+          - WIP (Work In Progress)
         responses:
           200:
             description: List of disruption histories
@@ -2340,7 +2340,6 @@
             properties:
               id:
                 type: string
-                format: string
                 description: Stop area ID
               type:
                 type: string
@@ -2446,7 +2445,6 @@
             properties:
               id:
                 type: string
-                format: string
                 description: Stop area ID
               type:
                 type: string
