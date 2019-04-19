@@ -63,6 +63,7 @@
     - name: Traffic Reports
     - name: Search
     - name: Export
+    - name: WIP
 
 
   ################################################################################
@@ -1252,6 +1253,57 @@
             description: Service unavailable
             schema:
               $ref: "#/definitions/error_occured"
+
+    /disruptions/{id}/history:
+      get:
+        description: Return all histories of one disruption
+        parameters:
+        - $ref: "#/parameters/header_authorization"
+        - $ref: "#/parameters/header_coverage"
+        - $ref: "#/parameters/header_customer_id"
+        - $ref: "#/parameters/header_contributors"
+        - $ref: "#/parameters/start_page"
+        - $ref: "#/parameters/items_per_page"
+        - $ref: "#/parameters/publication_status"
+        - $ref: "#/parameters/ends_after_date"
+        - $ref: "#/parameters/ends_before_date"
+        - $ref: "#/parameters/current_time"
+        - $ref: "#/parameters/tag"
+        - $ref: "#/parameters/uri"
+        - $ref: "#/parameters/line_section"
+        - $ref: "#/parameters/status"
+        - $ref: "#/parameters/depth"
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Entity identifier
+        tags:
+          - WIP
+        responses:
+          200:
+            description: List of disruption histories
+            schema:
+              type: object
+              properties:
+                disruptions:
+                  type: array
+                  items:
+                    $ref: "#/definitions/disruption"
+                meta:
+                  type: object
+                  properties:
+                    pagination:
+                      $ref: "#/definitions/pagination"
+          400:
+            description: Disruption bad id
+            schema:
+              $ref: "#/definitions/error_occured"
+          404:
+            description: Not found
+            schema:
+              $ref: "#/definitions/error_occured"
+
     /disruptions/{id}/impacts:
       get:
         description: Return all impacts of a disruption
@@ -2299,7 +2351,7 @@
             properties:
               id:
                 type: string
-                format: uuid
+                format: string
                 description: Stop area ID
               type:
                 type: string
@@ -2405,7 +2457,7 @@
             properties:
               id:
                 type: string
-                format: uuid
+                format: string
                 description: Stop area ID
               type:
                 type: string
