@@ -1262,17 +1262,6 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/start_page"
-        - $ref: "#/parameters/items_per_page"
-        - $ref: "#/parameters/publication_status"
-        - $ref: "#/parameters/ends_after_date"
-        - $ref: "#/parameters/ends_before_date"
-        - $ref: "#/parameters/current_time"
-        - $ref: "#/parameters/tag"
-        - $ref: "#/parameters/uri"
-        - $ref: "#/parameters/line_section"
-        - $ref: "#/parameters/status"
-        - $ref: "#/parameters/depth"
         - name: id
           in: path
           required: true
