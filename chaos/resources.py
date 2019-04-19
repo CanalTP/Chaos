@@ -2332,7 +2332,10 @@ class DisruptionsHistory(flask_restful.Resource):
                         pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
                     if impact_pt_object_id in line_section_metas[disruptionVersion]:
                         pt_object['line_section']['wordings'] = line_section_metas[impact_pt_object_id].values()
-
+        if len(disruptions) == 0:
+            return marshal({
+                'error': {'message': 'Disruption {} not found'.format(disruption_id)}
+            }, error_fields), 404
         rawData = {'disruptions': disruptions.values()}
         result = marshal(rawData, disruptions_fields)
         return result
