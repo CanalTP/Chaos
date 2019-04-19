@@ -63,7 +63,7 @@
     - name: Traffic Reports
     - name: Search
     - name: Export
-    - name: WIP (Work In Progress)
+    - name: History (Work In Progress)
 
 
   ################################################################################
@@ -1256,7 +1256,7 @@
 
     /disruptions/{id}/history:
       get:
-        description: Return all histories of one disruption
+        description: Get a list of historical states of a disruption
         parameters:
         - $ref: "#/parameters/header_authorization"
         - $ref: "#/parameters/header_coverage"
@@ -1268,7 +1268,7 @@
           type: string
           description: Entity identifier
         tags:
-          - WIP (Work In Progress)
+          - History (Work In Progress)
         responses:
           200:
             description: List of disruption histories
