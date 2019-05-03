@@ -30,8 +30,10 @@ def upgrade():
         schema='history'
     )
     op.create_table('associate_disruption_impact',
-        sa.Column('disruption_id', sa.Integer(), nullable=False),
-        sa.Column('impact_id', sa.Integer(), nullable=False),
+        sa.Column('disruption_id', postgresql.UUID(), nullable=False),
+        sa.Column('disruption_version', sa.Integer(), nullable=False),
+        sa.Column('impact_id', postgresql.UUID(), nullable=False),
+        sa.Column('impact_version', sa.Integer(), nullable=False),
         schema='history'
     )
     op.create_table('associate_impact_pt_object',
@@ -62,8 +64,8 @@ def upgrade():
                     send_notifications,version,notification_date) \
                  SELECT id,created_at,updated_at,disruption_id,status,severity_id,send_notifications,\
                     version,notification_date FROM public.impact WHERE disruption_id = OLD.id; \
-                 INSERT INTO history.associate_disruption_impact(disruption_id, impact_id) \
-                 SELECT hd.id, hi.id FROM history.disruption hd LEFT JOIN history.impact hi ON hd.disruption_id = hi.disruption_id WHERE hd.version = OLD.version; \
+                 INSERT INTO history.associate_disruption_impact(disruption_id, disruption_version, impact_id, impact_version) \
+                 SELECT d.id, d.version, i.id, i.version FROM public.disruption d LEFT JOIN public.impact i ON d.id = i.disruption_id WHERE d.id = OLD.id; \
                  INSERT INTO history.associate_impact_pt_object(impact_id,pt_object_id,version) \
                  SELECT impact_id,pt_object_id,OLD.version FROM public.associate_impact_pt_object WHERE impact_id IN (\
                     SELECT id FROM public.impact WHERE disruption_id = OLD.id\
