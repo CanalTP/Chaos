@@ -62,9 +62,12 @@ def upgrade():
                     send_notifications,version,notification_date) \
                  SELECT id,created_at,updated_at,disruption_id,status,severity_id,send_notifications,\
                     version,notification_date FROM public.impact WHERE disruption_id = OLD.id; \
+                 INSERT INTO history.associate_disruption_impact(disruption_id, impact_id) \
+                 SELECT hd.id, hi.id FROM history.disruption hd LEFT JOIN history.impact hi ON hd.disruption_id = hi.disruption_id WHERE hd.version = OLD.version; \
                  INSERT INTO history.associate_impact_pt_object(impact_id,pt_object_id,version) \
                  SELECT impact_id,pt_object_id,OLD.version FROM public.associate_impact_pt_object WHERE impact_id IN (\
-                 SELECT id FROM public.impact WHERE disruption_id = OLD.id); \
+                    SELECT id FROM public.impact WHERE disruption_id = OLD.id\
+                 ); \
                  \
                  RETURN NEW; \
                 END; \
