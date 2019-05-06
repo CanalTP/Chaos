@@ -28,7 +28,7 @@ def upgrade():
         sa.Column('version', sa.Integer(), nullable=False),
         sa.Column('notification_date', sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint('id'),
-        sa.ForeignKeyConstraint(['disruption_id'], ['disruption.id']),
+        sa.ForeignKeyConstraint(['disruption_id'], ['history.disruption.id']),
         schema='history'
     )
     op.create_table('associate_impact_pt_object',
