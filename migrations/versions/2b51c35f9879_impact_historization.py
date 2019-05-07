@@ -42,7 +42,7 @@ def upgrade():
                     schema='history'
                     )
     create_disruption_history_function = (
-        'CREATE OR REPLACE FUNCTION handle_disruption_history_change_for_impacts() RETURNS TRIGGER '
+        'CREATE OR REPLACE FUNCTION history.handle_disruption_history_change_for_impacts() RETURNS TRIGGER '
         'AS $data$ '
         '   DECLARE '
         '       public_disruption_id uuid; '
@@ -87,7 +87,7 @@ def upgrade():
     create_disruption_history_trigger = (
         'CREATE TRIGGER handle_disruption_history_change_for_impacts '
         '   AFTER INSERT OR UPDATE ON history.disruption '
-        '       FOR EACH ROW EXECUTE PROCEDURE handle_disruption_history_change_for_impacts()'
+        '       FOR EACH ROW EXECUTE PROCEDURE history.handle_disruption_history_change_for_impacts()'
     )
     op.execute(create_disruption_history_trigger)
 
@@ -102,7 +102,7 @@ def downgrade():
     op.execute(create_disruption_trigger)
 
     op.execute('DROP TRIGGER IF EXISTS handle_disruption_history_change_for_impacts ON history.disruption')
-    op.execute('DROP FUNCTION IF EXISTS handle_disruption_history_change_for_impacts()')
+    op.execute('DROP FUNCTION IF EXISTS history.handle_disruption_history_change_for_impacts()')
 
     op.execute('DROP TRIGGER IF EXISTS maint_impact_history ON public.impact')
     op.drop_table('impact', schema='history')
