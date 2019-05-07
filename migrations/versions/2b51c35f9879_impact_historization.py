@@ -47,6 +47,7 @@ def upgrade():
         '   DECLARE '
         '       public_disruption_id uuid; '
         '   BEGIN '
+        '   public_disruption_id = new.disruption_id; '
         '   INSERT INTO history.impact ('
         '            created_at,'
         '            disruption_id,'
