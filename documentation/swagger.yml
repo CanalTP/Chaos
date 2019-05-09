@@ -1262,7 +1262,6 @@
         - $ref: "#/parameters/header_coverage"
         - $ref: "#/parameters/header_customer_id"
         - $ref: "#/parameters/header_contributors"
-        - $ref: "#/parameters/depth"
         - name: id
           in: path
           required: true
