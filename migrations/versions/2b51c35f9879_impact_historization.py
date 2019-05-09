@@ -99,6 +99,38 @@ def upgrade():
     )
     op.execute(create_disruption_history_trigger)
 
+    create_impact_function = (
+        'CREATE OR REPLACE FUNCTION handle_impact_change_for_associate_impact_pt_object() RETURNS TRIGGER '
+        'AS $BODY$ '
+        '   BEGIN '
+        '   INSERT INTO history.associate_impact_pt_object ('
+        '            public_impact_id,'
+        '            public_pt_object_id,'
+        '            public_impact_version'
+        '        ) '
+        '            SELECT '
+        '                impact_id,'
+        '                pt_object_id,'
+        '                OLD.version'
+        '            FROM'
+        '                public.associate_impact_pt_object'
+        '            WHERE'
+        '                public.associate_impact_pt_object.impact_id = OLD.id'
+        '        ;'
+        '   RETURN NULL;'
+        ' END;'
+        ' $BODY$ LANGUAGE plpgsql;'
+    )
+
+    op.execute(create_impact_function)
+
+    create_impact_trigger = (
+        'CREATE TRIGGER handle_impact_change_for_associate_impact_pt_object '
+        '   BEFORE INSERT OR UPDATE ON public.impact '
+        '       FOR EACH ROW EXECUTE PROCEDURE handle_impact_change_for_associate_impact_pt_object()'
+    )
+    op.execute(create_impact_trigger)
+
 
 def downgrade():
     op.execute('DROP TRIGGER IF EXISTS last_disruption_changes on public.disruption')
@@ -111,5 +143,7 @@ def downgrade():
 
     op.execute('DROP TRIGGER IF EXISTS handle_disruption_history_change_for_impacts ON history.disruption')
     op.execute('DROP FUNCTION IF EXISTS history.handle_disruption_history_change_for_impacts()')
+    op.execute('DROP TRIGGER IF EXISTS handle_impact_change_for_associate_impact_pt_object ON public.impact')
+    op.execute('DROP FUNCTION IF EXISTS handle_impact_change_for_associate_impact_pt_object()')
     op.drop_table('impact', schema='history')
     op.drop_table('associate_impact_pt_object', schema='history')
