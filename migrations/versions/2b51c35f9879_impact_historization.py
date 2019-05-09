@@ -126,7 +126,7 @@ def upgrade():
 
     create_impact_trigger = (
         'CREATE TRIGGER handle_impact_change_for_associate_impact_pt_object '
-        '   BEFORE INSERT OR UPDATE ON public.impact '
+        '   AFTER UPDATE ON public.impact '
         '       FOR EACH ROW EXECUTE PROCEDURE handle_impact_change_for_associate_impact_pt_object()'
     )
     op.execute(create_impact_trigger)
