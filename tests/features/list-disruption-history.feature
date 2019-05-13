@@ -151,11 +151,6 @@ Feature: disruption history
         When I get "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff3/history"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruptions" should have a size of 2
-        And the field "disruptions.1.version" should be "2"
-        And the field "disruptions.1.impacts.impacts" should have a size of 1
-        And the field "disruptions.1.impacts.impacts.0.objects" should have a size of 1
-        And the field "disruptions.1.impacts.impacts.0.objects.0.id" should be "network:JDR:1"
         When I put to "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff3" with:
         """
         {"reference":"foo", "contributor": "contrib1", "cause":{"id":"7bfab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"},{"id": "network:JDR:2","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}
@@ -164,11 +159,15 @@ Feature: disruption history
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
+        And the field "disruptions.1.version" should be "2"
+        And the field "disruptions.1.impacts.impacts" should have a size of 1
+        And the field "disruptions.1.impacts.impacts.0.objects" should have a size of 1
+        And the field "disruptions.1.impacts.impacts.0.objects.0.id" should be "network:JDR:1"
         And the field "disruptions.2.version" should be "3"
         And the field "disruptions.2.impacts.impacts" should have a size of 2
         And the field "disruptions.2.impacts.impacts.0.objects" should have a size of 2
-        And the field "disruptions.2.impacts.impacts.0.objects.0.id" should be "network:JDR:1"
-        And the field "disruptions.2.impacts.impacts.0.objects.1.id" should be "network:JDR:2"
+        And the field "disruptions.2.impacts.impacts.0.objects.0.id" should be "network:JDR:2"
+        And the field "disruptions.2.impacts.impacts.0.objects.1.id" should be "network:JDR:1"
         And the field "disruptions.2.impacts.impacts.1.objects" should have a size of 1
         And the field "disruptions.2.impacts.impacts.1.objects.0.id" should be "network:JDR:1"
 
