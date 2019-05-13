@@ -166,8 +166,6 @@ Feature: disruption history
         And the field "disruptions.2.version" should be "3"
         And the field "disruptions.2.impacts.impacts" should have a size of 2
         And the field "disruptions.2.impacts.impacts.0.objects" should have a size of 2
-        And the field "disruptions.2.impacts.impacts.0.objects.0.id" should be "network:JDR:2"
-        And the field "disruptions.2.impacts.impacts.0.objects.1.id" should be "network:JDR:1"
         And the field "disruptions.2.impacts.impacts.1.objects" should have a size of 1
         And the field "disruptions.2.impacts.impacts.1.objects.0.id" should be "network:JDR:1"
 
