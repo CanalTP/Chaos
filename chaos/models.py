@@ -1115,13 +1115,13 @@ class Disruption(TimestampMixin, db.Model):
                            ' SELECT null AS int_id, created_at, updated_at,id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status::text' \
                            ' FROM public.disruption where public.disruption.id = :disruption_id UNION' \
                            ' SELECT id AS int_id, created_at, updated_at,disruption_id as id,reference,note,start_publication_date,end_publication_date,version,client_id , contributor_id,cause_id,status' \
-                           ' FROM history.disruption where history.disruption.disruption_id = :disruption_id'\
+                           ' FROM history.disruption where history.disruption.disruption_id = :disruption_id' \
                            ') AS disruption_union ORDER BY version, updated_at) AS d')
-        join_tables.append('LEFT JOIN LATERAL (SELECT * FROM (' \
+        join_tables.append('LEFT JOIN (SELECT * FROM (' \
                            ' SELECT id, created_at, updated_at, disruption_id, null AS disruption_int_id, status::text, severity_id, send_notifications, version, notification_date' \
                            ' FROM PUBLIC.impact WHERE  PUBLIC.impact.disruption_id = :disruption_id UNION' \
                            ' SELECT public_id as id, public_created_at, public_updated_at, public_disruption_id, disruption_id AS disruption_int_id, public_status, public_severity_id, public_send_notifications, public_version, public_notification_date' \
-                           ' FROM history.impact WHERE history.impact.disruption_id = d.int_id' \
+                           ' FROM history.impact WHERE history.impact.public_disruption_id = :disruption_id' \
                            ' ) AS disruption_impact_union' \
                            ' ) AS i' \
                            ' ON i.disruption_int_id = d.int_id OR (d.int_id is null and i.disruption_int_id is null)')
@@ -1151,13 +1151,11 @@ class Disruption(TimestampMixin, db.Model):
                            ' SELECT disruption_id, pt_object_id, version FROM history.associate_disruption_pt_object where history.associate_disruption_pt_object.disruption_id = :disruption_id) AS disruption_pt_object_union' \
                            ') AS adpo ON (adpo.disruption_id = d.id AND d.version=adpo.version)')
         join_tables.append(' LEFT JOIN pt_object AS localization ON (localization.id = adpo.pt_object_id)')
-        join_tables.append(' LEFT JOIN LATERAL ( SELECT * FROM (' \
+        join_tables.append(' LEFT JOIN ( SELECT * FROM (' \
                            ' SELECT impact_id, pt_object_id, NULL AS version FROM public.associate_impact_pt_object' \
-                           ' WHERE public.associate_impact_pt_object.impact_id=i.id' \
                            ' UNION SELECT public_impact_id, public_pt_object_id, public_impact_version FROM history.associate_impact_pt_object' \
-                           ' WHERE history.associate_impact_pt_object.public_impact_id=i.id AND history.associate_impact_pt_object.public_impact_version = i.version' \
                            ') AS aipto_union' \
-                           ') AS aipto ON aipto.version = i.version OR (aipto.version is null AND i.disruption_int_id is null)')
+                           ') AS aipto ON aipto.impact_id = i.id AND (aipto.version = i.version OR (aipto.version is null AND i.disruption_int_id is null))')
         join_tables.append('LEFT JOIN pt_object AS po ON (po.id = aipto.pt_object_id)')
         join_tables.append('LEFT JOIN application_periods AS ap ON (ap.impact_id = i.id)')
         join_tables.append('LEFT JOIN message AS m ON (m.impact_id = i.id)')
