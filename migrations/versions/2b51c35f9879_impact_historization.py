@@ -17,6 +17,10 @@ from sqlalchemy.dialects.postgresql import UUID
 
 def upgrade():
     op.execute('DROP TRIGGER IF EXISTS last_disruption_changes on public.disruption')
+    op.execute('TRUNCATE history.associate_disruption_property,'
+               'history.associate_disruption_pt_object,'
+               'history.associate_disruption_tag,'
+               'history.disruption;')
     create_disruption_trigger = (
         'CREATE TRIGGER last_disruption_changes '
         '   AFTER UPDATE ON public.disruption '
