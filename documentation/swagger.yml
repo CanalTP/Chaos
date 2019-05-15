@@ -1256,7 +1256,7 @@
 
     /disruptions/{id}/history:
       get:
-        description: Get a list of historical states of a disruption
+        description: Get a list of historical states of a disruption and its impacts
         parameters:
         - $ref: "#/parameters/header_authorization"
         - $ref: "#/parameters/header_coverage"
