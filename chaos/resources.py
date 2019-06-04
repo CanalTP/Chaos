@@ -1550,6 +1550,7 @@ class Impacts(flask_restful.Resource):
             if not chaos.utils.send_disruption_to_navitia(disruption):
                 ex_msg = 'An error occurred during transferring this impact to Navitia. Please try again'
                 raise exceptions.NavitiaError(ex_msg)
+            save_disruption_in_history(disruption)
             return marshal({'impact': impact}, one_impact_fields), 201
         except exceptions.NavitiaError as e:
             db.session.delete(impact)
@@ -1604,6 +1605,7 @@ this impact to Navitia. Please try again.'}}, error_fields), 503
                 {'error': {'message': '{}'.format(e.message)}},
                 error_fields
             ), 500
+        save_disruption_in_history(disruption)
         return marshal({'impact': impact}, one_impact_fields), 200
 
     @validate_contributor()

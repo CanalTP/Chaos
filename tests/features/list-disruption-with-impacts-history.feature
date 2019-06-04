@@ -79,6 +79,11 @@ Feature: disruption with impacts history
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 3
+        And the field "disruptions.0.impacts.impacts" should have a size of 2
+        And the field "disruptions.0.impacts.impacts.0.objects" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.0.objects.0.id" should be "network:JDR:2"
+        And the field "disruptions.0.impacts.impacts.1.objects" should have a size of 1
+        And the field "disruptions.0.impacts.impacts.1.objects.0.id" should be "line:JDR:M1"
 
 
 
