@@ -2262,4 +2262,4 @@ class HistoryDisruption(db.Model):
 
     @classmethod
     def get_by_disruption_id(cls, disruption_id):
-        return cls.query.filter_by(disruption_id=disruption_id).order_by(desc(cls.created_at))
+        return cls.query.filter_by(disruption_id=disruption_id)

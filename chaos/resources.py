@@ -2037,5 +2037,5 @@ class DisruptionsHistory(flask_restful.Resource):
         for history_disruption in history_disruptions:
             disruption = create_disruption_from_json(json.loads(history_disruption.data))
             disruptions[disruption.version] = disruption
-
-        return marshal({'disruptions': disruptions.values()}, disruptions_fields)
+        disruptions_sorted = OrderedDict(sorted(disruptions.items(), reverse=True))
+        return marshal({'disruptions': disruptions_sorted.values()}, disruptions_fields)
