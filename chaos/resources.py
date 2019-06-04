@@ -1622,6 +1622,7 @@ this impact to Navitia. Please try again.'}}, error_fields), 503
             if chaos.utils.send_disruption_to_navitia(disruption):
                 db.session.commit()
                 db.session.refresh(disruption)
+                save_disruption_in_history(disruption)
                 return None, 204
             else:
                 db.session.rollback()
