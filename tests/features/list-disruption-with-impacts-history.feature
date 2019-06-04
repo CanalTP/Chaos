@@ -134,13 +134,6 @@ Feature: disruption with impacts history
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
         And the field "disruptions.0.impacts.impacts" should have a size of 1
-        # some lines to slow down test
-        # TODO improve history sort order
-        And the field "disruptions.0.impacts.impacts.0.id" should be "7ffab234-3d49-4eea-aa2c-22f8680230b2"
-        And the field "disruptions.0.impacts.impacts.0.disruption.href" should contain "b750994c-01fe-11e4-b4fb-080027079ff5"
-        And the field "disruptions.0.impacts.impacts.0.created_at" should be "2014-04-04T23:53:13Z"
-        And the field "disruptions.0.impacts.impacts.0.updated_at" should be "2014-04-06T20:50:10Z"
-        And the field "disruptions.0.impacts.impacts.0.severity.id" should be "7ffab232-3d48-4eea-aa2c-22f8680230b6"
 
         When I delete to "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff5/impacts/7ffab234-3d49-4eea-aa2c-22f8680230b2" with:
         Then the status code should be "204"
