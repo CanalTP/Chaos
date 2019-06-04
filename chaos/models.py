@@ -2253,6 +2253,7 @@ class HistoryDisruption(db.Model):
     created_at = db.Column(db.DateTime(), default=get_current_time, nullable=False)
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     data = db.Column(db.Text, unique=False, nullable=False)
+    version = db.Column(db.Integer, nullable=False, default=1)
 
     def __repr__(self):
         return '<HistoryDisruption %r>' % self.id
@@ -2262,4 +2263,4 @@ class HistoryDisruption(db.Model):
 
     @classmethod
     def get_by_disruption_id(cls, disruption_id):
-        return cls.query.filter_by(disruption_id=disruption_id).order_by(desc(cls.created_at))
+        return cls.query.filter_by(disruption_id=disruption_id).order_by(desc(cls.created_at), desc(cls.version))

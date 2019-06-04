@@ -7,10 +7,11 @@ from aniso8601 import parse_datetime, parse_time, parse_date
 from chaos import db, models
 
 
-def save_in_database(disruption_id, disruption_json):
+def save_disruption(disruption, disruption_json):
     history_disruption = models.HistoryDisruption()
 
-    history_disruption.disruption_id = disruption_id
+    history_disruption.disruption_id = disruption.id
+    history_disruption.version = disruption.version
     history_disruption.data = disruption_json
     db.session.add(history_disruption)
     db.session.commit()
@@ -37,7 +38,7 @@ def save_disruption_in_history(data):
 
     clean_before_save_in_history(disruption)
     disruption['impacts'] = disruption['impacts']['impacts']
-    save_in_database(data.id, json.dumps(disruption))
+    save_disruption(data, json.dumps(disruption))
 
 
 def get_datetime_from_json_attr(json, attr):
