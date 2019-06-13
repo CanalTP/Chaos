@@ -488,7 +488,7 @@ Feature: Create disruption
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "[] is too short"
+        And the field "error.message" should be "impacts should not be empty"
 
 
     Scenario: Error when creating disruption with impact without objects
