@@ -158,6 +158,7 @@ class validate_client_token(object):
             return func(*args, **kwargs)
         return wrapper
 
+# To override the default validator message "[] is too short"
 class validate_send_notifications_and_notification_date(object):
     def __call__(self, func):
         @wraps(func)
@@ -173,6 +174,35 @@ class validate_send_notifications_and_notification_date(object):
                     ('notification_date' in impact and impact['notification_date'] is None):
                     return marshal(
                         {'error': {'message': "notification_date should not be empty if send_notifications is true"}},
+                        fields.error_fields
+                    ), 400
+            return func(*args, **kwargs)
+        return wrapper
+
+class validate_required_arrays(object):
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            json = request.get_json(silent=True)
+            impacts = []
+            if json and 'impacts' in json:
+                impacts = json['impacts']
+                if not impacts:
+                    return marshal(
+                        {'error': {'message': "impacts should not be empty"}},
+                        fields.error_fields
+                    ), 400
+            elif json and 'severity' in json:
+                impacts = [json]
+            for impact in impacts:
+                if ('objects' in impact) and not impact['objects']:
+                    return marshal(
+                        {'error': {'message': "objects should not be empty"}},
+                        fields.error_fields
+                    ), 400
+                elif ('application_periods' in impact) and not impact['application_periods']:
+                    return marshal(
+                        {'error': {'message': "application_periods should not be empty"}},
                         fields.error_fields
                     ), 400
             return func(*args, **kwargs)
