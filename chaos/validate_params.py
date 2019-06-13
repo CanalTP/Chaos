@@ -158,7 +158,6 @@ class validate_client_token(object):
             return func(*args, **kwargs)
         return wrapper
 
-# To override the default validator message "[] is too short"
 class validate_send_notifications_and_notification_date(object):
     def __call__(self, func):
         @wraps(func)
@@ -179,6 +178,7 @@ class validate_send_notifications_and_notification_date(object):
             return func(*args, **kwargs)
         return wrapper
 
+# To override the default validator message "[] is too short"
 class validate_required_arrays(object):
     def __call__(self, func):
         @wraps(func)
