@@ -29,7 +29,8 @@
 
 from functools import wraps
 from chaos.navitia import Navitia
-from utils import get_client_code, get_contributor_code, get_token, get_coverage, get_clients_tokens, client_token_is_allowed
+from utils import get_client_code, get_contributor_code, get_token,\
+    get_coverage, get_clients_tokens, client_token_is_allowed
 from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
 from flask import request, current_app
@@ -170,13 +171,14 @@ class validate_send_notifications_and_notification_date(object):
                 impacts = [json]
             for impact in impacts:
                 if ('send_notifications' in impact) and impact['send_notifications'] and \
-                    ('notification_date' in impact and impact['notification_date'] is None):
+                ('notification_date' in impact and impact['notification_date'] is None):
                     return marshal(
                         {'error': {'message': "notification_date should not be empty if send_notifications is true"}},
                         fields.error_fields
                     ), 400
             return func(*args, **kwargs)
         return wrapper
+
 
 # To override the default validator message "[] is too short"
 class validate_required_arrays(object):
@@ -185,6 +187,7 @@ class validate_required_arrays(object):
         def wrapper(*args, **kwargs):
             json = request.get_json(silent=True)
             impacts = []
+            # in a disruption
             if json and 'impacts' in json:
                 impacts = json['impacts']
                 if not impacts:
@@ -194,16 +197,16 @@ class validate_required_arrays(object):
                     ), 400
             elif json and 'severity' in json:
                 impacts = [json]
+
+            # in an impact
+            required_arrays_for_impact = ['objects', 'application_periods']
             for impact in impacts:
-                if ('objects' in impact) and not impact['objects']:
-                    return marshal(
-                        {'error': {'message': "objects should not be empty"}},
-                        fields.error_fields
-                    ), 400
-                elif ('application_periods' in impact) and not impact['application_periods']:
-                    return marshal(
-                        {'error': {'message': "application_periods should not be empty"}},
-                        fields.error_fields
-                    ), 400
+                for required_array in required_arrays_for_impact:  # type: str
+                    if (required_array in impact) and not impact[required_array]:
+                        return marshal(
+                            {'error': {'message': "{} should not be empty".format(required_array)}},
+                            fields.error_fields
+                        ), 400
+
             return func(*args, **kwargs)
         return wrapper
