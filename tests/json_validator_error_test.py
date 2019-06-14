@@ -19,7 +19,7 @@ def test_wording_is_empty_in_severity():
         validate({'wordings': []}, severity_input_format)
         assert False
     except ValidationError, e:
-        eq_(parse_error(e), "[] is too short", True)
+        eq_(parse_error(e), "wordings should not be empty", True)
 
 
 def test_wording_is_value_not_in__wordings_severity():
@@ -83,7 +83,7 @@ def test_channel_types_name_is_required_in_channel():
         validate({"name": "sms", "max_size": 500, "content_type": "text/type", "types": []}, channel_input_format)
         assert False
     except ValidationError, e:
-        eq_(parse_error(e), "[] is too short", True)
+        eq_(parse_error(e), "types should not be empty", True)
 
 
 def test_name_required_in_channel_types():
@@ -91,7 +91,7 @@ def test_name_required_in_channel_types():
         validate({"name": "sms", "max_size": 500, "content_type": "text/type", "types": []}, channel_input_format)
         assert False
     except ValidationError, e:
-        eq_(parse_error(e), "[] is too short", True)
+        eq_(parse_error(e), "types should not be empty", True)
 
 
 def test_reference_is_required_in_disruption():
@@ -214,7 +214,7 @@ def test_min_1_impact_is_required_in_disruption():
         validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": []}, disruptions_input_format)
         assert True
     except ValidationError, e:
-        eq_(parse_error(e), "[] is too short", True)
+        eq_(parse_error(e), "impacts should not be empty", True)
 
 def test_impact_format_is_checked_in_disruption():
     try:
