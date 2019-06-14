@@ -184,3 +184,12 @@ Feature: Create severity
         And the field "severity.color" should be "#123456"
         And the field "severity.priority" should be "9"
         And the field "severity.effect" should be "stop_moved"
+
+    Scenario: We cannot create a severity with empty wording
+        When I post to "/severities" with:
+        """
+        {"wordings": [], "color": "#123456", "priority": 9, "effect": "stop_moved"}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "wordings should not be empty"

@@ -76,7 +76,7 @@ Feature: update severity
         """
         Then the status code should be "404"
 
-    Scenario: a severity must have a wording
+    Scenario: a severity must have a wording and it should not be empty
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
@@ -91,6 +91,15 @@ Feature: update severity
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
+
+        I fill in header "X-Customer-Id" with "5"
+        When I put to "/severities/7ffab230-3d48-4eea-aa2c-22f8680230b6" with:
+        """
+        {"wordings": [], "color": "foo"}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "wordings should not be empty"
 
     Scenario: I can update the wording of a severity
         Given I have the following clients in my database:

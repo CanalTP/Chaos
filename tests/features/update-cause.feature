@@ -88,6 +88,14 @@ Feature: update cause
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
 
+        When I put to "/causes/7ffab230-3d48-4eea-aa2c-22f8680230b6" with:
+        """
+        {"wordings":[]}
+        """
+        Then the status code should be "400"
+        And the header "Content-Type" should be "application/json"
+        And the field "error.message" should be "wordings should not be empty"
+
     Scenario: I can update the wording of a cause
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
