@@ -29,7 +29,7 @@ Feature: Create cause
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "[] is too short"
+        And the field "error.message" should be "wordings should not be empty"
 
     Scenario: creation of cause
         Given I have the following clients in my database:
