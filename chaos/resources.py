@@ -50,7 +50,7 @@ import logging
 from utils import make_pager, option_value, get_current_time, add_notification_date_on_impacts
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token, validate_send_notifications_and_notification_date, \
-    validate_required_arrays
+    validate_required_list_of_impact
 from collections import OrderedDict
 from aniso8601 import parse_datetime
 from history import save_disruption_in_history, create_disruption_from_json
@@ -301,7 +301,7 @@ class Disruptions(flask_restful.Resource):
     @manage_navitia_error()
     @validate_client_token()
     @validate_send_notifications_and_notification_date()
-    @validate_required_arrays()
+    @validate_required_list_of_impact()
     def post(self, client, navitia):
         self.navitia = navitia
         json = request.get_json(silent=True)
@@ -379,7 +379,7 @@ class Disruptions(flask_restful.Resource):
     @validate_id(True)
     @validate_client_token()
     @validate_send_notifications_and_notification_date()
-    @validate_required_arrays()
+    @validate_required_list_of_impact()
     def put(self, client, contributor, navitia, id):
         self.navitia = navitia
         disruption = models.Disruption.get(id, contributor.id)
@@ -1520,7 +1520,7 @@ class Impacts(flask_restful.Resource):
     @validate_navitia()
     @manage_navitia_error()
     @validate_send_notifications_and_notification_date()
-    @validate_required_arrays()
+    @validate_required_list_of_impact()
     def post(self, client, contributor, navitia, disruption_id):
         self.navitia = navitia
         if not id_format.match(disruption_id):
@@ -1573,7 +1573,7 @@ class Impacts(flask_restful.Resource):
     @manage_navitia_error()
     @validate_id(True)
     @validate_send_notifications_and_notification_date()
-    @validate_required_arrays()
+    @validate_required_list_of_impact()
     def put(self, client, contributor, navitia, disruption_id, id):
         self.navitia = navitia
         json = request.get_json(silent=True)

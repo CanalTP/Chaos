@@ -181,7 +181,7 @@ class validate_send_notifications_and_notification_date(object):
 
 
 # To override the default validator message "[] is too short"
-class validate_required_arrays(object):
+class validate_required_list_of_impact(object):
     def __call__(self, func):
         @wraps(func)
         def wrapper(*args, **kwargs):
