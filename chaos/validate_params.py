@@ -29,7 +29,7 @@
 
 from functools import wraps
 from chaos.navitia import Navitia
-from utils import get_client_code, get_contributor_code, get_token,\
+from utils import get_client_code, get_contributor_code, get_token, \
     get_coverage, get_clients_tokens, client_token_is_allowed
 from chaos import exceptions, models, utils, fields
 from flask_restful import marshal
@@ -187,18 +187,19 @@ class validate_required_arrays(object):
         def wrapper(*args, **kwargs):
             json = request.get_json(silent=True)
             impacts = []
-            # in a disruption
-            if json and 'impacts' in json:
+
+            # in disruption
+            if json and 'impacts' in json:  # json is disruption
                 impacts = json['impacts']
                 if not impacts:
                     return marshal(
                         {'error': {'message': "impacts should not be empty"}},
                         fields.error_fields
                     ), 400
-            elif json and 'severity' in json:
+            elif json and 'severity' in json:  # json is impact
                 impacts = [json]
 
-            # in an impact
+            # in each impact
             required_arrays_for_impact = ['objects', 'application_periods']
             for impact in impacts:
                 for required_array in required_arrays_for_impact:  # type: str
