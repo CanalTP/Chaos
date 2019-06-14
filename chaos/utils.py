@@ -338,7 +338,12 @@ def group_impacts_by_pt_object(impacts, object_type, uris, get_pt_object):
 def parse_error(error):
     to_return = None
     try:
-        to_return = error.message
+        if (isinstance(error, ValidationError) and error.validator ==
+                'minItems' and error.validator_value == 1):
+            error.schema_path.rotate(1)
+            to_return = '{} should not be empty'.format(error.schema_path.pop())
+        else:
+            to_return = error.message
     except AttributeError:
         to_return = str(error).replace("\n", " ")
     return to_return.decode('utf-8')
