@@ -187,27 +187,34 @@ class validate_impact_lists(object):
         def wrapper(*args, **kwargs):
             json = request.get_json(silent=True)
             impacts = []
-
-            # in disruption
-            if json and 'impacts' in json:  # json is disruption
+            if json and 'impacts' in json:
                 impacts = json['impacts']
                 if not impacts:
                     return marshal(
                         {'error': {'message': "impacts should not be empty"}},
                         fields.error_fields
                     ), 400
-            elif json and 'severity' in json:  # json is impact
+            elif json and 'severity' in json:
                 impacts = [json]
-
-            # in each impact
-            required_arrays_for_impact = ['objects', 'application_periods']
             for impact in impacts:
-                for required_array in required_arrays_for_impact:  # type: str
-                    if (required_array in impact) and not impact[required_array]:
-                        return marshal(
-                            {'error': {'message': "{} should not be empty".format(required_array)}},
-                            fields.error_fields
-                        ), 400
-
+                if ('objects' in impact) and not impact['objects']:
+                    return marshal(
+                        {'error': {'message': "objects should not be empty"}},
+                        fields.error_fields
+                    ), 400
+                elif ('application_periods' in impact) and not impact['application_periods']\
+                        and ('application_period_patterns' not in impact
+                             or not impact['application_period_patterns']):
+                    return marshal(
+                        {'error': {'message': "application_periods should not be empty"}},
+                        fields.error_fields
+                    ), 400
+                elif ('application_period_patterns' in impact) and not impact['application_period_patterns']\
+                        and 'application_periods' not in impact:
+                    return marshal(
+                        {'error': {'message': "application_period_patterns should not be empty"}},
+                        fields.error_fields
+                    ), 400
             return func(*args, **kwargs)
+
         return wrapper
