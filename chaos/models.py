@@ -497,6 +497,19 @@ class Disruption(TimestampMixin, db.Model):
         ).first_or_404()
 
     @classmethod
+    def get_with_impacts(cls, id, contributor_id):
+        query = cls.query.filter(
+            (cls.id == id) and
+            (cls.contributor == contributor_id) and
+            (cls.status != 'archived')
+        )
+        disruption = query.first_or_404()
+        query_impact = Impact.all_for_disruption(id, contributor_id)
+        impacts = query_impact.all()
+        disruption.impacts = impacts
+        return disruption
+
+    @classmethod
     def get_query_with_args(
             cls,
             contributor_id,
@@ -1360,6 +1373,14 @@ class Impact(TimestampMixin, db.Model):
         alias = aliased(Severity)
         query = cls.query.filter_by(status='published')
         query = query.filter(and_(cls.disruption_id == disruption_id))
+        query = query.join(Disruption)
+        query = query.filter(Disruption.contributor_id == contributor_id)
+        return query.join(alias, Impact.severity).order_by(alias.priority)
+
+    @classmethod
+    def all_for_disruption(cls, disruption_id, contributor_id):
+        alias = aliased(Severity)
+        query = cls.query.filter(and_(cls.disruption_id == disruption_id))
         query = query.join(Disruption)
         query = query.filter(Disruption.contributor_id == contributor_id)
         return query.join(alias, Impact.severity).order_by(alias.priority)
