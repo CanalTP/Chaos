@@ -450,20 +450,24 @@ this disruption to Navitia. Please try again.'}}, error_fields), 503
     @validate_client_token()
     def delete(self, client, contributor, id):
 
-        disruptionForHistory = models.Disruption.get_with_impacts(id, contributor.id)
-        save_disruption_in_history(disruptionForHistory)
-        #return marshal({'error': {'message': disruptionForHistory.impacts}}, error_fields), 503
-
-
-
         disruption = models.Disruption.get(id, contributor.id)
         disruption.upgrade_version()
         disruption.archive()
+
+        if chaos.utils.send_disruption_to_navitia(disruption):
+            db.session.commit()
+            db.session.refresh(disruption)
+            save_disruption_in_history(disruption)
+            return None, 204
+
         try:
             if chaos.utils.send_disruption_to_navitia(disruption):
                 db.session.commit()
                 db.session.refresh(disruption)
 
+                disruption.impacts = impactsForHistory
+                #return marshal({'error': {'message': disruption.impacts}}, error_fields), 503
+                save_disruption_in_history(disruption)
                 return None, 204
             else:
                 db.session.rollback()

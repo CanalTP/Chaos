@@ -85,6 +85,21 @@ class CustomImpacts(fields.Raw):
                                        )
         }, display_null=False)
 
+class CustomImpactsForHistory(fields.Raw):
+    def output(self, key, val):
+        val.impacts = [impact for impact in val.impacts if impact.status in ['published', 'archived']]
+
+        return marshal(val, {
+            'pagination': FieldPaginateImpacts(attribute='impacts'),
+            'impacts': PaginateObjects(
+                                        fields.Nested(
+                                            impact_fields,
+                                            display_null=False,
+                                            attribute='impacts'
+                                            )
+                                       )
+        }, display_null=False)
+
 
 class FieldPaginateImpacts(fields.Raw):
     '''
@@ -742,6 +757,28 @@ disruption_fields = {
     'publication_status': fields.Raw,
     'contributor': FieldContributor,
     'impacts': CustomImpacts(),
+    'localization': FieldLocalization(attribute='localizations'),
+    'cause': fields.Nested(cause_fields, allow_null=True),
+    'tags': fields.List(fields.Nested(tag_fields)),
+    'properties': FieldAssociatedProperties(attribute='properties')
+}
+
+disruption_fields_for_history = {
+    'id': fields.Raw,
+    'self': {'href': fields.Url('disruption', absolute=True)},
+    'reference': fields.Raw,
+    'note': fields.Raw,
+    'status': fields.Raw,
+    'version': fields.Raw,
+    'created_at': FieldDateTime,
+    'updated_at': FieldDateTime,
+    'publication_period': {
+        'begin': FieldDateTime(attribute='start_publication_date'),
+        'end': FieldDateTime(attribute='end_publication_date')
+    },
+    'publication_status': fields.Raw,
+    'contributor': FieldContributor,
+    'impacts': CustomImpactsForHistory(),
     'localization': FieldLocalization(attribute='localizations'),
     'cause': fields.Nested(cause_fields, allow_null=True),
     'tags': fields.List(fields.Nested(tag_fields)),

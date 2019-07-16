@@ -2,7 +2,7 @@ import json
 
 from flask_restful import marshal
 from flask import g
-from fields import disruption_fields
+from fields import disruption_fields_for_history
 from aniso8601 import parse_datetime, parse_time, parse_date
 from chaos import db, models, mapper
 
@@ -32,7 +32,7 @@ def clean_before_save_in_history(disruption):
 def save_disruption_in_history(data):
     old_display_impacts = g.get('display_impacts')
     g.display_impacts = True
-    disruption = marshal(data, disruption_fields)
+    disruption = marshal(data, disruption_fields_for_history)
     g.display_impacts = old_display_impacts
 
     clean_before_save_in_history(disruption)
