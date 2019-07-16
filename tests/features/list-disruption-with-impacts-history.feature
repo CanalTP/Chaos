@@ -89,7 +89,7 @@ Feature: disruption with impacts history
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "disruptions" should have a size of 1
-        And the field "disruptions.0.impacts.impacts" should have a size of 1
+        And the field "disruptions.0.impacts.impacts" should have a size of 2
 
         When I delete "/disruptions/b750994c-01fe-11e4-b4fb-080027079ff5/impacts/7ffab234-3d49-4eea-aa2c-22f8680230b2" with:
         Then the status code should be "204"
