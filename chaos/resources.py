@@ -54,7 +54,6 @@ from chaos.validate_params import validate_client, validate_contributor, validat
 from collections import OrderedDict
 from aniso8601 import parse_datetime
 from history import save_disruption_in_history, create_disruption_from_json
-import sys
 
 __all__ = ['Disruptions', 'Index', 'Severity', 'Cause']
 
