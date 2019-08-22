@@ -56,25 +56,25 @@ def make_pager(resultset, endpoint, **kwargs):
     if endpoint:
         if resultset.has_prev:
             prev_link = url_for(endpoint,
-                                start_page=resultset.prev_num,
                                 items_per_page=resultset.per_page,
+                                start_page=resultset.prev_num,
                                 _external=True, **kwargs)
 
         if resultset.has_next:
             next_link = url_for(endpoint,
-                                start_page=resultset.next_num,
                                 items_per_page=resultset.per_page,
+                                start_page=resultset.next_num,
                                 _external=True, **kwargs)
 
         if resultset.total > 0:
             last_link = url_for(endpoint,
-                                start_page=resultset.pages,
                                 items_per_page=resultset.per_page,
+                                start_page=resultset.pages,
                                 _external=True, **kwargs)
             first_link = url_for(endpoint,
-                                 start_page=1,
-                                 items_per_page=resultset.per_page,
-                                 _external=True, **kwargs)
+                                items_per_page=resultset.per_page,
+                                start_page=1,
+                                _external=True, **kwargs)
 
     result = {}
     result["pagination"] = {
@@ -102,19 +102,19 @@ def make_fake_pager(resultcount, per_page, endpoint, **kwargs):
 
     if resultcount > per_page:
         next_link = url_for(endpoint,
-                            start_page=2,
                             items_per_page=per_page,
+                            start_page=2,
                             _external=True, **kwargs)
 
     if resultcount > 0:
         last_link = url_for(endpoint,
-                            start_page=int(ceil(float(resultcount) / per_page)),
                             items_per_page=per_page,
+                            start_page=int(ceil(float(resultcount) / per_page)),
                             _external=True, **kwargs)
         first_link = url_for(endpoint,
-                             start_page=1,
-                             items_per_page=per_page,
-                             _external=True, **kwargs)
+                            items_per_page=per_page,
+                            start_page=1,
+                            _external=True, **kwargs)
 
     result = {
         "pagination": {
