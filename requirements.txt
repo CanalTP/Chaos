@@ -33,5 +33,5 @@ six==1.11.0
 SQLAlchemy==0.9.7
 sure==1.2.7
 vine==1.1.4
-Werkzeug==0.14
+Werkzeug==0.15.4
 unicodecsv==0.14.1
