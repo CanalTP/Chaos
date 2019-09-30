@@ -917,7 +917,7 @@ def sanitize_csv_data(val):
     :param val: mixed
     :return: mixed
     """
-    if isinstance(val, basestring):
+    if isinstance(val, str):
         val = val.replace('\n', ' ').replace('\r', '')
 
     return val

@@ -484,6 +484,7 @@ class ImpactsSearch(flask_restful.Resource):
     @validate_client_token()
     @validate_pagination()
     def post(self, contributor, navitia):
+        logging.info('Begin post')
         self.navitia = navitia
         args = self.parsers['post'].parse_args()
 

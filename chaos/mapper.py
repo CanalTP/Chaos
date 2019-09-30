@@ -90,7 +90,7 @@ class OptionalField(object):
 
 
 def fill_from_json(item, json, fields):
-    for field, formater in fields.iteritems():
+    for field, formater in fields.items():
         if isinstance(formater, OptionalField):
             formater(item, field, json)
         else:

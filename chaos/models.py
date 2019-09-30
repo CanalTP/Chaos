@@ -607,7 +607,7 @@ class Disruption(TimestampMixin, db.Model):
         if uri_is_not_in_pt_object_filter(uri=uri, pt_object_filter=ptObjectFilter):
             return cls.query.filter('1=0')
         if ptObjectFilter is not None:
-            for key, objectIds in ptObjectFilter.iteritems():
+            for key, objectIds in ptObjectFilter.items():
                 object_type = key[:-1]
                 object_types.append(object_type)
                 uris = uris + objectIds
@@ -700,7 +700,7 @@ class Disruption(TimestampMixin, db.Model):
         vars['cause_is_visisble'] = True
         bindparams['cause_is_visisble'] = db.Boolean
 
-        if isinstance(uri, basestring) and uri:
+        if isinstance(uri, str) and uri:
             uri_filters = []
             uri_filters.append('po.uri = :uri')
             bindparams['uri'] = db.String
@@ -716,7 +716,7 @@ class Disruption(TimestampMixin, db.Model):
             uri_filters = []
             uri_filters.append('po.uri IN :pt_objects_uris')
             bindparams['pt_objects_uris'] = db.String
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.values() for id in ids])
 
             if line_section and 'lines' in ptObjectFilter:
                 uri_filters.append('(po.type = :po_type_line_section AND po_line.uri IN :po_line_section_lines)')
@@ -726,7 +726,7 @@ class Disruption(TimestampMixin, db.Model):
                 vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
             andwheres.append('(' + ' OR '.join(uri_filters) + ')')
 
-        if isinstance(cause_category_id, basestring) and cause_category_id:
+        if isinstance(cause_category_id, str) and cause_category_id:
             andwheres.append('c.category_id = :cause_category_id')
             bindparams['cause_category_id'] = db.String
             vars['cause_category_id'] = cause_category_id
@@ -895,7 +895,7 @@ class Disruption(TimestampMixin, db.Model):
 
         stmt = text(query)
 
-        for param_name, param_type in query_parts['bindparams'].iteritems():
+        for param_name, param_type in query_parts['bindparams'].items():
             stmt = stmt.bindparams(bindparam(param_name, type_=param_type))
 
         result = db.engine.execute(stmt, query_parts['vars']).fetchone()
@@ -947,7 +947,7 @@ class Disruption(TimestampMixin, db.Model):
 
         stmt = text(query)
 
-        for param_name, param_type in query_parts['bindparams'].iteritems():
+        for param_name, param_type in query_parts['bindparams'].items():
             stmt = stmt.bindparams(bindparam(param_name, type_=param_type))
 
         stmt = stmt.bindparams(bindparam('limit', type_=db.Integer),
@@ -1447,7 +1447,7 @@ class Impact(TimestampMixin, db.Model):
             uri_filters = []
             uri_filters.append('po.uri IN :pt_objects_uris')
             bindparams['pt_objects_uris'] = db.String
-            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.itervalues() for id in ids])
+            vars['pt_objects_uris'] = tuple([id for ids in ptObjectFilter.values() for id in ids])
 
             if 'lines' in ptObjectFilter:
                 uri_filters.append('(po.type = :po_type_line_section AND po_line.uri IN :po_line_section_lines)')
@@ -1457,7 +1457,7 @@ class Impact(TimestampMixin, db.Model):
                 vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
             andwheres.append('(' + ' OR '.join(uri_filters) + ')')
 
-        if isinstance(cause_category_id, basestring) and cause_category_id:
+        if isinstance(cause_category_id, str) and cause_category_id:
             andwheres.append('c.category_id = :cause_category_id')
             bindparams['cause_category_id'] = db.String
             vars['cause_category_id'] = cause_category_id
@@ -1577,7 +1577,7 @@ class Impact(TimestampMixin, db.Model):
 
         stmt = text(query)
 
-        for param_name, param_type in query_parts['bindparams'].iteritems():
+        for param_name, param_type in query_parts['bindparams'].items():
             stmt = stmt.bindparams(bindparam(param_name, type_=param_type))
 
         result = db.engine.execute(stmt, query_parts['vars']).fetchone()
@@ -1616,7 +1616,7 @@ class Impact(TimestampMixin, db.Model):
 
         stmt = text(query)
 
-        for param_name, param_type in query_parts['bindparams'].iteritems():
+        for param_name, param_type in query_parts['bindparams'].items():
             stmt = stmt.bindparams(bindparam(param_name, type_=param_type))
 
         stmt = stmt.bindparams(bindparam('limit', type_=db.Integer),
