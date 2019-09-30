@@ -19,7 +19,7 @@ def save_in_database(disruption_id, disruption_json):
 def clean_before_save_in_history(disruption):
     if not isinstance(disruption, dict):
         return
-    for key in disruption.keys():
+    for key in disruption.copy():
         if key in ['self', 'href', 'pagination']:
             disruption.pop(key)
         elif isinstance(disruption[key], dict):

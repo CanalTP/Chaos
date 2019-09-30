@@ -346,7 +346,7 @@ def parse_error(error):
             to_return = error.message
     except AttributeError:
         to_return = str(error).replace("\n", " ")
-    return to_return.decode('utf-8')
+    return to_return
 
 
 def get_uuid(value, name):

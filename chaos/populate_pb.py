@@ -111,7 +111,7 @@ def populate_channel(channel_pb, channel):
     channel_pb.id = channel.id
     channel_pb.name = channel.name
     channel_pb.content_type = channel.content_type
-    channel_pb.max_size = long(channel.max_size)
+    channel_pb.max_size = int(channel.max_size)
     created_upated_at(channel, channel_pb)
     populate_channel_type(channel, channel_pb)
 
@@ -141,7 +141,7 @@ def populate_pt_objects(impact, impact_pb):
         if pt_object.type == 'line_section':
             if hasattr(pt_object.line_section, 'sens'):
                 if pt_object.line_section.sens:
-                    informed_entitie.pt_line_section.sens = long(pt_object.line_section.sens)
+                    informed_entitie.pt_line_section.sens = int(pt_object.line_section.sens)
             populate_informed_entitie(pt_object.line_section.line, informed_entitie.pt_line_section.line)
             populate_informed_entitie(pt_object.line_section.start_point, informed_entitie.pt_line_section.start_point)
             populate_informed_entitie(pt_object.line_section.end_point, informed_entitie.pt_line_section.end_point)
