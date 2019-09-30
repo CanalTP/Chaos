@@ -36,6 +36,10 @@ from chaos import models, db, publisher
 from jsonschema import validate, ValidationError
 from chaos.fields import *
 from chaos.formats import *
+from chaos.formats import impact_input_format, channel_input_format, pt_object_type_values,\
+    tag_input_format, category_input_format, channel_type_values,\
+    property_input_format, disruptions_search_input_format, application_status_values, \
+    impacts_search_input_format, export_input_format
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -1197,7 +1201,7 @@ class Cause(flask_restful.Resource):
             response = {'cause': models.Cause.get(id, client.id, category_id)}
             return marshal(response, one_cause_fields)
         else:
-            response = {'causes': models.Cause.all(client.id, category_id), 'meta': {}}
+            response = {'causes': models.Cause.all(str(client.id), category_id), 'meta': {}}
             return marshal(response, causes_fields)
 
     @validate_client(True)
