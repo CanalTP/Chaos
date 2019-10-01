@@ -484,7 +484,6 @@ class ImpactsSearch(flask_restful.Resource):
     @validate_client_token()
     @validate_pagination()
     def post(self, contributor, navitia):
-        logging.info('Begin post')
         self.navitia = navitia
         args = self.parsers['post'].parse_args()
 
@@ -539,34 +538,34 @@ class ImpactsSearch(flask_restful.Resource):
         line_section_routes = {}
 
         for r in results:
-            disruptionId = r.id
-            wordingId = r.cause_wording_id
-            impact_id = r.impact_id
-            severity_id = r.severity_id
-            severity_wording_id = r.severity_wording_id
-            impact_pt_object_id = r.pt_object_id
-            application_period_id = r.application_period_id
-            message_id = r.message_id
-            channel_id = r.channel_id
-            channel_type_id = r.channel_type_id
-            message_meta_id = r.meta_id
-            application_period_patterns_id = r.pattern_id
-            time_slot_id = r.time_slot_id
-            line_section_id = r.line_section_id
+            disruptionId = str(r.id)
+            wordingId = str(r.cause_wording_id)
+            impact_id = str(r.impact_id)
+            severity_id = str(r.severity_id)
+            severity_wording_id = str(r.severity_wording_id)
+            impact_pt_object_id = str(r.pt_object_id)
+            application_period_id = str(r.application_period_id)
+            message_id = str(r.message_id)
+            channel_id = str(r.channel_id)
+            channel_type_id = str(r.channel_type_id)
+            message_meta_id = str(r.meta_id)
+            application_period_patterns_id = str(r.pattern_id)
+            time_slot_id = str(r.time_slot_id)
+            line_section_id = str(r.line_section_id)
 
             if impact_id is not None:
                 impacts[impact_id] = {
-                    'id': r.impact_id,
-                    'disruption_id': r.id,
+                    'id': str(r.impact_id),
+                    'disruption_id': str(r.id),
                     'disruption': {
-                        'id': r.id,
+                        'id': str(r.id),
                         'cause': {
-                            'id': r.cause_id,
+                            'id': str(r.cause_id),
                             'created_at': r.cause_created_at,
                             'updated_at': r.cause_updated_at,
                             'wordings': [],
                             'category': {
-                                'id': r.cause_category_id,
+                                'id': str(r.cause_category_id),
                                 'name': r.cause_category_name,
                                 'created_at': r.cause_category_created_at,
                                 'updated_at': r.cause_category_updated_at
@@ -587,8 +586,8 @@ class ImpactsSearch(flask_restful.Resource):
                 }
 
                 impacts[impact_id]['severity'] = {
-                    'id': r.severity_id,
-                    'client_id': r.severity_client_id,
+                    'id': str(r.severity_id),
+                    'client_id': str(r.severity_client_id),
                     'effect': r.severity_effect,
                     'priority': r.severity_priority,
                     'is_visible': r.severity_is_visible,
@@ -602,7 +601,7 @@ class ImpactsSearch(flask_restful.Resource):
                 application_period_patterns[impact_id] = {}
             if application_period_patterns_id is not None:
                 application_period_patterns[impact_id][application_period_patterns_id] = {
-                    'id': r.pattern_id,
+                    'id': str(r.pattern_id),
                     'start_date': r.pattern_start_date,
                     'end_date': r.pattern_end_date,
                     'weekly_pattern': r.pattern_weekly_pattern
@@ -631,13 +630,13 @@ class ImpactsSearch(flask_restful.Resource):
 
             if message_id is not None:
                 messages[impact_id][message_id] = {
-                    'id': r.message_id,
+                    'id': str(r.message_id),
                     'created_at': r.message_created_at,
                     'updated_at': r.message_updated_at,
                     'text': r.message_text,
                     'meta': [],
                     'channel': {
-                        'id': channel_id,
+                        'id': str(channel_id),
                         'content_type': r.channel_content_type,
                         'created_at': r.channel_created_at,
                         'updated_at': r.channel_updated_at,
@@ -676,7 +675,7 @@ class ImpactsSearch(flask_restful.Resource):
                 impact_pt_objects[impact_id] = {}
             if  impact_pt_object_id is not None:
                 impact_pt_objects[impact_id][impact_pt_object_id] = {
-                    'id': r.pt_object_id,
+                    'id': str(r.pt_object_id),
                     'uri': r.pt_object_uri,
                     'type': r.pt_object_type,
                 }
@@ -724,32 +723,32 @@ class ImpactsSearch(flask_restful.Resource):
 
         for impact in impacts.values():
             impact_id = impact['id']
-            impact['disruption']['cause']['wordings'] = cause_wordings[impact_id].values()
-            impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
-            impact['objects'] = impact_pt_objects[impact_id].values()
-            impact['application_periods'] = application_periods[impact_id].values()
-            impact['messages'] = messages[impact_id].values()
-            impact['patterns'] = application_period_patterns[impact_id].values()
+            impact['disruption']['cause']['wordings'] = list(cause_wordings[impact_id].values())
+            impact['severity']['wordings'] = list(severity_wordings[impact['severity']['id']].values())
+            impact['objects'] = list(impact_pt_objects[impact_id].values())
+            impact['application_periods'] = list(application_periods[impact_id].values())
+            impact['messages'] = list(messages[impact_id].values())
+            impact['patterns'] = list(application_period_patterns[impact_id].values())
 
             for message in impact['messages']:
                 channel_id = message['channel']['id']
                 message_id = message['id']
-                message['channel']['channel_types'] = channel_types[channel_id].values()
-                message['meta'] = message_metas[message_id].values()
+                message['channel']['channel_types'] = list(channel_types[channel_id].values())
+                message['meta'] = list(message_metas[message_id].values())
             for application_period_pattern in impact['patterns']:
                 application_period_pattern_id = application_period_pattern['id']
-                application_period_pattern['time_slots'] = time_slots[application_period_pattern_id].values()
+                application_period_pattern['time_slots'] = list(time_slots[application_period_pattern_id].values())
             for pt_object in impact['objects']:
                 impact_pt_object_id = pt_object['id']
                 if impact_pt_object_id in line_section_via:
-                    pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
+                    pt_object['line_section']['via'] = list(line_section_via[impact_pt_object_id].values())
                 if impact_pt_object_id in line_section_routes:
-                    pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
+                    pt_object['line_section']['routes'] = list(line_section_routes[impact_pt_object_id].values())
                 if impact_pt_object_id in line_section_metas:
-                    pt_object['line_section']['wordings'] = line_section_metas[impact_pt_object_id].values()
+                    pt_object['line_section']['wordings'] = list(line_section_metas[impact_pt_object_id].values())
 
-        rawData = {'impacts': impacts.values(), 'meta': self.createPager(
-            resultset = impacts.values(),
+        rawData = {'impacts': list(impacts.values()), 'meta': self.createPager(
+            resultset = list(impacts.values()),
             current_page=args['start_page'],
             per_page = args['items_per_page'],
             total_results_count = total_results_count,
@@ -874,39 +873,39 @@ class DisruptionsSearch(flask_restful.Resource):
         line_section_routes = {}
 
         for r in results:
-            disruptionId = r.id
-            tagId = r.tag_id
-            wordingId = r.cause_wording_id
-            property_id = r.property_id
-            localization_id = r.localization_id
-            impact_id = r.impact_id
-            severity_id = r.severity_id
-            severity_wording_id = r.severity_wording_id
-            impact_pt_object_id = r.pt_object_id
-            application_period_id = r.application_period_id
-            message_id = r.message_id
-            channel_id = r.channel_id
-            channel_type_id = r.channel_type_id
-            message_meta_id = r.meta_id
-            application_period_patterns_id = r.pattern_id
-            time_slot_id = r.time_slot_id
-            line_section_id = r.line_section_id
+            disruptionId = str(r.id)
+            tagId = str(r.tag_id)
+            wordingId = str(r.cause_wording_id)
+            property_id = str(r.property_id)
+            localization_id = str(r.localization_id)
+            impact_id = str(r.impact_id)
+            severity_id = str(r.severity_id)
+            severity_wording_id = str(r.severity_wording_id)
+            impact_pt_object_id = str(r.pt_object_id)
+            application_period_id = str(r.application_period_id)
+            message_id = str(r.message_id)
+            channel_id = str(r.channel_id)
+            channel_type_id = str(r.channel_type_id)
+            message_meta_id = str(r.meta_id)
+            application_period_patterns_id = str(r.pattern_id)
+            time_slot_id = str(r.time_slot_id)
+            line_section_id = str(r.line_section_id)
 
 
             if disruptionId not in impacts:
                 impacts[disruptionId] = {}
             if impact_id is not None:
                 impacts[disruptionId][impact_id] = {
-                    'id': r.impact_id,
-                    'disruption_id': r.id,
+                    'id': str(r.impact_id),
+                    'disruption_id': str(r.id),
                     'created_at': r.impact_created_at,
                     'updated_at': r.impact_updated_at,
                     'send_notifications': r.impact_send_notifications,
                     'notification_date': r.impact_notification_date
                 }
                 impacts[disruptionId][impact_id]['severity'] = {
-                    'id': r.severity_id,
-                    'client_id': r.severity_client_id,
+                    'id': str(r.severity_id),
+                    'client_id': str(r.severity_client_id),
                     'effect': r.severity_effect,
                     'priority': r.severity_priority,
                     'is_visible': r.severity_is_visible,
@@ -920,7 +919,7 @@ class DisruptionsSearch(flask_restful.Resource):
                 application_period_patterns[impact_id] = {}
             if application_period_patterns_id is not None:
                 application_period_patterns[impact_id][application_period_patterns_id] = {
-                    'id': r.pattern_id,
+                    'id': str(r.pattern_id),
                     'start_date': r.pattern_start_date,
                     'end_date': r.pattern_end_date,
                     'weekly_pattern': r.pattern_weekly_pattern
@@ -949,7 +948,7 @@ class DisruptionsSearch(flask_restful.Resource):
 
             if message_id is not None:
                 messages[impact_id][message_id] = {
-                    'id': r.message_id,
+                    'id': str(r.message_id),
                     'created_at': r.message_created_at,
                     'updated_at': r.message_updated_at,
                     'text': r.message_text,
@@ -994,7 +993,7 @@ class DisruptionsSearch(flask_restful.Resource):
                 impact_pt_objects[impact_id] = {}
             if  impact_pt_object_id is not None:
                 impact_pt_objects[impact_id][impact_pt_object_id] = {
-                    'id': r.pt_object_id,
+                    'id': str(r.pt_object_id),
                     'uri': r.pt_object_uri,
                     'type': r.pt_object_type,
                 }
@@ -1052,7 +1051,7 @@ class DisruptionsSearch(flask_restful.Resource):
                 properties[disruptionId] = {}
             if property_id is not None:
                 properties[disruptionId][property_id] = {
-                    'id' : r.property_id,
+                    'id' : str(r.property_id),
                     'key' : r.property_key,
                     'type' : r.property_type,
                     'value' : r.property_value,
@@ -1094,12 +1093,12 @@ class DisruptionsSearch(flask_restful.Resource):
                         'contributor_code' : r.contributor_code
                     },
                     'cause': {
-                        'id': r.cause_id,
+                        'id': str(r.cause_id),
                         'created_at': r.cause_created_at,
                         'updated_at': r.cause_updated_at,
                         'wordings': [],
                         'category': {
-                            'id': r.cause_category_id,
+                            'id': str(r.cause_category_id),
                             'name': r.cause_category_name,
                             'created_at': r.cause_category_created_at,
                             'updated_at': r.cause_category_updated_at
@@ -1115,38 +1114,38 @@ class DisruptionsSearch(flask_restful.Resource):
 
         for disruption in disruptions.values():
             disruptionId = disruption['id']
-            disruption['tags'] = tags[disruptionId].values()
-            disruption['cause']['wordings'] = cause_wordings[disruptionId].values()
-            disruption['properties'] = properties[disruptionId].values()
-            disruption['localizations'] = localizations[disruptionId].values()
-            disruption['impacts'] = impacts[disruptionId].values()
+            disruption['tags'] = list(tags[disruptionId].values())
+            disruption['cause']['wordings'] = list(cause_wordings[disruptionId].values())
+            disruption['properties'] = list(properties[disruptionId].values())
+            disruption['localizations'] = list(localizations[disruptionId].values())
+            disruption['impacts'] = list(impacts[disruptionId].values())
             for impact in disruption['impacts']:
                 impact_id = impact['id']
-                impact['severity']['wordings'] = severity_wordings[impact['severity']['id']].values()
-                impact['objects'] = impact_pt_objects[impact_id].values()
-                impact['application_periods'] = application_periods[impact_id].values()
-                impact['messages'] = messages[impact_id].values()
-                impact['patterns'] = application_period_patterns[impact_id].values()
+                impact['severity']['wordings'] = list(severity_wordings[impact['severity']['id']].values())
+                impact['objects'] = list(impact_pt_objects[impact_id].values())
+                impact['application_periods'] = list(application_periods[impact_id].values())
+                impact['messages'] = list(messages[impact_id].values())
+                impact['patterns'] = list(application_period_patterns[impact_id].values())
 
                 for message in impact['messages']:
                     channel_id = message['channel']['id']
                     message_id = message['id']
-                    message['channel']['channel_types'] = channel_types[channel_id].values()
-                    message['meta'] = message_metas[message_id].values()
+                    message['channel']['channel_types'] = list(channel_types[channel_id].values())
+                    message['meta'] = list(message_metas[message_id].values())
                 for application_period_pattern in impact['patterns']:
                     application_period_pattern_id = application_period_pattern['id']
-                    application_period_pattern['time_slots'] = time_slots[application_period_pattern_id].values()
+                    application_period_pattern['time_slots'] = list(time_slots[application_period_pattern_id].values())
                 for pt_object in impact['objects']:
                     impact_pt_object_id = pt_object['id']
                     if impact_pt_object_id in line_section_via:
-                        pt_object['line_section']['via'] = line_section_via[impact_pt_object_id].values()
+                        pt_object['line_section']['via'] = list(line_section_via[impact_pt_object_id].values())
                     if impact_pt_object_id in line_section_routes:
-                        pt_object['line_section']['routes'] = line_section_routes[impact_pt_object_id].values()
+                        pt_object['line_section']['routes'] = list(line_section_routes[impact_pt_object_id].values())
                     if impact_pt_object_id in line_section_metas:
-                        pt_object['line_section']['wordings'] = line_section_metas[impact_pt_object_id].values()
+                        pt_object['line_section']['wordings'] = list(line_section_metas[impact_pt_object_id].values())
 
-        rawData = {'disruptions': disruptions.values(), 'meta': self.createPager(
-            resultset = disruptions.values(),
+        rawData = {'disruptions': list(disruptions.values()), 'meta': self.createPager(
+            resultset = list(disruptions.values()),
             current_page=args['start_page'],
             per_page = args['items_per_page'],
             total_results_count = total_results_count,
@@ -2035,4 +2034,4 @@ class DisruptionsHistory(flask_restful.Resource):
             disruption = create_disruption_from_json(json.loads(history_disruption.data))
             disruptions[disruption.version] = disruption
 
-        return marshal({'disruptions': disruptions.values()}, disruptions_fields)
+        return marshal({'disruptions': list(disruptions.values())}, disruptions_fields)
