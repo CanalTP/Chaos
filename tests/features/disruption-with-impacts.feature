@@ -708,7 +708,7 @@ Feature: Manipulate impacts in a Disruption
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "u'' does not match '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$'"
+        And the field "error.message" should be "'' does not match '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$'"
 
         Scenario: Add an impact in a disruption without objects
 

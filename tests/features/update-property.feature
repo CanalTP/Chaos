@@ -126,7 +126,7 @@ Feature: Update property
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "u'' is too short"
+        And the field "error.message" should be "'' is too short"
 
     Scenario: we cannot create a property with an empty 'type' value
         Given I have the following clients in my database:
@@ -141,7 +141,7 @@ Feature: Update property
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "u'' is too short"
+        And the field "error.message" should be "'' is too short"
 
     Scenario: 'key' value must be a string
         Given I have the following clients in my database:
@@ -187,7 +187,7 @@ Feature: Update property
         """
         Then the status code should be "409"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should contain "IntegrityError"
+        And the field "error.message" should contain "UniqueViolation"
 
     Scenario: update a property with valid data
         Given I have the following clients in my database:

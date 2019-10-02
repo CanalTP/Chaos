@@ -200,7 +200,7 @@ Feature: Update disruptions with properties
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "u'' is too short"
+        And the field "error.message" should be "'' is too short"
 
     Scenario: The property's value must be a string
         Given I have the following clients in my database:
@@ -272,7 +272,7 @@ Feature: Update disruptions with properties
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "u'' does not match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'"
+        And the field "error.message" should be "'' does not match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'"
 
     Scenario: The property's id must be a valid uuid
         Given I have the following clients in my database:
@@ -296,7 +296,7 @@ Feature: Update disruptions with properties
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "u'e408adec-0243-11e6-954b-0050568c838' does not match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'"
+        And the field "error.message" should be "'e408adec-0243-11e6-954b-0050568c838' does not match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'"
 
     Scenario: The property must exist before linking it to a disruption
         Given I have the following clients in my database:

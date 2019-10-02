@@ -446,7 +446,7 @@ Feature: Create disruption
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "u'42' is not one of ['published', 'draft']"
+        And the field "error.message" should be "'42' is not one of ['published', 'draft']"
 
     Scenario: Error when creating disruption without impact
 

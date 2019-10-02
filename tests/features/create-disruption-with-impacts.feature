@@ -239,4 +239,4 @@ Feature: Create Disruption and impacts
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should contain "is not valid under any of the given schemas"
+        And the field "error.message" should contain "'application_periods' is a required property"
