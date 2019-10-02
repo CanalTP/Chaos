@@ -1,6 +1,7 @@
 from nose.tools import *
 import chaos
-from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time, get_channel_type, chaos_pb2
+import gtfs_realtime_pb2, chaos_pb2
+from chaos.populate_pb import populate_pb, get_pt_object_type, get_pos_time, get_channel_type
 from aniso8601 import parse_datetime
 import datetime
 
@@ -242,7 +243,7 @@ def test_disruption():
     disruption = get_disruption(None)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
-    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+    disruption_pb = feed_entity.Extensions[chaos_pb2.disruption]
     eq_(disruption_pb.HasField('contributor'),  False)
     eq_(disruption_pb.reference,  disruption.reference)
     eq_(disruption_pb.cause.wording,  disruption.cause.wording)
@@ -262,7 +263,7 @@ def test_disruption():
     eq_(len(disruption_pb.impacts),  3)
     eq_(disruption_pb.impacts[0].severity.wording,  "Severity_with_priority_NULL")
     eq_(disruption_pb.impacts[0].severity.color,  "#FFFF00")
-    eq_(disruption_pb.impacts[0].severity.effect, chaos.gtfs_realtime_pb2.Alert.NO_SERVICE)
+    eq_(disruption_pb.impacts[0].severity.effect, gtfs_realtime_pb2.Alert.NO_SERVICE)
     eq_(disruption_pb.impacts[0].severity.priority,  0)
     eq_(disruption_pb.impacts[1].severity.wording,  "Severity_with_priority_0")
     eq_(disruption_pb.impacts[1].severity.priority,  0)
@@ -340,7 +341,7 @@ def test_disruption_without_via():
     disruption = get_disruption('KISIO-DIGITAL', False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
-    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+    disruption_pb = feed_entity.Extensions[chaos_pb2.disruption]
 
     eq_(disruption_pb.contributor,  disruption.contributor.contributor_code)
     eq_(disruption_pb.reference, disruption.reference)
@@ -504,7 +505,7 @@ def test_disruption_without_routes():
     disruption = get_disruption('KISIO-DIGITAL', False, False)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
-    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+    disruption_pb = feed_entity.Extensions[chaos_pb2.disruption]
 
     eq_(disruption_pb.reference, disruption.reference)
     eq_(disruption_pb.cause.wording, disruption.cause.wording)
@@ -616,7 +617,7 @@ def test_disruption_with_message_meta():
     disruption = get_disruption('KISIO-DIGITAL', True, True, True)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
-    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+    disruption_pb = feed_entity.Extensions[chaos_pb2.disruption]
     eq_(disruption_pb.reference, disruption.reference)
     eq_(len(disruption_pb.impacts[0].messages), 2)
     eq_(len(disruption_pb.impacts[0].messages[0].meta), 1)

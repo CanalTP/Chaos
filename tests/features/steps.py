@@ -200,7 +200,7 @@ def given_i_have_the_following_causes_in_my_database(step, cls):
     with chaos.app.app_context():
         for values_dict in step.hashes:
             row = model_classes[cls]()
-            for key, value in values_dict.iteritems():
+            for key, value in values_dict.items():
                 if value == 'None':
                     value = None
                 setattr(row, key, value)

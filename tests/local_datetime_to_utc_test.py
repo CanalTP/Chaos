@@ -28,7 +28,7 @@ def test_time_zone_value_invalid():
         date_format = "%Y-%m-%dT%H:%M:%SZ"
         str_date_time = "2015-04-10T13:15:00Z"
         date_time = parse_datetime(str_date_time).replace(tzinfo=None)
-        utc_date_time = chaos.utils.get_utc_datetime_by_zone(date_time, 'europe/paris')
+        utc_date_time = chaos.utils.get_utc_datetime_by_zone(date_time, 'europe/unknown')
         eq_(utc_date_time.strftime(date_format), "2015-04-10T12:15:00Z")
 
 

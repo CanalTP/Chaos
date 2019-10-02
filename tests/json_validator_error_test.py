@@ -1,9 +1,9 @@
 from nose.tools import *
 from chaos.utils import parse_error
-from jsonschema import validate, ValidationError
+from jsonschema import validate
+from jsonschema.exceptions import ValidationError
 from chaos.formats import impact_input_format, channel_input_format, severity_input_format,\
-    cause_input_format, disruptions_input_format, tag_input_format, pt_object_type_values,\
-    pattern_input_format, channel_type_input_format, channel_type_values
+    disruptions_input_format, tag_input_format, pt_object_type_values, pattern_input_format
 
 
 def test_wording_is_required_in_severity():
@@ -236,7 +236,7 @@ def test_unique_localization_in_disruption():
         validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}, {"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError as e:
-        eq_(parse_error(e), "[{'type': 'stop_area', 'id': 'stop_area:JDR:SA:CHVIN'}, {'type': 'stop_area', 'id': 'stop_area:JDR:SA:CHVIN'}] has non-unique elements", True)
+        assert_in("non-unique elements", parse_error(e))
 
 
 def test_unique_application_periods_in_impact():
@@ -244,7 +244,7 @@ def test_unique_application_periods_in_impact():
         validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}],"objects": [{"id": "network:JDR:1", "type": "network"}]}, impact_input_format)
         assert False
     except ValidationError as e:
-        eq_(parse_error(e), "[{'begin': '2014-04-29T16:52:00Z', 'end': '2014-05-22T02:15:00Z'}, {'begin': '2014-04-29T16:52:00Z', 'end': '2014-05-22T02:15:00Z'}] has non-unique elements", True)
+        assert_in("non-unique elements", parse_error(e))
 
 
 def test_unique_pt_object_in_impact():
@@ -252,7 +252,7 @@ def test_unique_pt_object_in_impact():
         validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}, {"id": "network:JDR:2","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError as e:
-        eq_(parse_error(e), "[{'type': 'network', 'id': 'network:JDR:2'}, {'type': 'network', 'id': 'network:JDR:2'}] has non-unique elements", True)
+        assert_in("non-unique elements", parse_error(e))
 
 
 def test_unique_message_in_impact():
@@ -260,7 +260,7 @@ def test_unique_message_in_impact():
         validate({"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}, {"text": "message 1","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}],"objects": [{"id": "network:JDR:1", "type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}, impact_input_format)
         assert False
     except ValidationError as e:
-        eq_(parse_error(e), "[{'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}, {'text': 'message 1', 'channel': {'id': '4ffab230-3d48-4eea-aa2c-22f8680230b6'}}] has non-unique elements", True)
+        assert_in("non-unique elements", parse_error(e))
 
 
 def test_obects_is_required_in_impact():
@@ -283,7 +283,7 @@ def test_unique_tag_in_disruption():
         validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "tags":[{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}, {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError as e:
-        eq_(parse_error(e), "[{'id': '7ffab230-3d48-4eea-aa2c-22f8680230b6'}, {'id': '7ffab230-3d48-4eea-aa2c-22f8680230b6'}] has non-unique elements", True)
+        assert_in("non-unique elements", parse_error(e))
 
 
 def test_id_tag_is_required_in_disruption():

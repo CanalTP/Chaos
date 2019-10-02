@@ -5,9 +5,12 @@ import chaos
 class Obj(object):
     pass
 
+def set_up():
+    chaos.app.config['SERVER_NAME'] = 'localhost'
+
 #First page, 2 elements per page, 10 elements in total, without previous page link.
+@with_setup(set_up)
 def test_not_prev():
-    chaos.app.config['SERVER_NAME'] = 'http://localhost'
     with chaos.app.app_context():
         endpoint = "disruption"
         obj = Obj()
@@ -37,11 +40,11 @@ def test_not_prev():
 
         eq_('first' in result['pagination'], True)
         eq_('href' in result['pagination']['first'], True )
-        eq_(result['pagination']['first']['href'], 'http://http://localhost/disruptions?start_page=1&items_per_page=2' )
+        eq_(result['pagination']['first']['href'], generate_pager_url(1,2))
 
         eq_('last' in result['pagination'], True)
         eq_('href' in result['pagination']['last'], True )
-        eq_(result['pagination']['last']['href'], 'http://http://localhost/disruptions?start_page=5&items_per_page=2' )
+        eq_(result['pagination']['last']['href'], generate_pager_url(5,2))
 
         eq_('prev' in result['pagination'], True)
         eq_('href' in result['pagination']['prev'], True )
@@ -49,11 +52,11 @@ def test_not_prev():
 
         eq_('next' in result['pagination'], True)
         eq_('href' in result['pagination']['next'], True )
-        eq_(result['pagination']['next']['href'], 'http://http://localhost/disruptions?start_page=2&items_per_page=2' )
+        eq_(result['pagination']['next']['href'], generate_pager_url(2, 2))
 
 #Second page, 2 elements per page, 10 elements in total, with previous and next page links.
+@with_setup(set_up)
 def test_next_and_prev():
-    chaos.app.config['SERVER_NAME'] = 'http://localhost'
     with chaos.app.app_context():
 
         endpoint = "disruption"
@@ -84,23 +87,23 @@ def test_next_and_prev():
 
         eq_('first' in result['pagination'], True)
         eq_('href' in result['pagination']['first'], True )
-        eq_(result['pagination']['first']['href'], 'http://http://localhost/disruptions?start_page=1&items_per_page=3' )
+        eq_(result['pagination']['first']['href'], generate_pager_url(1, 3))
 
         eq_('last' in result['pagination'], True)
         eq_('href' in result['pagination']['last'], True )
-        eq_(result['pagination']['last']['href'], 'http://http://localhost/disruptions?start_page=4&items_per_page=3' )
+        eq_(result['pagination']['last']['href'], generate_pager_url(4, 3))
 
         eq_('prev' in result['pagination'], True)
         eq_('href' in result['pagination']['prev'], True )
-        eq_(result['pagination']['prev']['href'], 'http://http://localhost/disruptions?start_page=1&items_per_page=3' )
+        eq_(result['pagination']['prev']['href'], generate_pager_url(1, 3))
 
         eq_('next' in result['pagination'], True)
         eq_('href' in result['pagination']['next'], True )
-        eq_(result['pagination']['next']['href'], 'http://http://localhost/disruptions?start_page=3&items_per_page=3' )
+        eq_(result['pagination']['next']['href'], generate_pager_url(3, 3))
 
 #Last page with 1 element, 3 elements per page, 10 elements in total, without next page links
+@with_setup(set_up)
 def test_not_next_and_items_on_page():
-    chaos.app.config['SERVER_NAME'] = 'http://localhost'
     with chaos.app.app_context():
 
         endpoint = "disruption"
@@ -131,16 +134,27 @@ def test_not_next_and_items_on_page():
 
         eq_('first' in result['pagination'], True)
         eq_('href' in result['pagination']['first'], True )
-        eq_(result['pagination']['first']['href'], 'http://http://localhost/disruptions?start_page=1&items_per_page=3' )
+        eq_(result['pagination']['first']['href'], generate_pager_url(1, 3))
 
         eq_('last' in result['pagination'], True)
         eq_('href' in result['pagination']['last'], True )
-        eq_(result['pagination']['last']['href'], 'http://http://localhost/disruptions?start_page=4&items_per_page=3' )
+        eq_(result['pagination']['last']['href'], generate_pager_url(4, 3))
 
         eq_('prev' in result['pagination'], True)
         eq_('href' in result['pagination']['prev'], True )
-        eq_(result['pagination']['prev']['href'], 'http://http://localhost/disruptions?start_page=3&items_per_page=3' )
+        eq_(result['pagination']['prev']['href'], generate_pager_url(3, 3))
 
         eq_('next' in result['pagination'], True)
         eq_('href' in result['pagination']['next'], True )
         eq_(result['pagination']['next']['href'], None )
+
+
+def generate_pager_url(start_page, items_per_page):
+    """
+    Generates url with given parameters
+
+    :param start_page: int
+    :param items_per_page: int
+    :return: string
+    """
+    return "http://localhost/disruptions?items_per_page={}&start_page={}".format(items_per_page, start_page)

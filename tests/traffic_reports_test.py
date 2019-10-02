@@ -64,7 +64,7 @@ def test_get_traffic_report_with_network():
         }
     }
     dd = get_traffic_report_objects([disruption], navitia, {}, [])
-    eq_(cmp(dd["traffic_report"], result), 0)
+    eq_(dd["traffic_report"], result)
 
 
 def get_pt_object(uri, object_type, pt_objects=None):
@@ -141,7 +141,7 @@ def test_get_traffic_report_with_impact_on_lines():
         }
     }
     dd = get_traffic_report_objects([disruption], navitia, {}, [])
-    eq_(cmp(dd["traffic_report"], result), 0)
+    eq_(dd["traffic_report"], result)
 
 
 def test_get_traffic_report_with_impact_on_networks():
@@ -180,7 +180,7 @@ def test_get_traffic_report_with_impact_on_networks():
     }
     dd = get_traffic_report_objects([disruption], navitia, {}, [])
 
-    eq_(cmp(dd["traffic_report"], result), 0)
+    eq_(dd["traffic_report"], result)
 
 
 def test_get_traffic_report_with_impact_on_stop_areas_one_network():
@@ -206,7 +206,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_one_network():
         }
     }
     dd = get_traffic_report_objects([disruption], navitia, {}, [])
-    eq_(cmp(dd["traffic_report"], result), 0)
+    eq_(dd["traffic_report"], result)
 
 
 def test_get_traffic_report_with_impact_on_stop_areas_2_networks_and_filter_activated():
@@ -232,7 +232,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_2_networks_and_filter_acti
         }
     }
     dd = get_traffic_report_objects([disruption], navitia, {}, ["network:uri5"])
-    eq_(cmp(dd["traffic_report"], result), 0)
+    eq_(dd["traffic_report"], result)
 
 
 def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
@@ -265,7 +265,7 @@ def test_get_traffic_report_with_impact_on_stop_areas_2_networks():
         }
     }
     dd = get_traffic_report_objects([disruption], navitia, {}, [])
-    eq_(cmp(dd["traffic_report"], result), 0)
+    eq_(dd["traffic_report"], result)
 
 
 def test_get_traffic_report_with_2_impact_on_stop_area():
@@ -306,7 +306,7 @@ def test_get_traffic_report_with_2_impact_on_stop_area():
         }
     }
     dd = get_traffic_report_objects(disruptions, navitia, {}, [])
-    eq_(cmp(dd["traffic_report"], result), 0)
+    eq_(dd["traffic_report"], result)
 
 
 def test_get_traffic_report_with_impact_on_line_sections():
@@ -373,7 +373,7 @@ def test_get_traffic_report_with_impact_on_line_sections():
         }
     }
     dd = get_traffic_report_objects([disruption], navitia, { ptobject.id: ptobject.line_section }, [])
-    eq_(cmp(dd["traffic_report"], result), 0)
+    eq_(dd["traffic_report"], result)
 
 def test_filter_disruptions_by_ptobjects():
     disruption_1 = chaos.models.Disruption()
@@ -408,10 +408,10 @@ def test_filter_disruptions_by_ptobjects():
     }
     list_disruption = [disruption_1]
     filter_disruptions_by_ptobjects(list_disruption, filter_pt_object)
-    eq_(cmp(list_disruption, [disruption_1]), 0)
+    eq_(list_disruption, [disruption_1])
     filter_pt_object = {
         "networks": ["network:uri1"],
         "lines": ["line:uri2"]
     }
     filter_disruptions_by_ptobjects(list_disruption, filter_pt_object)
-    eq_(cmp(list_disruption, []), 0)
+    eq_(list_disruption, [])

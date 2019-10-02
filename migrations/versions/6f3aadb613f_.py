@@ -13,6 +13,7 @@ down_revision = '4adbb49a02f0'
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+from migrations.utils import index_exists
 
 impact_status = sa.Enum('published', 'archived', name='impact_status')
 
@@ -28,7 +29,8 @@ def upgrade():
     )
     impact_status.create(op.get_bind(), True)
     op.add_column('impact', sa.Column('status', impact_status, nullable=False, server_default='published', index=True))
-    op.create_index('ix_impact_status', 'impact', ['status'], unique=False)
+    if not index_exists('ix_impact_status'):
+        op.create_index('ix_impact_status', 'impact', ['status'], unique=False)
     ### end Alembic commands ###
 
 
