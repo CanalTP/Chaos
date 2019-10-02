@@ -67,6 +67,8 @@ def pythonify(value):
         return False
     if value == 'True':
         return True
+    if value == 'None':
+        return None
     return value
 
 def date_is_valid(field):
@@ -201,9 +203,7 @@ def given_i_have_the_following_causes_in_my_database(step, cls):
         for values_dict in step.hashes:
             row = model_classes[cls]()
             for key, value in values_dict.items():
-                if value == 'None':
-                    value = None
-                setattr(row, key, value)
+                setattr(row, key, pythonify(value))
             db.session.add(row)
         db.session.commit()
 
@@ -212,7 +212,7 @@ def given_i_have_the_relation_in_my_database(step, cls):
     for values_dict in step.hashes:
         keys = []
         values = []
-        for key, value in values_dict.iteritems():
+        for key, value in values_dict.items():
             keys.append(key)
             values.append("'{}'".format(value))
         db.session.execute("INSERT INTO {} ({}) VALUES ({})".format(associations[cls], ','.join(keys), ','.join(values)))

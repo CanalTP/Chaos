@@ -94,7 +94,7 @@ Feature: Create cause
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "Json invalid: key is empty, you give : [{u'value': u'bb', u'key': u'  '}]"
+        And the field "error.message" should be "Json invalid: key is empty, you give : [{'key': '  ', 'value': 'bb'}]"
 
     Scenario: creation of cause with default wording
         Given I have the following clients in my database:
