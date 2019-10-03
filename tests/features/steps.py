@@ -94,6 +94,8 @@ def find_field(json, fields):
     field_found = True
     for field in separated_fields:
         try:
+            if field.isdigit():
+                field = int(field)
             current_node = current_node[field]
         except KeyError:
             field_found = False
