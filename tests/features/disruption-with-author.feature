@@ -26,7 +26,7 @@ Feature: Handle Disruption with author
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
         And the field "disruption.author" should be "tcy"
-@test
+
     Scenario: Get disruption with author
 
         Given I have the following clients in my database:
