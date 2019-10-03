@@ -112,17 +112,17 @@ class Navitia(object):
 
         if response:
             json = response.json()
+            timeout = app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600)
+
             if pt_objects and json[pt_objects]:
                 json_pt_objects = json[pt_objects]
-                cache.set(cache_key, json_pt_objects,
-                          app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+                cache.set(cache_key, json_pt_objects, timeout)
                 return json_pt_objects
 
             if self.collections[object_type] in json and json[self.collections[object_type]]:
                 json_pt_object = json[self.collections[object_type]][0]
                 try:
-                    cache.set(cache_key, json_pt_object,
-                            app.config['CACHE_CONFIGURATION'].get('NAVITIA_CACHE_TIMEOUT', 3600))
+                    cache.set(cache_key, json_pt_object, timeout)
                 except:
                     logging.getLogger(__name__).exception('Cache Timeout')
                     logging.getLogger(__name__).info('Set value in memory failed.')
