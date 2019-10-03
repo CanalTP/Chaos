@@ -109,8 +109,10 @@ def when_i_post_to(step, method, url):
     else:
         headers = {'content-type': 'application/json'}
 
-    if method.upper() == 'GET':
-        world.headers.pop("content-type", None)
+    if method.upper() == 'POST' or method.upper() == 'PUT':
+        headers['content-type'] = 'application/json'
+    else:
+        headers.pop("content-type", None)
     world.response = world.client.open(path=url, method=method, data=data, headers=headers)
 
 
