@@ -99,11 +99,11 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab211-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
+        {"severity": {"id": "7ffab211-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
-        Then the status code should be "400"
+        Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should contain "is not valid under any of the given schemas"
+        And the field "error.message" should contain "The severty with id 7ffab211-3d48-4eea-aa2c-22f8680230b6 does not exist for this client"
 
     Scenario: Add an impact in a disruption with wrong contributor fails
 

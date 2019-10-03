@@ -59,8 +59,15 @@ associations = {
     'associate_message_meta': associate_message_meta
 }
 
+def isbyte(value):
+    value_set = set(str(value))
+    if value_set == {'0', '1'} or value_set == {'0'} or value_set == {'1'}:
+        return True
+    return False
 
 def pythonify(value):
+    if isbyte(value):
+        return value
     if value.isdigit():
         return int(value)
     if value == 'False':
