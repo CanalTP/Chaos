@@ -187,7 +187,7 @@ Feature: Update (put) impacts in a Disruption
         And the field "impacts" should have a size of 2
         And the field "impacts.0.objects" should have a size of 2
         And the field "impacts.1.application_periods" should have a size of 0
-        And in the database for the impacts "7ffab232-3d47-4eea-aa2c-22f8680230b6" the field "version" should be "1"
+        And in the database for the impacts "7ffab232-3d47-4eea-aa2c-22f8680230b6" the field "version" should be 1
 
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
@@ -294,7 +294,7 @@ Feature: Update (put) impacts in a Disruption
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+         update-impact.featureupdate-impact.feature   | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
@@ -444,7 +444,7 @@ Feature: Update (put) impacts in a Disruption
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should contain "is not valid under any of the given schemas"
+        And the field "error.message" should contain "'application_periods' is a required property"
 
     Scenario: Update impact with id not valid
 
@@ -634,7 +634,7 @@ Feature: Update (put) impacts in a Disruption
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruption.version" should be "1"
+        And the field "disruption.version" should be 1
 
         When I post to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts" with:
         """
@@ -646,7 +646,7 @@ Feature: Update (put) impacts in a Disruption
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruption.version" should be "2"
+        And the field "disruption.version" should be 2
 
     Scenario: Verification version of disruption: PUT impact
 
@@ -677,7 +677,7 @@ Feature: Update (put) impacts in a Disruption
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruption.version" should be "1"
+        And the field "disruption.version" should be 1
 
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
@@ -689,7 +689,7 @@ Feature: Update (put) impacts in a Disruption
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruption.version" should be "2"
+        And the field "disruption.version" should be 2
 
     Scenario: Verification version of disruption: DELETE impact
 
@@ -720,7 +720,7 @@ Feature: Update (put) impacts in a Disruption
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruption.version" should be "1"
+        And the field "disruption.version" should be 1
 
         When I delete "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6":
         Then the status code should be "204"
@@ -729,4 +729,4 @@ Feature: Update (put) impacts in a Disruption
         When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
-        And the field "disruption.version" should be "2"
+        And the field "disruption.version" should be 2
