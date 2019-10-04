@@ -17,9 +17,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
+            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
@@ -72,9 +72,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
+            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
@@ -128,9 +128,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | archived  | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
+            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | archived  | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
@@ -185,9 +185,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
+            | bar       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 2ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
@@ -244,9 +244,9 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-            | faa       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 8ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
+            | faa       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 8ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
@@ -320,10 +320,10 @@ Feature: list impacts by ptobject and/or uri(s)
             | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following disruptions in my database:
-            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       |
-            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-            | fii       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 8ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-            | fuu       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 9ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
+            | reference | note  | created_at          | updated_at          | status    | id                                   | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
+            | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
+            | fii       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 8ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
+            | fuu       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 9ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-02T23:52:12    | 2014-04-03T23:55:12  |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
