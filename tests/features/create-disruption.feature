@@ -260,7 +260,7 @@ Feature: Create disruption
         And the field "disruption.localization" should exist
         And the field "disruption.localization.0.id" should be "stop_area:JDR:SA:CHVIN"
         And the field "disruption.localization.0.type" should be "stop_area"
-        And the field "disruption.version" should be "1"
+        And the field "disruption.version" should be 1
 
     Scenario: We cannot create a disruption with localization not in navitia
 

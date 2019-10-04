@@ -65,7 +65,7 @@ Feature: disruption history
         And the field "disruptions.1.properties.type.0.value" should be "val1"
         And the field "disruptions.1.tags" should have a size of 1
         And the field "disruptions.1.tags.0.name" should be "weather"
-        And the field "disruptions.1.version" should be "1"
+        And the field "disruptions.1.version" should be 1
 
         And the field "disruptions.0.reference" should be "foo2"
         And the field "disruptions.0.note" should be null
@@ -75,7 +75,7 @@ Feature: disruption history
         And the field "disruptions.0.properties" should have a size of 0
         And the field "disruptions.0.localization" should have a size of 0
         And the field "disruptions.0.tags" should have a size of 0
-        And the field "disruptions.0.version" should be "2"
+        And the field "disruptions.0.version" should be 2
 
     Scenario: Disruption with ptobject line_section
         Given I have the following clients in my database:

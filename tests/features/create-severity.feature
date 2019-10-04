@@ -86,7 +86,7 @@ Feature: Create severity
         And the header "Content-Type" should be "application/json"
         And the field "severity.wording" should be "foo"
         And the field "severity.color" should be "#123456"
-        And the field "severity.priority" should be "1"
+        And the field "severity.priority" should be 1
         And the field "severity.effect" should be "no_service"
 
     Scenario: We can create a reduced_service severity
