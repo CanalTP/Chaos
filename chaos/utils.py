@@ -917,6 +917,12 @@ def sanitize_csv_data(val):
     :param val: mixed
     :return: mixed
     """
+    # basestring is not available in Python 3
+    try:
+        basestring
+    except NameError:
+        basestring = str
+
     if isinstance(val, basestring):
         val = val.replace('\n', ' ').replace('\r', '')
 
