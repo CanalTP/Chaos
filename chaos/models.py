@@ -1249,7 +1249,8 @@ class Impact(TimestampMixin, db.Model):
     disruption_id = db.Column(UUID, db.ForeignKey(Disruption.id))
     severity_id = db.Column(UUID, db.ForeignKey(Severity.id))
     messages = db.relationship('Message', backref='impact', lazy='joined', cascade='delete')
-    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined', cascade='delete')
+    application_periods = db.relationship('ApplicationPeriods', backref='impact', lazy='joined', cascade='delete',
+                                          order_by="ApplicationPeriods.start_date")
     severity = db.relationship('Severity', backref='impacts', lazy='joined')
     objects = db.relationship("PTobject", secondary=associate_impact_pt_object,
                               lazy='joined', order_by="PTobject.type, PTobject.uri")
@@ -1376,6 +1377,7 @@ class Impact(TimestampMixin, db.Model):
         query = query.filter(Disruption.contributor_id == contributor_id)
         query = query.filter(and_(ApplicationPeriods.start_date <= end_date, ApplicationPeriods.end_date >= start_date))
         query_line_section = query
+
         if pt_object_type or uris:
             alias_line = aliased(PTobject)
             alias_start_point = aliased(PTobject)
@@ -1414,7 +1416,6 @@ class Impact(TimestampMixin, db.Model):
 
         if filter_with_line_section:
             query = query.union_all(query_line_section)
-        query = query.order_by("application_periods_1.start_date")
         return query.all()
 
     @classmethod
