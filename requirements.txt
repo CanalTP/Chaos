@@ -12,7 +12,7 @@ honcho==1.0.1
 httmock==1.3.0
 jsonschema==3.0.2
 kombu==4.6.4
-git+https://github.com/sgpy/lettuce.git
+git+https://github.com/CanalTP/lettuce.git
 mock==3.0.5
 nose==1.3.7
 protobuf==3.9.1
