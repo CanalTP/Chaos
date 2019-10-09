@@ -118,7 +118,7 @@ Feature: list severity
         And the header "Content-Type" should be "application/json"
         And the field "severities" should have a size of 5
         And the field "severities.0.wording" should be "good news"
-        And the field "severities.0.priority" should be "1"
+        And the field "severities.0.priority" should be 1
         And the field "severities.1.wording" should be "blocking"
         And the field "severities.1.priority" should be "2"
         And the field "severities.2.wording" should be "bar"
