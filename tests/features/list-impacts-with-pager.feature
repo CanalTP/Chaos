@@ -73,9 +73,13 @@ Feature: list impacts with pager
         And the field "meta.pagination.items_per_page" should be 20
         And the field "meta.pagination.items_on_page" should be 6
         And the field "meta.pagination.start_page" should be 1
-        And the field "meta.pagination.first.href" should be "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=1&items_per_page=20"
+        And the field "meta.pagination.first.href" should contain "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?"
+        And the field "meta.pagination.first.href" should contain "start_page=1"
+        And the field "meta.pagination.first.href" should contain "items_per_page=20"
         And the field "meta.pagination.next.href" should be null
-        And the field "meta.pagination.last.href" should be "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=1&items_per_page=20"
+        And the field "meta.pagination.last.href" should contain "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?"
+        And the field "meta.pagination.last.href" should contain "start_page=1"
+        And the field "meta.pagination.last.href" should contain "items_per_page=20"
 
     Scenario: Use pager to display impacts pager index
         Given I have the following clients in my database:
@@ -111,10 +115,18 @@ Feature: list impacts with pager
         And the field "meta.pagination.items_per_page" should be 2
         And the field "meta.pagination.items_on_page" should be 2
         And the field "meta.pagination.start_page" should be 2
-        And the field "meta.pagination.prev.href" should be "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=1&items_per_page=2"
-        And the field "meta.pagination.first.href" should be "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=1&items_per_page=2"
-        And the field "meta.pagination.next.href" should be "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=3&items_per_page=2"
-        And the field "meta.pagination.last.href" should be "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?start_page=3&items_per_page=2"
+        And the field "meta.pagination.prev.href" should contain "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?"
+        And the field "meta.pagination.prev.href" should contain "start_page=1"
+        And the field "meta.pagination.prev.href" should contain "items_per_page=2"
+        And the field "meta.pagination.first.href" should contain "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?"
+        And the field "meta.pagination.first.href" should contain "start_page=1"
+        And the field "meta.pagination.first.href" should contain "items_per_page=2"
+        And the field "meta.pagination.next.href" should contain "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?"
+        And the field "meta.pagination.next.href" should contain "start_page=3"
+        And the field "meta.pagination.next.href" should contain "items_per_page=2"
+        And the field "meta.pagination.last.href" should contain "http://localhost/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts?"
+        And the field "meta.pagination.last.href" should contain "start_page=3"
+        And the field "meta.pagination.last.href" should contain "items_per_page=2"
 
     Scenario: get impact with id impact valid
         Given I have the following clients in my database:
