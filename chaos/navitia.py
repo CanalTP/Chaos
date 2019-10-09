@@ -51,6 +51,8 @@ class Navitia(object):
         }
 
     def query_formater(self, uri, object_type, pt_objects=None):
+        if object_type is None:
+            return None
         if object_type == 'line_section':
             return None
         if object_type not in self.collections:
