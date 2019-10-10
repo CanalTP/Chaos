@@ -207,7 +207,7 @@ def and_in_the_database_the_severity_group1_the_field_group2_should_be_group3(st
     #Context to allow Flask to manage sqlalchemy session
     with chaos.app.app_context():
         row = model_classes[cls].query.filter_by(id=id).first()
-        eq_(getattr(row, field), pythonify(value))
+        eq_(str(getattr(row, field)), str(value))
 
 
 @step(u'Given I have the following (\w+) in my database:')

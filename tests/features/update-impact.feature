@@ -187,7 +187,7 @@ Feature: Update (put) impacts in a Disruption
         And the field "impacts" should have a size of 2
         And the field "impacts.0.objects" should have a size of 2
         And the field "impacts.1.application_periods" should have a size of 0
-        And in the database for the impacts "7ffab232-3d47-4eea-aa2c-22f8680230b6" the field "version" should be 1
+        And in the database for the impacts "7ffab232-3d47-4eea-aa2c-22f8680230b6" the field "version" should be "1"
 
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
