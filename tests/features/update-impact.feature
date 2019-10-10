@@ -294,7 +294,7 @@ Feature: Update (put) impacts in a Disruption
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
-         update-impact.featureupdate-impact.feature   | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
