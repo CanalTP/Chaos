@@ -4,7 +4,7 @@ certifi==2019.9.11
 Flask==1.1.1
 Flask-Caching==1.7.2
 Flask-Migrate==2.5.2
-git+https://github.com/pthegner/flask-restful.git@13ebdfd3cd9c05d35e38921331308b99e249385f
+git+https://github.com/CanalTP/flask-restful.git@de0a47c139a52e5805af309dd723e0c87d2bf6d7
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.0
 gevent==1.4.0
