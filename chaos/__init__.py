@@ -36,7 +36,7 @@ datetime.datetime.strptime('', '')
 # remplace blocking method by a non blocking equivalent
 # this enable us to use gevent for launching background task
 from gevent import monkey
-monkey.patch_all(thread=False)
+monkey.patch_all(thread=False, subprocess=False, os=False, signal=False)
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
