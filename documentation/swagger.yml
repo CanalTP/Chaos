@@ -1327,7 +1327,7 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: "#/components/requestBodies/disruption_creation"
+        $ref: "#/components/requestBodies/disruption_update"
       tags:
         - Disruption
       responses:
@@ -1971,7 +1971,13 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/disruption_creation"
-      description: Category that needs to be stored
+      description: Disruption that needs to be stored
+    disruption_update:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/disruption_update"
+      description: Disruption that needs to be updated
   schemas:
     application_period_pattern:
       type: object
@@ -2419,6 +2425,163 @@ components:
           description: Message meta for additional information
           items:
             $ref: "#/components/schemas/meta"
+    disruption_update:
+      type: object
+      required:
+        - reference
+        - impacts
+        - contributor
+        - cause
+        - publication_period
+      properties:
+        reference:
+          type: string
+          maxLength: 250
+          description: Publication reference label
+        note:
+          type: string
+          description: Service note of disruption
+        contributor:
+          type: string
+          description: Contributor code (same as header X-Contributors)
+        author:
+          $ref: "#/components/schemas/author"
+        status:
+          type: string
+          enum:
+            - archived
+            - published
+            - draft
+        cause:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Cause ID
+        tags:
+          description: List with Tag IDs
+          type: array
+          items:
+            type: object
+            required:
+              - id
+            properties:
+              id:
+                type: string
+                format: uuid
+                description: Tag ID
+        localization:
+          description: List with IDs of stop areas
+          type: array
+          items:
+            type: object
+            required:
+              - id
+              - type
+            properties:
+              id:
+                type: string
+                description: Stop area ID
+              type:
+                type: string
+                enum:
+                  - stop_area
+          uniqueItems: true
+        publication_period:
+          $ref: "#/components/schemas/period_create"
+        impacts:
+          type: array
+          description: List of associated impacts
+          items:
+            $ref: "#/components/schemas/disruption_update_impact"
+          uniqueItems: true
+          minItems: 1
+        properties:
+          description: List with property IDs
+          type: array
+          items:
+            type: object
+            required:
+              - property_id
+              - value
+            properties:
+              property_id:
+                description: Property ID
+                type: string
+                format: uuid
+              value:
+                description: Value of a property
+                type: string
+                minLength: 1
+                maxLength: 250
+    disruption_update_impact:
+      type: object
+      required:
+        - severity
+        - objects
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Impact ID
+        severity:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              description: Severity ID
+              type: string
+              format: uuid
+        application_periods:
+          type: array
+          description: Array with dates of application periods
+          items:
+            $ref: "#/components/schemas/period_create"
+        send_notifications:
+          type: boolean
+          default: false
+          description: If notification sms, mail, push on impact should be send
+        notification_date:
+          description: Date of notification (if not set and send_notification is true, it
+            will be the current UTC date)
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
+        messages:
+          type: array
+          description: List with messages by channel
+          items:
+            $ref: "#/components/schemas/disruption_impact_message"
+          uniqueItems: true
+        objects:
+          type: array
+          description: List of impacted PT objects
+          items:
+            type: object
+            required:
+              - id
+              - type
+            properties:
+              id:
+                description: Impacted PT object ID in navitia
+                type: string
+                maxLength: 250
+              type:
+                description: Impacted PT object type in navitia
+                type: string
+                enum:
+                  - network
+                  - stop_area
+                  - line
+                  - line_section
+                  - route
+                  - stop_point
+          uniqueItems: true
+          minItems: 1
     disruption_in_impact:
       type: object
       properties:
