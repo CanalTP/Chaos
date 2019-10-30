@@ -2380,27 +2380,106 @@ components:
           type: array
           description: List of impacted PT objects
           items:
-            type: object
-            required:
-              - id
-              - type
-            properties:
-              id:
-                description: Impacted PT object ID in navitia
-                type: string
-                maxLength: 250
-              type:
-                description: Impacted PT object type in navitia
-                type: string
-                enum:
-                  - network
-                  - stop_area
-                  - line
-                  - line_section
-                  - route
-                  - stop_point
+            oneOf:
+              - $ref: "#/components/schemas/impact_object"
+              - $ref: "#/components/schemas/impact_line_section_object"
           uniqueItems: true
           minItems: 1
+    impact_object:
+      type: object
+      required:
+        - id
+        - type
+      properties:
+        id:
+          description: Impacted PT object ID in navitia
+          type: string
+          maxLength: 250
+        type:
+          description: Impacted PT object type in navitia
+          type: string
+          enum:
+            - network
+            - stop_area
+            - line
+            - route
+            - stop_point
+    impact_line_section_object:
+      type: object
+      required:
+        - id
+        - type
+      properties:
+        id:
+          description: Impacted PT object ID in navitia
+          type: string
+          maxLength: 250
+        type:
+          description: Impacted PT object type in navitia
+          type: string
+          enum:
+            - line_section
+        line_section:
+          type: object
+          properties:
+            start_point:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - stop_area
+              required:
+                - id
+                - type
+            end_point:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - stop_area
+              required:
+                - id
+                - type
+            metas:
+              type: array
+              items:
+                $ref: "#/components/schemas/traffic_report_line_section_meta"
+            routes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  type:
+                    type: string
+                    enum:
+                      - route
+                required:
+                  - id
+                  - type
+            line:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - line
+              required:
+                - id
+                - type
+          required:
+            - start_point
+            - end_point
+            - line
     disruption_impact_message:
       type: object
       required:
@@ -2561,25 +2640,9 @@ components:
           type: array
           description: List of impacted PT objects
           items:
-            type: object
-            required:
-              - id
-              - type
-            properties:
-              id:
-                description: Impacted PT object ID in navitia
-                type: string
-                maxLength: 250
-              type:
-                description: Impacted PT object type in navitia
-                type: string
-                enum:
-                  - network
-                  - stop_area
-                  - line
-                  - line_section
-                  - route
-                  - stop_point
+            oneOf:
+              - $ref: "#/components/schemas/impact_object"
+              - $ref: "#/components/schemas/impact_line_section_object"
           uniqueItems: true
           minItems: 1
     disruption_in_impact:
@@ -2814,14 +2877,9 @@ components:
           type: array
           description: List with impacted PT objects
           items:
-            type: object
-            properties:
-              id:
-                description: Impacted PT object ID in navitia
-                type: string
-              type:
-                description: Impacted PT object type in navitia
-                type: string
+            oneOf:
+              - $ref: "#/components/schemas/impact_object"
+              - $ref: "#/components/schemas/impact_line_section_object"
         send_notifications:
           description: If notification should be send or not
           type: boolean
