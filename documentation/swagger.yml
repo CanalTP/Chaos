@@ -1892,7 +1892,7 @@ components:
       in: query
       name: current_time
       description: "Parameter for settings the current time, mostly for debugging purpose
-        (example: 2018-08-03T12:19:13Z)"
+        (example: '2018-08-03T12:19:13Z')"
       required: false
       schema:
         type: string
@@ -2018,12 +2018,12 @@ components:
           type: string
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
     category_creation:
       required:
         - name
@@ -2047,12 +2047,12 @@ components:
           $ref: "#/components/schemas/href"
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
     cause_creation:
       type: object
       required:
@@ -2087,12 +2087,12 @@ components:
           example: false
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         types:
           type: array
           items:
@@ -2142,8 +2142,8 @@ components:
           $ref: "#/components/schemas/author"
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         id:
           type: string
           format: uuid
@@ -2237,8 +2237,8 @@ components:
             $ref: "#/components/schemas/tag"
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         version:
           type: integer
           description: Number of how many time this disruption has been changed
@@ -2362,8 +2362,8 @@ components:
           description: Date of notification (if not set and send_notification is true, it
             will be the current UTC date)
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         messages:
           type: array
           description: List with messages by channel
@@ -2475,13 +2475,13 @@ components:
         ends_after_date:
           description: Start-date restriction for end_publication date
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         ends_before_date:
           description: End-date restriction for end_publication date
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         application_period:
           required:
             - begin
@@ -2491,18 +2491,18 @@ components:
           properties:
             begin:
               type: string
-              pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-              example: 2018-08-03T12:19:13Z
+              pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+              example: '2018-08-03T12:19:13Z'
             end:
               type: string
-              pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-              example: 2018-08-03T12:19:13Z
+              pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+              example: '2018-08-03T14:19:13Z'
         current_time:
           description: Parameter for settings the current time, mostly for debugging purpose
           default: now
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         tag:
           description: Filter by tag (id of tag)
           type: array
@@ -2576,8 +2576,8 @@ components:
             $ref: "#/components/schemas/period"
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         disruption:
           $ref: "#/components/schemas/href"
         id:
@@ -2592,8 +2592,8 @@ components:
           description: Date of notification (if not set and send_notification is true, it
             will be the current UTC date)
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         objects:
           type: array
           description: List with impacted PT objects
@@ -2619,8 +2619,8 @@ components:
           $ref: "#/components/schemas/severity"
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
     impact_creation:
       type: object
       required:
@@ -2667,19 +2667,19 @@ components:
           description: Date of notification (if not set and send_notification is true, it
             will be the current UTC date)
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
     impact_message:
       type: object
       properties:
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         text:
           description: Message for given channel
           type: string
@@ -2704,12 +2704,12 @@ components:
           type: integer
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         types:
           type: array
           items:
@@ -2727,8 +2727,8 @@ components:
             $ref: "#/components/schemas/period"
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         disruption:
           $ref: "#/components/schemas/disruption_in_impact"
         id:
@@ -2764,14 +2764,14 @@ components:
           description: Date of notification (if not set and send_notification is true, it
             will be the current UTC date)
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         severity:
           $ref: "#/components/schemas/severity"
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
     impacts_export_create:
       type: object
       required:
@@ -2780,11 +2780,11 @@ components:
       properties:
         start_date:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
           example: 2019-01-01T00:00:00Z
         end_date:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
           example: 2019-03-01T23:59:59Z
         time_zone:
           type: string
@@ -2805,27 +2805,27 @@ components:
             - done
         process_start_date:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
           example: 2019-03-20T16:00:00Z
         start_date:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
           example: 2019-01-01T00:00:00Z
         end_date:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
           example: 2019-03-01T23:59:59Z
         time_zone:
           type: string
           example: Europe/Paris
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
     impacts_search:
       type: object
       properties:
@@ -2864,18 +2864,18 @@ components:
           properties:
             begin:
               type: string
-              pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-              example: 2018-08-03T12:19:13Z
+              pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+              example: '2018-08-03T12:19:13Z'
             end:
               type: string
-              pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-              example: 2018-08-03T12:19:13Z
+              pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+              example: '2018-08-03T14:19:13Z'
         current_time:
           description: Parameter for settings the current time, mostly for debugging purpose
           default: now
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         cause_category_id:
           description: Filter by category id
           type: string
@@ -2932,12 +2932,12 @@ components:
       properties:
         begin:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         end:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T14:19:13Z'
     period_create:
       type: object
       required:
@@ -2946,12 +2946,12 @@ components:
       properties:
         begin:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         end:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T14:19:13Z'
     property:
       type: object
       properties:
@@ -2966,12 +2966,12 @@ components:
           type: string
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
     property_creation:
       type: object
       required:
@@ -3024,8 +3024,8 @@ components:
           type: string
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         effect:
           type: string
           enum:
@@ -3043,8 +3043,8 @@ components:
           type: integer
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         wording:
           type: string
         wordings:
@@ -3089,12 +3089,12 @@ components:
           type: string
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
     tag_creation:
       type: object
       required:
@@ -3343,8 +3343,8 @@ components:
           $ref: "#/components/schemas/author"
         created_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         id:
           type: string
           format: uuid
@@ -3442,8 +3442,8 @@ components:
             $ref: "#/components/schemas/tag"
         updated_at:
           type: string
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-          example: 2018-08-03T12:19:13Z
+          pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+          example: '2018-08-03T12:19:13Z'
         version:
           type: integer
           description: Number of how many time this disruption has been changed
