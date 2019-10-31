@@ -2192,7 +2192,14 @@ class Export(TimestampMixin, db.Model):
     @classmethod
     def get_client_impacts_between_application_dates(cls, client_id, app_start_date, app_end_date):
 
-        query = 'SELECT DISTINCT' \
+        client_channels=Channel.all(client_id)
+
+        channel_columns = ''
+        for chanel in client_channels:
+            channel_columns += "(CASE WHEN ch.name='{}' THEN m.text END) \"{}\",".format(chanel.name, chanel.name)
+
+        query = 'SELECT DISTINCT '\
+                + channel_columns + \
                 ' d.reference' \
                 ', tag.name AS tag_name' \
                 ', c.wording AS cause' \
@@ -2204,9 +2211,6 @@ class Export(TimestampMixin, db.Model):
                 ', s.wording AS severity' \
                 ', (CASE WHEN cht.name=\'title\' THEN m.text ELSE \'\' END) as impact_title' \
                 ', i.status' \
-                ', ch.name AS channel_name' \
-                ', cht.name AS channel_type_name' \
-                ', m.text AS channel_message' \
                 ', app.start_date AS application_start_date' \
                 ', app.end_date AS application_end_date' \
                 ', (CASE WHEN (SELECT COUNT(1) FROM application_periods app_period WHERE app_period.impact_id = i.id) > 1 THEN True ELSE False END) AS periodicity' \
@@ -2215,6 +2219,9 @@ class Export(TimestampMixin, db.Model):
                 ' FROM ' \
                 ' disruption d' \
                 ' LEFT JOIN impact i ON (i.disruption_id = d.id)' \
+                ' LEFT JOIN message m ON (i.id = m.impact_id)' \
+                ' JOIN channel ch ON (m.channel_id = ch.id AND ch.client_id = :client_id)' \
+                ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
                 ' LEFT JOIN associate_disruption_tag adt ON (d.id = adt.disruption_id)' \
                 ' LEFT JOIN tag ON (tag.id = adt.tag_id)' \
                 ' LEFT JOIN application_periods app ON (app.impact_id = i.id)' \
@@ -2222,12 +2229,8 @@ class Export(TimestampMixin, db.Model):
                 ' LEFT JOIN associate_impact_pt_object aipto ON (i.id = aipto.impact_id)' \
                 ' LEFT JOIN pt_object po ON (aipto.pt_object_id = po.id)' \
                 ' LEFT JOIN severity s ON (i.severity_id = s.id)' \
-                ' LEFT JOIN channel ch ON (ch.client_id = :client_id)' \
-                ' LEFT JOIN channel_type cht ON (cht.channel_id = ch.id)' \
-                ' LEFT JOIN message m ON (i.id = m.impact_id and m.channel_id = ch.id) ' \
                 ' WHERE' \
                 ' d.client_id = :client_id' \
-                ' AND ch.client_id = :client_id'\
                 ' AND app.start_date >= :app_start_date' \
                 ' AND app.end_date <= :app_end_date' \
                 ' AND c.is_visible = :is_visible' \
