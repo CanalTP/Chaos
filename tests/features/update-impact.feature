@@ -245,7 +245,7 @@ Feature: Update (put) impacts in a Disruption
 
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"objects": [{"id": "network:TAD:CanalTP","type": "network"}, {"id": "network:default_network","type": "network"}], "application_periods": [{"begin": "2014-07-01T16:52:00Z","end": "2014-08-30T02:15:00Z"}]}
+        {"objects": [{"id": "network:TAD:1","type": "network"}, {"id": "network:default_network","type": "network"}], "application_periods": [{"begin": "2014-07-01T16:52:00Z","end": "2014-08-30T02:15:00Z"}]}
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"

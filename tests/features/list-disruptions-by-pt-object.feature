@@ -267,7 +267,7 @@ Feature: list impacts by ptobject and/or uri(s)
             | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
             | stop_area    | stop_area:JDR:NATIO                           | 2014-04-04T23:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | stop_area    | stop_area:JDR:REUIL                           | 2014-04-04T23:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | stop_area    | stop_area:JDR:ESDEN                           | 2014-04-04T23:52:12 | 9ffab232-4d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following line_section in my database:
