@@ -494,7 +494,7 @@ Feature: traffic report api
 #                       |                                       20-01-2014      30-01-2014
 #  application_period   |                                           +------------------+
 #                       |
-# PtObject: stop_area:JDR:SA:DENFE
+# PtObject: stop_area:JDR:DENFE
 #
 #                                                                            TEST2
 #
@@ -520,7 +520,7 @@ Feature: traffic report api
 
     Given I have the following ptobject in my database:
         | type      | uri                     | created_at          | updated_at          | id                                         |
-        | stop_area | stop_area:JDR:SA:DENFE  | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+        | stop_area | stop_area:JDR:DENFE  | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
     Given I have the relation associate_impact_pt_object in my database:
         | pt_object_id                               | impact_id                            |
@@ -542,7 +542,7 @@ Feature: traffic report api
     And the field "traffic_reports.0.network.name" should be "RATP"
     And the field "traffic_reports.0.network.links" should not exist
     And the field "traffic_reports.0.stop_areas" should have a size of 1
-    And the field "traffic_reports.0.stop_areas.0.id" should be "stop_area:JDR:SA:DENFE"
+    And the field "traffic_reports.0.stop_areas.0.id" should be "stop_area:JDR:DENFE"
     And the field "traffic_reports.0.stop_areas.0.name" should be "La Défense Grande Arche"
     And the field "traffic_reports.0.stop_areas.0.links" should have a size of 1
     And the field "traffic_reports.0.stop_areas.0.links.0.id" should be "7ffab232-3d47-4eea-aa2c-22f8680230b6"
@@ -910,8 +910,8 @@ Feature: traffic report api
         | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
         | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
         | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-        | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
-        | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
+        | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
+        | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
     Given I have the following line_section in my database:
         | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |sens|object_id                           |
@@ -947,9 +947,9 @@ Feature: traffic report api
     And the field "traffic_reports.0.line_sections.0.line_section" should exist
     And the field "traffic_reports.0.line_sections.0.type" should be "line_section"
     And the field "traffic_reports.0.line_sections.0.line_section.end_point.type" should be "stop_area"
-    And the field "traffic_reports.0.line_sections.0.line_section.end_point.id" should be "stop_area:JDR:SA:CHVIN"
+    And the field "traffic_reports.0.line_sections.0.line_section.end_point.id" should be "stop_area:JDR:CHVIN"
     And the field "traffic_reports.0.line_sections.0.line_section.start_point.type" should be "stop_area"
-    And the field "traffic_reports.0.line_sections.0.line_section.start_point.id" should be "stop_area:JDR:SA:BASTI"
+    And the field "traffic_reports.0.line_sections.0.line_section.start_point.id" should be "stop_area:JDR:BASTI"
     And the field "traffic_reports.0.line_sections.0.line_section.line.type" should be "line"
     And the field "traffic_reports.0.line_sections.0.line_section.line.id" should be "line:JDR:M1"
     And the field "traffic_reports.0.line_sections.0.line_section.line.name" should exist
@@ -1011,8 +1011,8 @@ Feature: traffic report api
         | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b7 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b7       |
         | route        | route:JDR:M14                                    | 2014-04-06T22:52:12 | 2014-04-06T22:52:12 | 5ffab200-3d48-4eea-aa2c-22f8680230b6       |
         | route        | route:JDR:M1_R                                   | 2014-04-06T22:52:12 | 2014-04-06T22:52:12 | 6ffab200-3d48-4eea-aa2c-22f8680230b6       |
-        | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
-        | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
+        | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6       |
+        | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 8ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
     Given I have the following line_section in my database:
         | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |sens|object_id                           |
@@ -1219,8 +1219,8 @@ Feature: traffic report api
             | type          | uri                                       | created_at          | updated_at          | id                                         |
             | network       | network:JDR:2                             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b1       |
             | line          | line:JDR:TGV                              | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b2       |
-            | stop_area     | stop_area:JDR:SA:GareMontparnasse         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b3       |
-            | stop_area     | stop_area:JDR:SA:LeMans                   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b4       |
+            | stop_area     | stop_area:JDR:GareMontparnasse         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b3       |
+            | stop_area     | stop_area:JDR:LeMans                   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b4       |
             | stop_point    | stop_point:JDR:SP:Nantes-TGV              | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b5       |
             | stop_point    | stop_point:JDR:SP:GareMontparnasse-TGV    | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
@@ -1290,8 +1290,8 @@ Feature: traffic report api
             | type          | uri                                       | created_at          | updated_at          | id                                         |
             | network       | network:JDR:2                             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b1       |
             | line          | line:JDR:TGV                              | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b2       |
-            | stop_area     | stop_area:JDR:SA:GareMontparnasse         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b3       |
-            | stop_area     | stop_area:JDR:SA:LeMans                   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b4       |
+            | stop_area     | stop_area:JDR:GareMontparnasse         | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b3       |
+            | stop_area     | stop_area:JDR:LeMans                   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b4       |
             | stop_point    | stop_point:JDR:SP:Nantes-TGV              | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b5       |
             | stop_point    | stop_point:JDR:SP:GareMontparnasse-TGV    | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
 

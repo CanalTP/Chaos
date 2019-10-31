@@ -39,7 +39,7 @@ Feature: list disruptions with ptObjects filter
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         |
             | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area | stop_area:JDR:SA:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
@@ -132,7 +132,7 @@ Feature: list disruptions with ptObjects filter
             | type      | uri                    | created_at          | updated_at          | id                                         |
             | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area | stop_area:JDR:SA:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
@@ -191,7 +191,7 @@ Feature: list disruptions with ptObjects filter
             | type      | uri                    | created_at          | updated_at          | id                                         |
             | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area | stop_area:JDR:SA:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
@@ -211,7 +211,7 @@ Feature: list disruptions with ptObjects filter
 
         When I post to "/disruptions/_search" with:
         """
-        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"], "stop_areas": ["stop_area:JDR:SA:CHVIN"]}}
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"networks": ["network:JDR:1"], "stop_areas": ["stop_area:JDR:CHVIN"]}}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -300,8 +300,8 @@ Feature: list disruptions with ptObjects filter
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
@@ -370,8 +370,8 @@ Feature: list disruptions with ptObjects filter
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
@@ -618,7 +618,7 @@ Feature: list disruptions with ptObjects filter
             | type      | uri                    | created_at          | updated_at          | id                                         |
             | network   | network:JDR:1          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network   | network:JDR:2          | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area | stop_area:JDR:SA:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |
@@ -636,7 +636,7 @@ Feature: list disruptions with ptObjects filter
 
         When I post to "/disruptions/_search" with:
         """
-        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"stop_areas": ["stop_area:JDR:SA:CHVIN"]}}
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"stop_areas": ["stop_area:JDR:CHVIN"]}}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -670,8 +670,8 @@ Feature: list disruptions with ptObjects filter
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:SA:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:SA:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network      | network:TAD:CanalTP                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
@@ -744,7 +744,7 @@ Feature: list disruptions with ptObjects filter
 
         Given I have the following ptobject in my database:
             | type      | uri                    | created_at          | updated_at          | id                                         |
-            | stop_area | stop_area:JDR:SA:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area | stop_area:JDR:CHVIN | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                               | impact_id                            |

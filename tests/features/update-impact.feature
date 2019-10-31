@@ -638,7 +638,7 @@ Feature: Update (put) impacts in a Disruption
 
         When I post to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"},{"id": "stop_area:JDR:SA:PTVIN","type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"},{"id": "stop_area:JDR:PTVIN","type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
         Then the status code should be "201"
         And the header "Content-Type" should be "application/json"
@@ -681,7 +681,7 @@ Feature: Update (put) impacts in a Disruption
 
         When I put to "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
-        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"},{"id": "stop_area:JDR:SA:PTVIN","type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
+        {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"},{"id": "stop_area:JDR:PTVIN","type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
         """
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"

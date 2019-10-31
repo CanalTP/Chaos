@@ -203,7 +203,7 @@ def test_reference_is_required_in_disruption():
 
 def test_impacts_is_required_in_disruption():
     try:
-        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
+        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"}}, disruptions_input_format)
         assert False
     except ValidationError, e:
         eq_(parse_error(e), "'impacts' is a required property", True)
@@ -211,14 +211,14 @@ def test_impacts_is_required_in_disruption():
 
 def test_min_1_impact_is_required_in_disruption():
     try:
-        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": []}, disruptions_input_format)
+        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": []}, disruptions_input_format)
         assert True
     except ValidationError, e:
         eq_(parse_error(e), "impacts should not be empty", True)
 
 def test_impact_format_is_checked_in_disruption():
     try:
-        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:SA:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
+        validate({"reference": "foo","contributor": "contrib1","publication_period": {"begin": "2014-06-24T10:35:00Z","end": "2018-06-24T10:35:00Z"},"localization": [{"id": "stop_area:JDR:CHVIN","type": "stop_area"}],"cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert True
     except ValidationError, e:
         eq_(parse_error(e), "'objects' is a required property", True)
@@ -233,10 +233,10 @@ def test_begin_date_is_required_in_disruption():
 
 def test_unique_localization_in_disruption():
     try:
-        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}, {"id":"stop_area:JDR:SA:CHVIN", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
+        validate({"reference": "foo", "contributor": "contrib1", "publication_period": {"begin": "2014-06-24T10:35:00Z", "end": None}, "localization":[{"id":"stop_area:JDR:CHVIN", "type": "stop_area"}, {"id":"stop_area:JDR:CHVIN", "type": "stop_area"}], "cause":{"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}]}, disruptions_input_format)
         assert False
     except ValidationError, e:
-        eq_(parse_error(e), "[{'type': 'stop_area', 'id': 'stop_area:JDR:SA:CHVIN'}, {'type': 'stop_area', 'id': 'stop_area:JDR:SA:CHVIN'}] has non-unique elements", True)
+        eq_(parse_error(e), "[{'type': 'stop_area', 'id': 'stop_area:JDR:CHVIN'}, {'type': 'stop_area', 'id': 'stop_area:JDR:CHVIN'}] has non-unique elements", True)
 
 
 def test_unique_application_periods_in_impact():
