@@ -34,7 +34,7 @@ Feature: list impacts by ptobject
 
         Given I have the following ptobject in my database:
             | type          | uri                       | created_at          | updated_at          | id                                         |
-            | stop_point    | stop_point:JDR:SP:ABBES2  | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_point    | stop_point:JDR:ABBES2  | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network       | network:JDR:1             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network       | network:JDR:1             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network       | network:JDR:2             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
@@ -67,7 +67,7 @@ Feature: list impacts by ptobject
         And the field "objects" should have a size of 1
         And the field "objects.0.impacts" should have a size of 1
         And the field "objects.0.type" should be "stop_point"
-        And the field "objects.0.id" should be "stop_point:JDR:SP:ABBES2"
+        And the field "objects.0.id" should be "stop_point:JDR:ABBES2"
 
     Scenario: Use ptobject 'network' filter to display impacts
         Given I have the following clients in my database:

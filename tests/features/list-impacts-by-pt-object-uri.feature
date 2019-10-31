@@ -34,7 +34,7 @@ Feature: list impacts by ptobject and/or uri(s)
 
         Given I have the following ptobject in my database:
             | type          | uri                       | created_at          | updated_at          | id                                         |
-            | stop_point    | stop_point:JDR:SP:ABBES2  | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_point    | stop_point:JDR:ABBES2  | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network       | network:JDR:1             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network       | network:JDR:1             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
             | network       | network:JDR:2             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
@@ -61,7 +61,7 @@ Feature: list impacts by ptobject and/or uri(s)
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b5 | 7ffab234-3d49-4eea-aa2c-22f8680230b3 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab234-3d49-4eec-aa2c-22f8680230b4 |2014-01-20 16:52:00                  |2014-01-30 16:52:00 |
 
-        When I get "/impacts?uri[]=stop_point:JDR:SP:ABBES2&start_date=2014-01-21T23:52:12Z&end_date=2014-01-25T23:52:12Z"
+        When I get "/impacts?uri[]=stop_point:JDR:ABBES2&start_date=2014-01-21T23:52:12Z&end_date=2014-01-25T23:52:12Z"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "objects" should have a size of 1
