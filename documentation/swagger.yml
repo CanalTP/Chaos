@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: v1
+  version: v1.1
   title: Documentation of API Chaos
   description: >
     Chaos is the web service which can feed
@@ -2382,7 +2382,7 @@ components:
           items:
             oneOf:
               - $ref: "#/components/schemas/impact_object"
-              - $ref: "#/components/schemas/impact_line_section_object"
+              - $ref: "#/components/schemas/impact_object_line_section"
           uniqueItems: true
           minItems: 1
     impact_object:
@@ -2404,7 +2404,7 @@ components:
             - line
             - route
             - stop_point
-    impact_line_section_object:
+    impact_object_line_section:
       type: object
       required:
         - id
@@ -2642,7 +2642,7 @@ components:
           items:
             oneOf:
               - $ref: "#/components/schemas/impact_object"
-              - $ref: "#/components/schemas/impact_line_section_object"
+              - $ref: "#/components/schemas/impact_object_line_section"
           uniqueItems: true
           minItems: 1
     disruption_in_impact:
