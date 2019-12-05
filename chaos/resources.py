@@ -350,6 +350,7 @@ class Disruptions(flask_restful.Resource):
     @manage_navitia_error()
     @validate_id(True)
     @validate_client_token()
+    @validate_cause()
     @validate_send_notifications_and_notification_date()
     def put(self, client, contributor, navitia, id):
         self.navitia = navitia
