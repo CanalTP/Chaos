@@ -23,7 +23,8 @@ import logging
 from utils import make_pager, option_value, get_current_time, add_notification_date_on_impacts
 from chaos.validate_params import validate_client, validate_contributor, validate_navitia, \
     manage_navitia_error, validate_id, validate_client_token, \
-    validate_send_notifications_and_notification_date, validate_pagination
+    validate_send_notifications_and_notification_date, validate_pagination, \
+    validate_cause
 from collections import OrderedDict
 from aniso8601 import parse_datetime
 from history import save_disruption_in_history, create_disruption_from_json
@@ -271,6 +272,7 @@ class Disruptions(flask_restful.Resource):
     @validate_client(True)
     @manage_navitia_error()
     @validate_client_token()
+    @validate_cause()
     @validate_send_notifications_and_notification_date()
     def post(self, client, navitia):
         self.navitia = navitia

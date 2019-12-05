@@ -159,6 +159,23 @@ class validate_client_token(object):
             return func(*args, **kwargs)
         return wrapper
 
+class validate_cause(object):
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            json = request.get_json(silent=True)
+            if json and 'cause' in json:
+                cause_id = json['cause']['id']
+                client = models.Client.get_by_code(get_client_code(request))
+                cause = models.Cause.get(cause_id, client.id)
+                if not cause:
+                    return marshal(
+                        {'error': {'message': 'Cause {} Not Found'.format(cause_id)}},
+                        fields.error_fields
+                    ), 404
+                return func(*args, **kwargs)
+        return wrapper
+
 class validate_send_notifications_and_notification_date(object):
     def __call__(self, func):
         @wraps(func)
