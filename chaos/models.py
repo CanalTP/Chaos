@@ -298,6 +298,13 @@ class Cause(TimestampMixin, db.Model):
             kargs["category_id"] = category_id
         return cls.query.filter_by(**kargs).first_or_404()
 
+    @classmethod
+    def get_by_id_and_client_id(cls, id, client_id):
+        kargs = {"client_id": client_id,
+                 "is_visible": True,
+                 "id": id}
+        return cls.query.filter_by(**kargs).first()
+
     def delete_wordings(self):
         index = len(self.wordings) - 1
         while index >= 0:
