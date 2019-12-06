@@ -10,7 +10,6 @@ Feature: Create disruption
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "The parameter X-Customer-Id does not exist in the header"
 
-@test
     Scenario: Reference and contributor is required
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"

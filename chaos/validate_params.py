@@ -174,6 +174,7 @@ class validate_cause(object):
                         fields.error_fields
                     ), 404
                 return func(*args, **kwargs)
+            return func(*args, **kwargs)
         return wrapper
 
 class validate_send_notifications_and_notification_date(object):
