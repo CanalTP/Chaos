@@ -36,7 +36,7 @@ from flask.ext.restful import abort
 from flask import request, current_app
 from formats import id_format
 from os import path
-
+from werkzeug.exceptions import NotFound
 
 class validate_client(object):
     def __init__(self, create_client=False):
@@ -167,8 +167,9 @@ class validate_cause(object):
             if json and 'cause' in json:
                 cause_id = json['cause']['id']
                 client = models.Client.get_by_code(get_client_code(request))
-                cause = models.Cause.get_by_id_and_client_id(cause_id, client.id)
-                if not cause:
+                try:
+                    cause = models.Cause.get(cause_id, client.id)
+                except NotFound as e:
                     return marshal(
                         {'error': {'message': 'The cause with id {} does not exist for this client'.format(cause_id)}},
                         fields.error_fields
