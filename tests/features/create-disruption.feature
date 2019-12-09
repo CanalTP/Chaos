@@ -535,7 +535,7 @@ Feature: Create disruption
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "Cause 8ffab230-3d48-4eea-aa2c-22f8680230b6 Not Found"
+        And the field "error.message" should be "The cause with id 8ffab230-3d48-4eea-aa2c-22f8680230b6 does not exist for this client"
 
     Scenario: Error when we edit disruption with cause of another client
 
@@ -567,4 +567,4 @@ Feature: Create disruption
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "Cause 8ffab230-3d48-4eea-aa2c-22f8680230b6 Not Found"
+        And the field "error.message" should be "The cause with id 8ffab230-3d48-4eea-aa2c-22f8680230b6 does not exist for this client"

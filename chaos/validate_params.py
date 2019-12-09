@@ -170,7 +170,7 @@ class validate_cause(object):
                 cause = models.Cause.get_by_id_and_client_id(cause_id, client.id)
                 if not cause:
                     return marshal(
-                        {'error': {'message': 'Cause {} Not Found'.format(cause_id)}},
+                        {'error': {'message': 'The cause with id {} does not exist for this client'.format(cause_id)}},
                         fields.error_fields
                     ), 404
                 return func(*args, **kwargs)
