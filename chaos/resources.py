@@ -13,7 +13,7 @@ from formats import *
 from formats import impact_input_format, channel_input_format, pt_object_type_values,\
     tag_input_format, category_input_format, channel_type_values,\
     property_input_format, disruptions_search_input_format, application_status_values, \
-    impacts_search_input_format, export_input_format
+    impacts_search_input_format, export_input_format, contributor_input_format
 from chaos import mapper, exceptions
 from chaos import utils, db_helper
 import chaos
@@ -1314,6 +1314,18 @@ this impact to Navitia. Please try again.'}}, error_fields), 503
             {'error': {'message': 'An error occurred during deletion\
 . Please try again.'}}, error_fields), 500
 
+class Contributor(flask_restful.Resource):
+    @validate_client(True)
+    @validate_client_token()
+    def post(self, client):
+        json = request.get_json(silent=True)
+        logging.getLogger(__name__).debug('Post contributor: %s', json)
+        try:
+            validate(json, contributor_input_format)
+        except ValidationError as e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
 
 class Channel(flask_restful.Resource):
     @validate_client()

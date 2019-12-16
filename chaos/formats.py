@@ -500,3 +500,10 @@ export_input_format = {
     },
     'required': ['start_date', 'end_date']
 }
+contributor_input_format = {
+    'type': 'object',
+    'properties': {
+        'code': {'type': 'string', 'maxLength': 250},
+    },
+    'required': ['code']
+}

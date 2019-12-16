@@ -169,3 +169,7 @@ export_mapping = {
     'end_date': Datetime(attribute='end_date'),
     'time_zone': None
 }
+
+contributor_mapping = {
+    'code': AliasText(attribute='contributor_code')
+}

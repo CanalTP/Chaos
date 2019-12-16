@@ -88,6 +88,9 @@ api.add_resource(resources.Property,
                  '/properties/<string:id>',
                  endpoint='property')
 
+api.add_resource(resources.Contributor,
+                 '/contributors',
+                 endpoint='contributor')
 
 @app.errorhandler(Exception)
 def error_handler(exception):
