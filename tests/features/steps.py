@@ -195,7 +195,7 @@ def and_in_the_database_the_severity_group1_the_field_group2_should_be_group3(st
 
 
 @step(u'Given I have the following (\w+) in my database:')
-def given_i_have_the_following_causes_in_my_database(step, cls):
+def given_i_have_the_following_table_in_my_database(step, cls):
     # Context to allow Flask to manage sqlalchemy session
     with chaos.app.app_context():
         for values_dict in step.hashes:
