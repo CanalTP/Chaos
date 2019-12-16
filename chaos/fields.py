@@ -738,3 +738,7 @@ disruptions_fields = {
 one_disruption_fields = {
     'disruption': fields.Nested(disruption_fields)
 }
+
+contributor_field = {
+    'code': fields.Raw
+}

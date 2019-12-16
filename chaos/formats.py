@@ -503,7 +503,7 @@ export_input_format = {
 contributor_input_format = {
     'type': 'object',
     'properties': {
-        'code': {'type': 'string', 'maxLength': 250},
+        'code': {'type': 'string', 'maxLength': 250, 'minLength': 1},
     },
     'required': ['code']
 }

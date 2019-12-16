@@ -1315,17 +1315,36 @@ this impact to Navitia. Please try again.'}}, error_fields), 503
 . Please try again.'}}, error_fields), 500
 
 class Contributor(flask_restful.Resource):
-    @validate_client(True)
+    @validate_client()
     @validate_client_token()
     def post(self, client):
         json = request.get_json(silent=True)
         logging.getLogger(__name__).debug('Post contributor: %s', json)
+
         try:
             validate(json, contributor_input_format)
         except ValidationError as e:
             logging.debug(str(e))
             return marshal({'error': {'message': utils.parse_error(e)}},
                            error_fields), 400
+
+        contributor = models.Contributor.get_by_code(json.get('code'))
+        if contributor:
+            return marshal({"error": {"message": "Contributor with code '{}' already exist".format(json.get('code'))}}, error_fields), 409
+
+        contributor = models.Contributor()
+        mapper.fill_from_json(contributor, json, mapper.contributor_mapping)
+        db.session.add(contributor)
+        try:
+            db.session.commit()
+            db.session.refresh(contributor)
+        except IntegrityError as e:
+            logging.debug(str(e))
+            return marshal({'error': {'message': utils.parse_error(e)}},
+                           error_fields), 400
+
+        return marshal({'code': contributor.contributor_code}, contributor_field), 201
+
 
 class Channel(flask_restful.Resource):
     @validate_client()
