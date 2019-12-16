@@ -1837,6 +1837,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/error_occured"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_occured"
+        "404":
+          description: Not Found (client not found)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_occured"
         "409":
           description: Conflict
           content:
