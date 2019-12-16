@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: v1.1
+  version: v1.2
   title: Documentation of API Chaos
   description: >
     Chaos is the web service which can feed
@@ -50,6 +50,7 @@ tags:
   - name: Search
   - name: Export
   - name: History
+  - name: Contributor
 paths:
   /categories:
     get:
@@ -1810,6 +1811,39 @@ paths:
             application/csv:
               schema:
                 $ref: "#/components/schemas/error_404"
+  /contributors:
+    post:
+      description: Create a contributor
+      parameters:
+        - $ref: "#/components/parameters/header_authorization"
+        - $ref: "#/components/parameters/header_customer_id"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/contributor_create"
+      tags:
+        - Contributor
+      responses:
+        "201":
+          description: Contributor created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/contributor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_occured"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error_occured"
+      
 servers:
   - url: http://127.0.0.1:5000/
 components:
@@ -3677,3 +3711,21 @@ components:
     author:
       type: string
       description: ID of disruption creator or editor
+    contributor_create:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 250
+          description: Code of the new contributor
+    contributor:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 250
+          description: Code of the contributor
