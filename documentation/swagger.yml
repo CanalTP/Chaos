@@ -1844,7 +1844,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/error_occured"
         "404":
-          description: Not Found (client not found)
+          description: Not Found (Customer not found)
           content:
             application/json:
               schema:
