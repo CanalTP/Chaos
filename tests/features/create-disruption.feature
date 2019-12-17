@@ -282,7 +282,7 @@ Feature: Create disruption
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
         And the field "error" should exist
-        And the field "error.message" should be "ptobject stop_area:AAA doesn't exist"
+        And the field "error.message" should be "ptobject 'stop_area:AAA' doesn't exist"
 
     Scenario: We can create a disruption with tag
 

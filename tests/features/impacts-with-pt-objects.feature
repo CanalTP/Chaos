@@ -1294,4 +1294,4 @@ Feature: Manipulate impacts in a Disruption
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "ptobject network:JDR:2 doesn't exist"
+        And the field "error.message" should be "ptobject 'network:JDR:2' doesn't exist"

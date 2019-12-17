@@ -52,7 +52,7 @@ def manage_pt_object_without_line_section(navitia, db_objects, json_attribute, j
             try:
                 ptobject = fill_and_get_pt_object(navitia, pt_object_dict, pt_object_json, False)
             except exceptions.ObjectUnknown:
-                raise exceptions.ObjectUnknown('ptobject {} doesn\'t exist'.format(pt_object_json['id']))
+                raise exceptions.ObjectUnknown("ptobject '{}' doesn't exist".format(pt_object_json['id']))
 
             if ptobject.uri not in pt_object_db:
                 db_objects.append(ptobject)

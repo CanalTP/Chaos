@@ -116,7 +116,7 @@ Feature: update disruption
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "ptobject AA doesn't exist"
+        And the field "error.message" should be "ptobject 'AA' doesn't exist"
 
     Scenario: update disruption without contributor
 

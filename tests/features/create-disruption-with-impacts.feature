@@ -23,7 +23,7 @@ Feature: Create Disruption and impacts
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "ptobject stop_area:AA doesn't exist"
+        And the field "error.message" should be "ptobject 'stop_area:AA' doesn't exist"
 
     Scenario: creation of disruption with one impact and ptobject not exist
 
@@ -48,7 +48,7 @@ Feature: Create Disruption and impacts
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "ptobject stop_area:AA doesn't exist"
+        And the field "error.message" should be "ptobject 'stop_area:AA' doesn't exist"
 
     Scenario: creation of disruption with one impact
 
