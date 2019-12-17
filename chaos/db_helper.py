@@ -190,6 +190,7 @@ def clean_message(msg, type=''):
         msg.text = msg.text.replace('\r\n', ' ')
 
 def manage_message(impact, json, client_id):
+    # Same management for every cases as 'messages' is not required
     if 'messages' not in json:
         json['messages'] = []
     messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
