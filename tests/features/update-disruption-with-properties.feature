@@ -321,4 +321,3 @@ Feature: Update disruptions with properties
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
         And the field "error.message" should be "property e408adec-0243-11e6-954b-0050568c8382 not found"
-

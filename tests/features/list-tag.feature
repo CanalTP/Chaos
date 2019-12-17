@@ -94,5 +94,3 @@ Feature: list tag
         When I get "/tags/7ffab230-3d48-4eea-aa2c-22f8680230b6"
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-
-

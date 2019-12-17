@@ -114,6 +114,3 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.severity.self.href" should exist
         And the field "impact.self.href" should exist
         And the field "impact.disruption.href" should exist
-
-
-

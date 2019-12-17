@@ -190,39 +190,39 @@ def clean_message(msg, type=''):
         msg.text = msg.text.replace('\r\n', ' ')
 
 def manage_message(impact, json, client_id):
+    if 'messages' not in json:
+        json['messages'] = []
     messages_db = dict((msg.channel_id, msg) for msg in impact.messages)
-    messages_json = dict()
-    channels_required = models.Channel.get_channels_required(client_id)
-    if 'messages' in json:
-        messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
-        manage_channels_required(messages_json, channels_required)
-        for message_json in json['messages']:
-            if message_json["channel"]["id"] in messages_db:
-                msg = messages_db[message_json["channel"]["id"]]
-                mapper.fill_from_json(msg, message_json, mapper.message_mapping)
-                clean_message(msg, msg.channel.content_type)
-                manage_message_meta(msg, message_json)
-            else:
-                message = models.Message()
-                message.impact_id = impact.id
-                mapper.fill_from_json(message, message_json, mapper.message_mapping)
-                channel = models.Channel.get(message.channel_id, client_id)
-                clean_message(message, channel.content_type)
-                impact.insert_message(message)
-                manage_message_meta(message, message_json)
-                messages_db[message.channel_id] = message
-    elif channels_required:
-        raise exceptions.InvalidJson('Channel{} {} {} required.'.format(
-            's' if len(channels_required) > 1 else '',
-            ', '.join(list(ch.id for ch in channels_required)),
-            'are' if len(channels_required) > 1 else 'is'
-        ))
+    messages_json = dict((msg["channel"]["id"], msg) for msg in json['messages'])
 
+    manage_channels_required(messages_json, client_id)
+    manage_message_db(impact, json, messages_json, messages_db, client_id)
+    manage_delete_message_db(impact, messages_json, messages_db)
+
+def manage_delete_message_db(impact, messages_json, messages_db):
     difference = set(messages_db) - set(messages_json)
     for diff in difference:
         impact.delete_message(messages_db[diff])
 
-def manage_channels_required(messages_json, channels_required):
+def manage_message_db(impact, json, messages_json, messages_db, client_id):
+    for message_json in json['messages']:
+        if message_json["channel"]["id"] in messages_db:
+            msg = messages_db[message_json["channel"]["id"]]
+            mapper.fill_from_json(msg, message_json, mapper.message_mapping)
+            clean_message(msg, msg.channel.content_type)
+            manage_message_meta(msg, message_json)
+        else:
+            message = models.Message()
+            message.impact_id = impact.id
+            mapper.fill_from_json(message, message_json, mapper.message_mapping)
+            channel = models.Channel.get(message.channel_id, client_id)
+            clean_message(message, channel.content_type)
+            impact.insert_message(message)
+            manage_message_meta(message, message_json)
+            messages_db[message.channel_id] = message
+
+def manage_channels_required(messages_json, client_id):
+    channels_required = models.Channel.get_channels_required(client_id)
     if channels_required:
         for channel_required in channels_required:
             if channel_required.id not in messages_json or messages_json[channel_required.id] is None:

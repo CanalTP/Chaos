@@ -91,4 +91,3 @@ Feature: Create tag
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
         And the field "tag.name" should be "foo"
-

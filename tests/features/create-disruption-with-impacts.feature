@@ -313,4 +313,4 @@ Feature: Create Disruption and impacts
         """
         Then the status code should be "400"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "Channels 5ffab230-3d48-4eea-aa2c-22f8680230b6, 5ffab232-3d48-4eea-aa2c-22f8680230b6 are required."
+        And the field "error.message" should be "Channel 5ffab230-3d48-4eea-aa2c-22f8680230b6 is required."
