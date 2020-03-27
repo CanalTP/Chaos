@@ -1,20 +1,13 @@
-FROM debian:7.8
+FROM python:2.7-alpine3.6
 
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get -yq install \
-        curl \
-        python2.7 \
-        python2.7-dev \
-        python-pip \
-        git \
-        libpq-dev \
-        wget \
-        netcat && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+    apk upgrade && \
+    apk add git gcc g++ postgresql-dev musl-dev libressl make
 
 ADD requirements.txt /tmp/requirements.txt
-RUN pip install -qr /tmp/requirements.txt -i https://pypi.python.org/simple/
-RUN pip install -q honcho -i https://pypi.python.org/simple/
+
+RUN pip install --upgrade pip && pip install -qr /tmp/requirements.txt
+RUN pip install -q honcho
 
 RUN wget -qP /tmp https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
 RUN tar -xf /tmp/protobuf-2.6.1.tar.gz -C /var/lib/
