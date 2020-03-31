@@ -2,7 +2,7 @@ FROM python:2.7-alpine3.6
 
 RUN apk update && \
     apk upgrade && \
-    apk add git gcc g++ postgresql-dev musl-dev libressl make
+    apk add git gcc g++ postgresql-dev musl-dev libressl make bash
 
 ADD requirements.txt /tmp/requirements.txt
 
@@ -15,7 +15,7 @@ RUN cd /var/lib/protobuf-2.6.1 && \
     ./configure && \
     make && \
     make install && \
-    ldconfig
+    ldconfig /etc/ld.so.conf.d
 RUN rm -rf /tmp/*
 
 ADD docker/run.sh /run.sh
