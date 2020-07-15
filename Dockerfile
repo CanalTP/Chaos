@@ -19,7 +19,7 @@ RUN set -xe && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install $buildDeps && \
     pip install --upgrade pip && \
-    pip install uwsgi -i https://pypi.python.org/simple/ && \
+    pip install uwsgi -i https://pypi.org/simple/ && \
     pip install setuptools==44.1.0 && \
     pip install -r requirements.txt -i https://pypi.python.org/simple/ && \
     python setup.py build_pbf && cd .. && \
