@@ -21,7 +21,7 @@ RUN set -xe && \
     pip install --upgrade pip && \
     pip install uwsgi -i https://pypi.org/simple/ && \
     pip install setuptools==44.1.0 && \
-    pip install -r requirements.txt -i https://pypi.python.org/simple/ && \
+    pip install -r requirements.txt -i https://pypi.org/simple/ && \
     python setup.py build_pbf && cd .. && \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps && \
     rm -rf /var/lib/apt/lists/*
