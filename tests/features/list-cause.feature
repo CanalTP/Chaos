@@ -2,7 +2,7 @@ Feature: list cause
 
     Background:
         I fill in header "X-Customer-Id" with "5"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
 
     Scenario: Call without client in the header fails
         I remove header "X-Customer-Id"

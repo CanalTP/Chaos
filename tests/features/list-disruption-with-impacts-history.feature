@@ -5,7 +5,7 @@ Feature: disruption with impacts history
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
 
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |

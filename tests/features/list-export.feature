@@ -2,7 +2,7 @@ Feature: list export
 
     Background:
         Given I fill in header "X-Customer-Id" with "5"
-        And I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        And I fill navitia authorization in header
 
     Scenario: list without client in the header fails
         Given I remove header "X-Customer-Id"

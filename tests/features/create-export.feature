@@ -2,7 +2,7 @@ Feature: Create export
     Background:
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
 
     Scenario: we cannot create an export without header X-Customer-Id
         I remove header "X-Customer-Id"

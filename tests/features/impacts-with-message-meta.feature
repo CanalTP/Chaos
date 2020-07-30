@@ -2,7 +2,7 @@ Feature: impacts with message meta
 
     Background:
         I fill in header "X-Customer-Id" with "5"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Coverage" with "jdr"
         I fill in header "X-Contributors" with "contrib1"
 
@@ -92,7 +92,7 @@ Feature: impacts with message meta
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id":"7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects":[{"id":"line:JDR:M1","type":"line"}],"messages":[{"text":"bodyMail","channel":{"id":"7ffab232-3d48-4eea-aa2c-22f8680230b7"},"meta":[{"key":"objectMail","value":"Traffic"}]}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}

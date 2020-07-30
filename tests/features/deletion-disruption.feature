@@ -2,7 +2,7 @@ Feature: disruption can be deleted
 
     Background:
         I fill in header "X-Customer-Id" with "5"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contrib1"
 
     Scenario: delete disruption without contributor in the header is not valid
@@ -121,7 +121,7 @@ Feature: disruption can be deleted
             | bar       | bye   | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
 
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I get "/disruptions"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -178,7 +178,7 @@ Feature: disruption can be deleted
         When I delete "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
         Then the status code should be "204"
 
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I get "/impacts?pt_object_type=network&start_date=2014-01-01T15:52:12Z&end_date=2014-02-20T23:52:12Z"
 
         Then the status code should be "200"

@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  chaos:
+    image: chaos:test
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/chaos_testing
+    command: tail -f /dev/null
+    volumes:
+      - .:/var/www/Chaos
+    working_dir: /var/www/Chaos
+    links:
+      - database
+
+  database:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_USER=navitia
+      - POSTGRES_PASSWORD=navitia
+      - POSTGRES_DB=chaos_testing
+    volumes:
+      - ./docker/postgres/add_uuid_extension.sh:/docker-entrypoint-initdb.d/add_uuid_extension.sh
+
+networks:
+  default:
+    external:
+      name: canaltp

@@ -16,7 +16,7 @@ Feature: Create disruptions with properties
 
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
@@ -40,7 +40,7 @@ Feature: Create disruptions with properties
             | weather   | 2019-12-06T23:52:12 | 2019-12-06T23:52:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
@@ -63,7 +63,7 @@ Feature: Create disruptions with properties
             | weather   | 2019-12-06T23:52:12 | 2019-12-06T23:52:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
@@ -86,7 +86,7 @@ Feature: Create disruptions with properties
             | weather   | 2019-12-06T23:52:12 | 2019-12-06T23:52:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
@@ -109,7 +109,7 @@ Feature: Create disruptions with properties
             | weather   | 2019-12-06T23:52:12 | 2019-12-06T23:52:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
@@ -132,7 +132,7 @@ Feature: Create disruptions with properties
             | weather   | 2019-12-06T23:52:12 | 2019-12-06T23:52:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
@@ -155,7 +155,7 @@ Feature: Create disruptions with properties
             | weather   | 2019-12-06T23:52:12 | 2019-12-06T23:52:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
@@ -181,7 +181,7 @@ Feature: Create disruptions with properties
         | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """
@@ -211,7 +211,7 @@ Feature: Create disruptions with properties
         | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I post to "/disruptions" with:
         """

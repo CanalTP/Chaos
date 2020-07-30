@@ -26,7 +26,7 @@ Feature: Manipulate impacts in a Disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
@@ -60,7 +60,7 @@ Feature: Manipulate impacts in a Disruption
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
@@ -96,7 +96,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab211-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
@@ -132,7 +132,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib2"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab211-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -167,7 +167,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -208,7 +208,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         Given I post to "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -252,7 +252,7 @@ Feature: Manipulate impacts in a Disruption
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I get "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -288,7 +288,7 @@ Feature: Manipulate impacts in a Disruption
 
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I get "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts"
         Then the status code should be "200"
         And the header "Content-Type" should be "application/json"
@@ -323,7 +323,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/AA-VV/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}]}
@@ -359,7 +359,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
         {"objects": [{"id": "network:JDR:2","type": "network"},{"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -409,7 +409,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/7ffab232-3d48-4eea-aa2c-22f8680230b6/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "messages": [{"text": "message 2","channel": {"id": "4ffab230-3d48-4eea-aa2c-22f8680230b6"}}], "objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -448,7 +448,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -489,7 +489,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "send_notifications": true, "notification_date": "2014-04-06T22:52:12Z", "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -531,7 +531,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "send_notifications": false, "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -573,7 +573,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -615,7 +615,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "notification_date": "2014-06-24T10:35:00Z", "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -658,7 +658,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -701,7 +701,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "notification_date": "", "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -737,7 +737,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -773,7 +773,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_periods": []}
@@ -809,7 +809,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "route:JDR:M1","type": "route"}], "application_period_patterns": []}
@@ -851,7 +851,7 @@ Feature: Manipulate impacts in a Disruption
 
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contrib1"
 
         When I get to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b1":

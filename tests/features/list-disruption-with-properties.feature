@@ -23,7 +23,7 @@ Feature: List disruptions with properties
         | val2  | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | f408adec-0243-11e6-954b-0050568c8382 |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I get to "/disruptions":
         Then the status code should be "200"
@@ -49,7 +49,7 @@ Feature: List disruptions with properties
         | foo       | hello | 2014-04-02T23:52:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2019-04-01T00:00:00        | 2019-04-02T00:00:00   |
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I get to "/disruptions":
         Then the status code should be "200"
@@ -87,7 +87,7 @@ Feature: List disruptions with properties
 
         I fill in header "X-Customer-Id" with "test"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         I fill in header "X-Contributors" with "contributor"
         When I get to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6":
         Then the status code should be "200"

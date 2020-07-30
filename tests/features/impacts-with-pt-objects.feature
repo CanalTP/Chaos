@@ -25,7 +25,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2AAA","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -59,7 +59,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -123,7 +123,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_area:JDR:SA:PTVIN","type": "stop_area"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -161,7 +161,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "stop_point:JDR:SP:BREGS1","type": "stop_point"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -199,7 +199,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "line:JDR:M1","type": "line"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -240,7 +240,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -288,7 +288,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}, {"id": "line:JDR:M1","type": "line"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -335,7 +335,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/2ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "3ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -372,7 +372,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -411,7 +411,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section", "line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -449,7 +449,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section":{"line":{"id":"line:JDR:M1","type":"line"},"start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"},"end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}},{"id":"line:JDR:M2", "type":"line_section","line_section":{"line":{"id":"line:JDR:M2","type":"line"},"start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"},"end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}}],"application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -487,7 +487,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -528,7 +528,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -569,7 +569,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -612,7 +612,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line"},{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:PTVIN", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}]}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -655,7 +655,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M1", "type":"line_section","line_section": {"line":{"id":"line:JDR:M1","type":"line"}, "start_point":{"id":"stop_area:Failed", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:BERAU", "type":"stop_area"}}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"},{"begin": "2014-04-29T16:52:00Z","end": "2014-05-22T02:15:00Z"}]}
@@ -724,7 +724,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:TAD:CanalTP","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -795,7 +795,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:1","type": "network"}, {"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -874,7 +874,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}]}}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -951,7 +951,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction", "value":"12"}, {"key":"direction", "value":"34"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -1040,7 +1040,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction", "value":"1234"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -1129,7 +1129,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -1208,7 +1208,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[{"key":"direction"}] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -1221,7 +1221,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id":"line:JDR:M5", "type":"line_section","line_section": {"line":{"id":"line:JDR:M5","type":"line"}, "start_point":{"id":"stop_area:JDR:SA:BASTI", "type":"stop_area"}, "end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}], "metas":[] }}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}
@@ -1256,7 +1256,7 @@ Feature: Manipulate impacts in a Disruption
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Contributors" with "contrib1"
         I fill in header "X-Coverage" with "jdr"
-        I fill in header "Authorization" with "d5b0148c-36f4-443c-9818-1f2f74a00be0"
+        I fill navitia authorization in header
         When I post to "/disruptions/a750994c-01fe-11e4-b4fb-080027079ff3/impacts" with:
         """
         {"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"}, "objects": [{"id": "network:JDR:2","type": "network"}], "application_periods": [{"begin": "2014-04-29T16:52:00Z","end": "2014-06-22T02:15:00Z"}]}

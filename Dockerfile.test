@@ -1,0 +1,5 @@
+FROM python:2.7-alpine3.4
+
+RUN apk update && apk add --no-cache postgresql-dev gcc musl-dev protobuf git && \
+    pip install --upgrade pip && \
+    pip install virtualenv -i https://pypi.python.org/simple/

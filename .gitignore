@@ -8,3 +8,13 @@ chaos/clients_tokens.json
 # IDE / text editor
 .idea
 *~
+
+# Tests
+.coverage
+coverage.xml
+lettucetests.xml
+nosetest_chaos.xml
+pylint.log
+
+# Docker
+docker/postgres/data
