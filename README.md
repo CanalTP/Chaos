@@ -134,12 +134,6 @@ You can add a 'master' key in the file. It will allow you to access all resource
 
 ## Tests
 
-The following commands for tests are also working in Docker environment, you just have to run before: 
-```
-docker-compose exec ws bash
-cd tests
-```
-
 ### Unit tests
 ```
 cd tests
@@ -155,6 +149,14 @@ To stop directly on faulty test
 ```
 cd tests
 honcho run lettuce --failfast
+```
+
+### With docker
+```
+docker-compose -f docker-compose.test.yml build --pull
+docker-compose -f docker-compose.test.yml up -d
+docker-compose -f docker-compose.test.yml exec -T chaos /bin/sh ./docker/tests.sh
+docker-compose -f docker-compose.test.yml down --remove-orphans
 ```
 
 ## Copyright
