@@ -115,7 +115,7 @@ def i_fill_in_header(step, field_name, value):
 
 @step('I fill navitia authorization in header')
 def i_fill_navitia_authorization_in_header(step):
-    world.headers['Authorization'] = os.getenv('NAVITIA_AUTHORIZATION')
+    world.headers['Authorization'] = str(os.getenv('NAVITIA_AUTHORIZATION', 'd5b0148c-36f4-443c-9818-1f2f74a00be0'))
 
 @step('I clean header')
 def i_clean_header(step):
