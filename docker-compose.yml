@@ -1,23 +1,29 @@
-version: '3.5'
+version: '3'
 
 services:
   ws:
-    image: chaos-jenkins-test:1.0.0
-    user: "$_UID:$GID"
+    image: chaos-prod:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
-      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@172.18.0.1/chaos
-      - RABBITMQ_CONNECTION_STRING=pyamqp://guest:guest@172.18.0.1:5672//?heartbeat=60
-      - NAVITIA_URL=http://api.navitia.io
-      - DOMAIN_NAME=chaos-ws.local.canaltp.fr
-      - CACHE_TYPE=redis
-      - CACHE_REDIS_HOST=redis
-      - NAVITIA_CACHE_TIMEOUT=86400
-      - NAVITIA_PUBDATE_CACHE_TIMEOUT=10
+      - RABBITMQ_ENABLED=0
+      - NAVITIA_URL=http://navitia2-ws.ctp.internal.canaltp.fr
+      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/chaos_testing
     volumes:
       - .:/var/www/Chaos
+    working_dir: /var/www/Chaos
+    links:
+      - database
 
-  redis:
-    image: redis
+  database:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_USER=navitia
+      - POSTGRES_PASSWORD=navitia
+      - POSTGRES_DB=chaos_testing
+    volumes:
+      - ./docker/postgres/add_uuid_extension.sh:/docker-entrypoint-initdb.d/add_uuid_extension.sh
 
 networks:
   default:
