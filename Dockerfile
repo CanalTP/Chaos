@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM python:2.7-slim-jessie
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install \
