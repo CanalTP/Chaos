@@ -9,21 +9,10 @@ services:
     environment:
       - RABBITMQ_ENABLED=0
       - NAVITIA_URL=http://navitia2-ws.ctp.internal.canaltp.fr
-      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/chaos_testing
+      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@172.18.0.1/chaos
     volumes:
       - .:/var/www/Chaos
     working_dir: /var/www/Chaos
-    links:
-      - database
-
-  database:
-    image: postgres:9.4
-    environment:
-      - POSTGRES_USER=navitia
-      - POSTGRES_PASSWORD=navitia
-      - POSTGRES_DB=chaos_testing
-    volumes:
-      - ./docker/postgres/add_uuid_extension.sh:/docker-entrypoint-initdb.d/add_uuid_extension.sh
 
 networks:
   default:
