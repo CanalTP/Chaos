@@ -1,0 +1,10 @@
+*.md
+documentation/
+tests/
+.gitinore
+.gitmodules
+COPYING
+docker-compose.test.yml
+Dockerfile.dev
+Dockerfile.test
+Jenkinsfile
