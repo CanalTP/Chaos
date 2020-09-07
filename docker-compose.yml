@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
   ws:
@@ -7,9 +7,10 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - RABBITMQ_ENABLED=0
+      - RABBITMQ_ENABLED=1
+      - RABBITMQ_CONNECTION_STRING=pyamqp://guest:guest@172.21.0.1:5672//?heartbeat=60
       - NAVITIA_URL=http://navitia2-ws.ctp.internal.canaltp.fr
-      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@172.18.0.1/chaos
+      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@172.21.0.1/chaos
     volumes:
       - .:/var/www/Chaos
     working_dir: /var/www/Chaos
