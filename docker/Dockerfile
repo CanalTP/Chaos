@@ -1,11 +1,11 @@
-FROM python:2.7-slim-jessie
+FROM python:2.7-slim-stretch
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install \
         wget \
         python-pip \
         libpq5 \
-        libprotobuf9 \
+        libprotobuf10 \
         libpython2.7 \
         netcat \
         apache2 \
