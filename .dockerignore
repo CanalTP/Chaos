@@ -1,10 +1,11 @@
+.*
+*/docker*
 *.md
 documentation/
+requirements/
 tests/
-.gitinore
-.gitmodules
+venv/
 COPYING
-docker-compose.test.yml
-Dockerfile.dev
-Dockerfile.test
 Jenkinsfile
+PULL_REQUEST_TEMPLATE
+pylint.rc
