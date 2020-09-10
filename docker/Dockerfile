@@ -30,6 +30,7 @@ RUN set -xe && \
 
 EXPOSE 5000
 
+ENV CHAOS_CONFIG_FILE=default_settings.py
 ENV PYTHONPATH=.
 
 CMD ["mod_wsgi-express", "start-server", "docker/chaos.wsgi", "--port", "5000", "--chunked-request", "--user", "www-data", "--group", "www-data"]

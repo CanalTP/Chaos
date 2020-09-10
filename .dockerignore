@@ -1,6 +1,6 @@
 .*
 *.md
-*/docker*
+docker/*
 !docker/chaos.wsgi
 documentation/
 requirements/

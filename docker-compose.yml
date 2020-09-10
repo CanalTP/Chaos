@@ -1,15 +1,13 @@
-version: '3.8'
+version: '3.5'
 
 services:
   ws:
-    image: chaos-prod:1.0.0
+    image: navitia/chaos-ws:dev
     build:
       context: .
       dockerfile: docker/Dockerfile
     environment:
-      - RABBITMQ_ENABLED=1
       - RABBITMQ_CONNECTION_STRING=pyamqp://guest:guest@172.21.0.1:5672//?heartbeat=60
-      - NAVITIA_URL=http://navitia2-ws.ctp.dev.canaltp.fr
       - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@172.21.0.1/chaos
     volumes:
       - .:/srv/chaos
