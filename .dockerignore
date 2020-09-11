@@ -1,7 +1,7 @@
 .*
 *.md
-docker/*
-!docker/chaos.wsgi
+*.pyc
+*/docker*
 documentation/
 requirements/
 tests/

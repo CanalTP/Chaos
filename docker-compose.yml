@@ -1,19 +1,55 @@
-version: '3.5'
+version: '3.8'
 
 services:
   ws:
-    image: navitia/chaos-ws:dev
+    image: navitia/chaos-ws:${VERSION}
     build:
       context: .
       dockerfile: docker/Dockerfile
+    networks:
+      - chaos
+      - lb-common
     environment:
-      - RABBITMQ_CONNECTION_STRING=pyamqp://guest:guest@172.21.0.1:5672//?heartbeat=60
-      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@172.21.0.1/chaos
-    volumes:
-      - .:/srv/chaos
-    working_dir: /srv/chaos
+      - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
+      - DEBUG=${DEBUG}
+      - NAVITIA_URL=${NAVITIA_URL}
+      - NAVITIA_TIMEOUT=${NAVITIA_TIMEOUT}
+      - RABBITMQ_CONNECTION_STRING=${RABBITMQ_CONNECTION_STRING}
+      - CACHE_TYPE=${CACHE_TYPE}
+      - CACHE_DEFAULT_TIMEOUT=${CACHE_DEFAULT_TIMEOUT}
+      - NAVITIA_CACHE_TIMEOUT=${NAVITIA_CACHE_TIMEOUT}
+      - NAVITIA_PUBDATE_CACHE_TIMEOUT=${NAVITIA_PUBDATE_CACHE_TIMEOUT}
+      - CACHE_REDIS_HOST=${CACHE_REDIS_HOST}
+      - CACHE_REDIS_PORT=${CACHE_REDIS_PORT}
+      - CACHE_REDIS_PASSWORD=${CACHE_REDIS_PASSWORD}
+      - CACHE_REDIS_DB=${CACHE_REDIS_DB}
+      - CACHE_KEY_PREFIX=${CACHE_KEY_PREFIX}
+      - EXCHANGE=${EXCHANGE}
+      - ENABLE_RABBITMQ=${ENABLE_RABBITMQ}
+      - PROFILING_ENABLED=${PROFILING_ENABLED}
+      - IMPACT_EXPORT_DIR=${IMPACT_EXPORT_DIR}
+      - IMPACT_EXPORT_PYTHON=${IMPACT_EXPORT_PYTHON}
+      - NEW_RELIC_CONFIG_FILE=${NEW_RELIC_CONFIG_FILE}
+      - CACHE_CONFIGURATION=${CACHE_CONFIGURATION}
+      - NEW_RELIC_CONFIG_FILE=${NEW_RELIC_CONFIG_FILE}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: ${FLUENTD_ADDRESS}
+        tag: chaos.ws.http
+        fluentd-async-connect: "true"
+    deploy:
+      replicas: "${REPLICAS_CHAOS_APACHE}"
+      labels:
+        - "traefik.frontend.rule=Host:chaos-${ENV}.canaltp.fr,chaos-${ENV}.canaltp.prod"
+        - "traefik.docker.network=lb-common"
+        - "traefik.port=5000"
+        - "traefik.frontend.entryPoints=http"
+        - "traefik.enable=true"
 
 networks:
-  default:
-    external:
-      name: canaltp
+  chaos:
+    name: chaos_network
+    driver: overlay
+  lb-common:
+    external: true

@@ -1,5 +1,7 @@
 FROM python:2.7-slim-stretch
 
+WORKDIR /srv/chaos
+
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -yq install \
         wget \
@@ -8,13 +10,11 @@ RUN apt-get update && \
         libprotobuf10 \
         libpython2.7 \
         netcat \
-        apache2 \
         apache2-dev \
         && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /srv/chaos
-WORKDIR /srv/chaos
 
 RUN set -xe && \
     buildDeps="libpq-dev python-dev protobuf-compiler git" && \
@@ -30,7 +30,8 @@ RUN set -xe && \
 
 EXPOSE 5000
 
-ENV CHAOS_CONFIG_FILE=default_settings.py
-ENV PYTHONPATH=.
+VOLUME ["/data/exports", "/conf/newrelic.ini"]
 
-CMD ["mod_wsgi-express", "start-server", "docker/chaos.wsgi", "--port", "5000", "--chunked-request", "--user", "www-data", "--group", "www-data"]
+CMD ["mod_wsgi-express", "start-server", "chaos.wsgi", "--port", "5000", "--chunked-request", "--user", "www-data", "--group", "www-data"]
+
+
