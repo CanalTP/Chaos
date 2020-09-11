@@ -46,6 +46,9 @@ services:
         - "traefik.port=5000"
         - "traefik.frontend.entryPoints=http"
         - "traefik.enable=true"
+    volumes:
+      - ./exports:/data/exports:rw
+      - ./newrelic.ini:/conf/newrelic.ini:ro
 
 networks:
   chaos:

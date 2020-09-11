@@ -18,3 +18,4 @@ pylint.log
 
 # Docker
 docker/postgres/data
+*.local*
