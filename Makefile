@@ -17,4 +17,4 @@ update_protobuf:
 #
 
 build_prod_env: init_protobuf update_protobuf
-	./docker/build
+	./docker/build.sh
