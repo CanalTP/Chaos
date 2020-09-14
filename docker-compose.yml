@@ -31,7 +31,6 @@ services:
       - IMPACT_EXPORT_PYTHON=${IMPACT_EXPORT_PYTHON}
       - NEW_RELIC_CONFIG_FILE=${NEW_RELIC_CONFIG_FILE}
       - CACHE_CONFIGURATION=${CACHE_CONFIGURATION}
-      - NEW_RELIC_CONFIG_FILE=${NEW_RELIC_CONFIG_FILE}
     logging:
       driver: "fluentd"
       options:
