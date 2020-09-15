@@ -1,8 +1,8 @@
-version: '3.8'
+version: '3.5'
 
 services:
   ws:
-    image: navitia/chaos-ws:${VERSION}
+    image: ${REGISTRY_HOST}/navitia/chaos-ws:${VERSION}
     build:
       context: .
       dockerfile: docker/Dockerfile
