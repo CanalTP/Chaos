@@ -506,7 +506,7 @@ class Disruption(TimestampMixin, db.Model):
                 'ch.created_at AS channel_created_at', 'ch.updated_at AS channel_updated_at', 'ch.max_size AS channel_max_size',
                 'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id', 'cht.name AS channel_type_name',
                 'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
-                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
+                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern, pa.timezone AS pattern_timezone',
                 'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
                 'ls.id AS line_section_id',
                 'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
@@ -1086,7 +1086,7 @@ class Disruption(TimestampMixin, db.Model):
                 'ch.created_at AS channel_created_at', 'ch.updated_at AS channel_updated_at', 'ch.max_size AS channel_max_size',
                 'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id', 'cht.name AS channel_type_name',
                 'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
-                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
+                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern, pa.timezone AS pattern_timezone',
                 'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
                 'ls.id AS line_section_id',
                 'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
@@ -1142,7 +1142,7 @@ class Disruption(TimestampMixin, db.Model):
             'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id',
             'cht.name AS channel_type_name',
             'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
-            'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
+            'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern, pa.timezone AS pattern_timezone',
             'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
             'ls.id AS line_section_id',
             'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
@@ -1778,7 +1778,7 @@ class Impact(TimestampMixin, db.Model):
                 'ch.created_at AS channel_created_at', 'ch.updated_at AS channel_updated_at', 'ch.max_size AS channel_max_size',
                 'ch.name AS channel_name', 'ch.required AS channel_required', 'cht.id AS channel_type_id', 'cht.name AS channel_type_name',
                 'me.id AS meta_id', 'me.key AS meta_key', 'me.value AS meta_value',
-                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern',
+                'pa.id AS pattern_id, pa.start_date AS pattern_start_date, pa.end_date AS pattern_end_date, pa.weekly_pattern AS pattern_weekly_pattern, pa.timezone AS pattern_timezone',
                 'ts.id AS time_slot_id, ts.begin AS time_slot_begin, ts.end AS time_slot_end',
                 'ls.id AS line_section_id',
                 'po_line.uri AS line_section_line_uri, po_line.type AS line_section_line_type',
@@ -2046,6 +2046,7 @@ class Pattern(TimestampMixin, db.Model):
     weekly_pattern = db.Column(BIT(7), unique=False, nullable=False)
     impact_id = db.Column(UUID, db.ForeignKey(Impact.id), index=True)
     time_slots = db.relationship('TimeSlot', backref='pattern', lazy='joined', cascade='delete')
+    time_zone = db.Column('timezone', db.String(255), nullable=True)
 
     def __init__(self, impact_id=None):
         self.id = str(uuid.uuid1())

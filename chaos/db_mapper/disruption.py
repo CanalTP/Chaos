@@ -69,7 +69,8 @@ def map_disruption(results):
                 'id': r.pattern_id,
                 'start_date': r.pattern_start_date,
                 'end_date': r.pattern_end_date,
-                'weekly_pattern': r.pattern_weekly_pattern
+                'weekly_pattern': r.pattern_weekly_pattern,
+                'timezone': r.pattern_timezone
             }
         if application_period_patterns_id not in time_slots:
             time_slots[application_period_patterns_id] = {}

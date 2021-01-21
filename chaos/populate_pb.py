@@ -100,6 +100,7 @@ def populate_application_patterns(impact, impact_pb):
         pattern_pb.week_pattern.saturday = bool(int(pattern.weekly_pattern[5]))
         pattern_pb.week_pattern.sunday = bool(int(pattern.weekly_pattern[6]))
         populate_time_slot(pattern, pattern_pb)
+        pattern_pb.timezone = pattern.time_zone
 
 
 def populate_time_slot(pattern, pattern_pb):

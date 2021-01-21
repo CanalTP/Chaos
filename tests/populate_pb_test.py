@@ -653,6 +653,7 @@ def test_impact_with_application_period_patterns():
     # "time_slots": [{"begin": "08:45", "end": "09:30"}]
     eq_(disruption_pb.impacts[0].application_patterns[0].time_slots[0].begin, 31500)
     eq_(disruption_pb.impacts[0].application_patterns[0].time_slots[0].end, 34200)
+    eq_(disruption_pb.impacts[0].application_patterns[0].timezone, 'Europe/Paris')
 
     # "start_date": "2015-02-05", "end_date": "2015-02-06", "weekly_pattern": "1111111",
     eq_(disruption.impacts[0].patterns[1].weekly_pattern, '1111111')
@@ -675,3 +676,4 @@ def test_impact_with_application_period_patterns():
     # "time_slots": [{"begin": "17:45", "end": "19:30"}]
     eq_(disruption_pb.impacts[0].application_patterns[1].time_slots[0].begin, 63900)
     eq_(disruption_pb.impacts[0].application_patterns[1].time_slots[0].end, 70200)
+    eq_(disruption_pb.impacts[0].application_patterns[1].timezone, 'Europe/Paris')
