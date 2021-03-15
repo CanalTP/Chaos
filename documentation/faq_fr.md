@@ -51,8 +51,8 @@ Utiliser une `line_section` permet d'impacter la ligne 42 de C vers F.
 <br>Une `line_section` est 'passante', c'est à dire qu'un impact entre C et F n’empêchera pas un trajet de A vers G. cf [Navitia > line_sections](https://github.com/CanalTP/navitia/blob/dev/documentation/rfc/line_sections.md)
 
 ## Comment ne perturber un point d'arrêt que pour une seule ligne s'il est desservi par plusieurs autres lignes ?
-Exemple un arrêt D est desservi par les lignes 42 et  69. Un évènement à cet arrêt ne concernera que la ligne 42.
-- si vous créez un impact sur le point d'arrêt D, Navitia remontera l'évènement pour toutes les lignes passant par cet arrêt lignes 42 et  69.
+Exemple un arrêt D est desservi par les lignes 42 et 69. Un évènement à cet arrêt ne concernera que la ligne 42.
+- si vous créez un impact sur le point d'arrêt D, Navitia remontera l'évènement pour toutes les lignes passant par cet arrêt, soit les lignes 42 et 69.
 - en créant un impact `line_section` pour la ligne 42 de l'arrêt D à l'arrêt D, Navitia remontera l’évènement précisément pour les itinéraires de la ligne 42 où le voyageur monte ou descend à l'arrêt D.
 
 ## Combien de temps faut-il a Navitia pour intégrer un `impact` ?
