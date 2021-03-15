@@ -60,7 +60,7 @@ Il peut s'écouler de 30 secondes à 2 minutes entre une création dans Chaos et
 
 ## Dans un impact, à quoi servent les attributs `notification_date` et `send_notification` ?
 Ce sont des attributs destinés à des applications tierces d'envois de notification, au libre choix des intégrateurs.
-Dans notre propre applicatif, send_notification indique que l'impact doit générer des envois de notification, et notification_date a quelle date cela doit être fait.
+Dans le webservice de gestion des alertes voyageurs aussi développé par Kisio Digital (Kronos),  `send_notification` indique que l'impact doit générer des envois d'alertes, et `notification_date` à quelle date cela doit être fait.
 
 ## Un média 'front' peut-il utiliser directement Chaos pour connaître l'Information Voyageurs ?
 Non, Chaos est un composant d'une chaîne d'outils back-office. Les medias 'front' doivent requêter Navitia pour obtenir cette information.
