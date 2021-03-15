@@ -1,6 +1,7 @@
 # FAQ Chaos
 
-## Erreur 400 lors de ma première requête POST.
+Pour rappel, Chaos est une API d'alimentation de  [Navitia](https://github.com/CanalTP/navitia) en [disruptions](http://doc.navitia.io/#traffic-reports).
+## Erreur 400 lors de ma première requête POST ?
 Verifiez la présence de content-type "application/json" dans votre le header.
 
 ## Quelle est la difference entre `application_period` et `publication_period` ?
