@@ -8,7 +8,7 @@ It can work together with [Kirin](https://github.com/CanalTP/kirin) which can fe
 
 [Swagger](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/CanalTP/Chaos/master/documentation/swagger.yml)
 
-For french users, this FAQ: https://github.com/CanalTP/Chaos/master/documentation/faq_fr.md
+For french users, you can see this [FAQ](documentation/faq_fr.md)
 
 ## Installation
 
@@ -191,4 +191,3 @@ Tchat channel [`#navitia` on riot](https://riot.im/app/#/room/#navitia:matrix.or
 Forum [Navitia on googlegroups](https://groups.google.com/d/forum/navitia)
 
 www.navitia.io
-
