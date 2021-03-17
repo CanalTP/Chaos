@@ -8,6 +8,8 @@ It can work together with [Kirin](https://github.com/CanalTP/kirin) which can fe
 
 [Swagger](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/CanalTP/Chaos/master/documentation/swagger.yml)
 
+For french users, this FAQ: https://github.com/CanalTP/Chaos/master/documentation/faq_fr.md
+
 ## Installation
 
 ### The hard way
