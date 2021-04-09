@@ -5,7 +5,7 @@ services:
     image: chaos:test
     build:
       context: .
-      dockerfile: Dockerfile.test
+      dockerfile: docker/Dockerfile.test
     environment:
       - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/chaos_testing
     command: tail -f /dev/null

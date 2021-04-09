@@ -12,6 +12,31 @@ For french users, you can see this [FAQ](documentation/faq_fr.md)
 
 ## Installation
 
+### The easy way (with Docker)
+
+#### Production environment
+
+[Installation for Production](documentation/build_and_deploy_prod_env.md)
+
+
+#### Local environment
+```
+git clone git@github.com:CanalTP/Chaos.git
+cd Chaos
+git submodule init
+git submodule update
+docker-compose up -d
+```
+
+To watch logs output: 
+```
+docker-compose logs -f
+``` 
+
+Chaos will be accessible on http://chaos_ws_1.docker if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
+The database will be accessible at 'chaos_database_1.docker' and default RabbitMQ interface at 'http://chaos_rabbitmq_1.docker:15672'.
+
+
 ### The hard way
 
 #### Clone the Chaos repository
@@ -99,24 +124,6 @@ ENABLE_RABBITMQ = False
 ```
 honcho start
 ```
-
-#### The easy way (with Docker)
-
-```
-git clone git@github.com:CanalTP/Chaos.git
-cd Chaos
-git submodule init
-git submodule update
-docker-compose up -d
-```
-
-To watch logs output: 
-```
-docker-compose logs -f
-``` 
-
-Chaos will be accessible on http://chaos_ws_1.docker if you are using the [docker-gen-hosts tool](https://github.com/vincentlepot/docker-gen-hosts), it will also be accessible on http://chaos-ws.local.canaltp.fr 
-The database will be accessible at 'chaos_database_1.docker' and default RabbitMQ interface at 'http://chaos_rabbitmq_1.docker:15672'.
 
 ## Security (optional)
 

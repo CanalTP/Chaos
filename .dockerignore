@@ -1,0 +1,12 @@
+.*
+*.md
+*.pyc
+*/docker*
+documentation/
+requirements/
+tests/
+venv/
+COPYING
+Jenkinsfile
+PULL_REQUEST_TEMPLATE
+pylint.rc

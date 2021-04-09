@@ -1,42 +1,46 @@
-version: '2'
+version: '3.5'
 
 services:
-  ws:
-    image: navitia/chaos-ws:dev
+  chaos-ws:
+    image: ${REGISTRY_HOST}/chaos/chaos-ws:${VERSION}
+    depends_on:
+      - chaos-ws-redis
+    networks:
+      - chaos
+      - lb-common
     environment:
-      - SQLALCHEMY_DATABASE_URI=postgresql://navitia:navitia@database/chaos
-      - RABBITMQ_CONNECTION_STRING=pyamqp://guest:guest@rabbitmq:5672//?heartbeat=60
-      - NAVITIA_URL=http://api.navitia.io
-      - DOMAIN_NAME=chaos-ws.local.canaltp.fr
-      - CACHE_TYPE=redis
-      - CACHE_REDIS_HOST=redis
-      - NAVITIA_CACHE_TIMEOUT=86400
-      - NAVITIA_PUBDATE_CACHE_TIMEOUT=10
-    command: /bin/bash /var/www/Chaos/docker/honcho_launcher.sh
+      - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
+      - NAVITIA_URL=${NAVITIA_URL}
+      - NAVITIA_TIMEOUT=${NAVITIA_TIMEOUT}
+      - RABBITMQ_CONNECTION_STRING=${RABBITMQ_CONNECTION_STRING}
+      - CACHE_REDIS_HOST=${CACHE_REDIS_HOST}
+      - IMPACT_EXPORT_DIR=${IMPACT_EXPORT_DIR}
+      - NEW_RELIC_CONFIG_FILE=${NEW_RELIC_CONFIG_FILE}
+    logging:
+     driver: "fluentd"
+      options:
+       tag: chaos.ws.http
+       fluentd-async-connect: "true"
+    deploy:
+      replicas: "${REPLICAS_CHAOS_WS}"
+      labels:
+        - "traefik.frontend.rule=Host:chaos-${ENV}.navitia.io,chaos-${ENV}.canaltp.prod"
+        - "traefik.docker.network=lb-common"
+        - "traefik.port=5000"
+        - "traefik.frontend.entryPoints=http"
+        - "traefik.enable=true"
     volumes:
-      - .:/var/www/Chaos
-    links:
-      - database
-      - rabbitmq
+      - ${IMPACT_EXPORT_DIR}:/data/exports:rw
+      - ${NEW_RELIC_CONFIG_FILE}:/conf/newrelic.ini:ro
 
-  rabbitmq:
-    image: rabbitmq:management
-
-  database:
-    image: postgres:9.4
-    environment:
-      - POSTGRES_USER=navitia
-      - POSTGRES_PASSWORD=navitia
-      - POSTGRES_DB=chaos
-    volumes:
-      - ./docker/postgres/data:/var/lib/postgresql/data:rw
-      - ./docker/postgres/add_uuid_extension.sh:/docker-entrypoint-initdb.d/add_uuid_extension.sh
-      - ./docker/postgres/add_test_database.sh:/docker-entrypoint-initdb.d/add_test_database.sh
-
-  redis:
-    image: redis
+  chaos-ws-redis:
+    image: redis:${REDIS_VERSION}
+    networks:
+      - chaos
 
 networks:
-  default:
-    external:
-      name: canaltp
+  chaos:
+    name: chaos_network
+    driver: overlay
+  lb-common:
+    external: true
