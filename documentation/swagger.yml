@@ -2618,16 +2618,14 @@ components:
           type: string
           maxLength: 250
         type:
-          description: >
-            Impacted PT object type in navitia (BETA version)
-
-            "routes" or "line" property are mandatory.
-
-            If both are specified, "line" will be ignored. Only "routes" will be kept.
+          description: Impacted PT object type in navitia (BETA version)
           type: string
           enum:
             - rail_section
         rail_section:
+          title: >
+            "routes" or "line" property are mandatory.
+            If both are specified, "line" will be ignored. Only "routes" will be kept.
           type: object
           properties:
             start_point:
