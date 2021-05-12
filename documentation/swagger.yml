@@ -2664,7 +2664,7 @@ components:
                 required:
                   - id
                   - order
-              minItems: 1
+              minItems: 0
             routes:
               type: array
               items:
