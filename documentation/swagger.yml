@@ -2664,7 +2664,7 @@ components:
                 required:
                   - id
                   - order
-              minItems: 1
+              minItems: 0
             routes:
               type: array
               items:
@@ -2694,7 +2694,6 @@ components:
           required:
             - start_point
             - end_point
-            - blocked_stop_areas
     disruption_impact_message:
       type: object
       required:
