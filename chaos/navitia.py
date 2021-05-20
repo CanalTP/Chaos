@@ -136,7 +136,7 @@ class Navitia(object):
         if not uri or not type:
             return None
 
-        if type == 'line_section':
+        if type in ['line_section', 'rail_section']:
             return None
 
         response = self.get_pt_object(uri, type)

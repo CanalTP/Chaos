@@ -297,7 +297,7 @@ class Disruptions(flask_restful.Resource):
 
         # Add localization present in Json
         try:
-            db_helper.manage_pt_object_without_line_section(
+            db_helper.manage_simple_pt_object(
                 self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown as e:
             response = self.get_post_error_response_and_log(e, 404)
@@ -386,7 +386,7 @@ class Disruptions(flask_restful.Resource):
 
         # Add localization present in Json
         try:
-            db_helper.manage_pt_object_without_line_section(
+            db_helper.manage_simple_pt_object(
                 self.navitia, disruption.localizations, 'localization', json)
         except exceptions.ObjectUnknown as e:
             response = self.get_put_error_response_and_log(e, 404)
@@ -549,6 +549,7 @@ class ImpactsSearch(flask_restful.Resource):
             application_period_patterns_id = r.pattern_id
             time_slot_id = r.time_slot_id
             line_section_id = r.line_section_id
+            rail_section_id = r.rail_section_id
 
             if impact_id is not None:
                 impacts[impact_id] = {
@@ -708,6 +709,24 @@ class ImpactsSearch(flask_restful.Resource):
                         },
                         'routes': [],
                         'metas': []
+                    }
+
+                if rail_section_id is not None:
+                    impact_pt_objects[impact_id][impact_pt_object_id]['rail_section'] = {
+                        'line': {
+                            'uri': r.rail_section_line_uri,
+                            'type': r.rail_section_line_type
+                        },
+                        'start_point': {
+                            'uri': r.rail_section_start_uri,
+                            'type': r.rail_section_start_type
+                        },
+                        'end_point': {
+                            'uri': r.rail_section_end_uri,
+                            'type': r.rail_section_end_type
+                        },
+                        'blocked_stop_areas': r.rail_section_blocked_stop_areas,
+                        'routes': [],
                     }
 
         for impact in impacts.values():

@@ -151,6 +151,14 @@ line_section_mapping = {
     'end_point': None
 }
 
+rail_section_mapping = {
+    'line': None,
+    'start_point': None,
+    'end_point': None,
+    'blocked_stop_areas': None,
+    'routes': None,
+}
+
 pattern_mapping = {
     'start_date': Date(attribute='start_date'),
     'end_date': Date(attribute='end_date'),

@@ -1,5 +1,6 @@
 # Copyright (c) since 2001, Kisio Digital and/or its affiliates. All rights reserved.
 
+import json
 from copy import deepcopy
 from flask_restful import fields, url_for, marshal
 from flask import current_app, request, g
@@ -28,6 +29,11 @@ class FieldDate(fields.Raw):
             return value.strftime('%Y-%m-%d')
         return None
 
+class FieldJsonData(fields.Raw):
+    def format(self, value):
+        if value:
+            return json.loads(value)
+        return None
 
 class CustomImpacts(fields.Raw):
     def output(self, key, val):
@@ -448,6 +454,11 @@ one_objectTC_generic_fields = {
     'type': fields.Raw
 }
 
+one_objectTC_order_fields = {
+    'id': fields.Raw(attribute='uri'),
+    'order': fields.Raw
+}
+
 one_objectTC_fields = deepcopy(one_objectTC_generic_fields)
 one_objectTC_fields['name'] = FieldObjectName()
 
@@ -463,12 +474,24 @@ line_section_fields = {
                          display_empty=False),
 }
 
+rail_section_fields = {
+    'line': fields.Nested(one_objectTC_fields, display_null=False),
+    'start_point': fields.Nested(one_objectTC_fields, display_null=False),
+    'end_point': fields.Nested(one_objectTC_fields, display_null=False),
+    'blocked_stop_areas': FieldJsonData,
+    'routes': FieldJsonData,
+}
+
 objectTC_fields = {
     'id': fields.Raw(attribute='uri'),
     'type': fields.Raw,
     'name': FieldObjectName(),
     'line_section': fields.Nested(
         line_section_fields,
+        display_null=False,
+        allow_null=True),
+    'rail_section': fields.Nested(
+        rail_section_fields,
         display_null=False,
         allow_null=True)
 }
