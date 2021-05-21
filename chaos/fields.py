@@ -479,7 +479,9 @@ rail_section_fields = {
     'start_point': fields.Nested(one_objectTC_fields, display_null=False),
     'end_point': fields.Nested(one_objectTC_fields, display_null=False),
     'blocked_stop_areas': FieldJsonData,
-    'routes': FieldJsonData,
+    'routes': fields.List(
+        fields.Nested(one_objectTC_fields, display_null=False),
+        display_empty=False)
 }
 
 objectTC_fields = {
