@@ -173,7 +173,7 @@ def fill_and_add_rail_section(navitia, all_objects, pt_object_json):
     rail_section.start_point = fill_and_get_pt_object(navitia, all_objects, rail_section_json['start_point'])
     rail_section.end_point = fill_and_get_pt_object(navitia, all_objects, rail_section_json['end_point'])
 
-    # Here we manage blocked_stop_areas in line_section
+    # Here we manage blocked_stop_areas in rail_section
     rail_section.blocked_stop_areas = json.dumps(rail_section_json["blocked_stop_areas"])
 
     if 'routes' in rail_section_json:

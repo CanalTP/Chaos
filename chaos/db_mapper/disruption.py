@@ -19,6 +19,7 @@ def map_disruption(results):
     time_slots = {}
     line_section_metas = {}
     line_section_routes = {}
+    rail_section_routes = {}
 
     for r in results:
         disruptionId = r.id
@@ -38,6 +39,7 @@ def map_disruption(results):
         application_period_patterns_id = r.pattern_id
         time_slot_id = r.time_slot_id
         line_section_id = r.line_section_id
+        rail_section_id = r.rail_section_id
 
         if disruptionId not in impacts:
             impacts[disruptionId] = {}
@@ -177,7 +179,31 @@ def map_disruption(results):
                     'routes': [],
                     'metas': []
                 }
+            if rail_section_id is not None:
+                if impact_pt_object_id not in rail_section_routes:
+                    rail_section_routes[impact_pt_object_id] = {}
 
+                if r.por_route_id is not None:
+                    rail_section_routes[impact_pt_object_id][r.por_route_id] = {
+                        'uri': r.por_route_uri,
+                        'type': r.por_route_type
+                    }
+                impact_pt_objects[impact_id][impact_pt_object_id]['rail_section'] = {
+                    'line': {
+                        'uri': r.rail_section_line_uri,
+                        'type': r.rail_section_line_type
+                    },
+                    'start_point': {
+                        'uri': r.rail_section_start_uri,
+                        'type': r.rail_section_start_type
+                    },
+                    'end_point': {
+                        'uri': r.rail_section_end_uri,
+                        'type': r.rail_section_end_type
+                    },
+                    'routes': rail_section_routes[impact_pt_object_id].values(),
+                    'metas': []
+                }
         if disruptionId not in localizations:
             localizations[disruptionId] = {}
         if localization_id is not None:

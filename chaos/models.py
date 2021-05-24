@@ -514,7 +514,12 @@ class Disruption(TimestampMixin, db.Model):
                 'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
                 'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
                 'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
-                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value'
+                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
+                'rs.id AS rail_section_id',
+                'por_line.uri AS rail_section_line_uri, por_line.type AS rail_section_line_type',
+                'por_start.uri AS rail_section_start_uri, por_start.type AS rail_section_start_type',
+                'por_end.uri AS rail_section_end_uri, por_end.type AS rail_section_end_type',
+                'por_route.id AS por_route_id, por_route.uri AS por_route_uri, por_route.type AS por_route_type'
             ],
             'and_wheres' : [
                 'd.id = :disruption_id',
@@ -876,6 +881,12 @@ class Disruption(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
         join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
+        join_tables.append('LEFT JOIN rail_section AS rs ON (po.id = rs.object_id)')
+        join_tables.append('LEFT JOIN pt_object AS por_line ON (por_line.id = rs.line_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS por_start ON (por_start.id = rs.start_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS por_end ON (por_end.id = rs.end_object_id)')
+        join_tables.append('LEFT JOIN associate_rail_section_route_object AS arsro ON (arsro.rail_section_id = rs.id)')
+        join_tables.append('LEFT JOIN pt_object AS por_route ON (arsro.route_object_id = por_route.id)')
 
         andwheres = [] if 'and_wheres' not in query_parts else query_parts['and_wheres']
 
@@ -1094,7 +1105,13 @@ class Disruption(TimestampMixin, db.Model):
                 'po_start.uri AS line_section_start_uri, po_start.type AS line_section_start_type',
                 'po_end.uri AS line_section_end_uri, po_end.type AS line_section_end_type',
                 'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
-                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value'
+                'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
+                'rs.id AS rail_section_id',
+                'por_line.uri AS rail_section_line_uri, por_line.type AS rail_section_line_type',
+                'por_start.uri AS rail_section_start_uri, por_start.type AS rail_section_start_type',
+                'por_end.uri AS rail_section_end_uri, por_end.type AS rail_section_end_type',
+                'rs.blocked_stop_areas AS rail_section_blocked_stop_areas',
+                'por_route.id AS por_route_id, por_route.uri AS por_route_uri, por_route.type AS por_route_type',
             ]
         query_parts['and_wheres'].append('d.id IN :disruption_ids')
         query_parts['order_by'] = ['d.end_publication_date','d.id', 'po.type','po.uri']
@@ -1649,6 +1666,12 @@ class Impact(TimestampMixin, db.Model):
         join_tables.append('LEFT JOIN pt_object AS po_route ON (alsro.route_object_id = po_route.id)')
         join_tables.append('LEFT JOIN associate_wording_line_section AS awls ON (awls.line_section_id = ls.id)')
         join_tables.append('LEFT JOIN wording AS awlsw ON (awls.wording_id = awlsw.id)')
+        join_tables.append('LEFT JOIN rail_section AS rs ON (po.id = rs.object_id)')
+        join_tables.append('LEFT JOIN pt_object AS por_line ON (por_line.id = rs.line_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS por_start ON (por_start.id = rs.start_object_id)')
+        join_tables.append('LEFT JOIN pt_object AS por_end ON (por_end.id = rs.end_object_id)')
+        join_tables.append('LEFT JOIN associate_rail_section_route_object AS arsro ON (arsro.rail_section_id = rs.id)')
+        join_tables.append('LEFT JOIN pt_object AS por_route ON (arsro.route_object_id = por_route.id)')
 
         andwheres = [] if 'and_wheres' not in query_parts else query_parts['and_wheres']
 
