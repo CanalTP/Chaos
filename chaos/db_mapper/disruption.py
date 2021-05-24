@@ -40,6 +40,7 @@ def map_disruption(results):
         time_slot_id = r.time_slot_id
         line_section_id = r.line_section_id
         rail_section_id = r.rail_section_id
+        rail_section_blocked_stop_areas = r.rail_section_blocked_stop_areas
 
         if disruptionId not in impacts:
             impacts[disruptionId] = {}
@@ -202,7 +203,7 @@ def map_disruption(results):
                         'type': r.rail_section_end_type
                     },
                     'routes': rail_section_routes[impact_pt_object_id].values(),
-                    'metas': []
+                    'blocked_stop_areas': rail_section_blocked_stop_areas
                 }
         if disruptionId not in localizations:
             localizations[disruptionId] = {}

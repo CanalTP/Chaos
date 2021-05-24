@@ -516,6 +516,7 @@ class Disruption(TimestampMixin, db.Model):
                 'po_route.id AS po_route_id, po_route.uri AS po_route_uri, po_route.type AS po_route_type',
                 'awlsw.id AS awlsw_id, awlsw.key AS awlsw_key, awlsw.value AS awlsw_value',
                 'rs.id AS rail_section_id',
+                'rs.blocked_stop_areas AS rail_section_blocked_stop_areas',
                 'por_line.uri AS rail_section_line_uri, por_line.type AS rail_section_line_type',
                 'por_start.uri AS rail_section_start_uri, por_start.type AS rail_section_start_type',
                 'por_end.uri AS rail_section_end_uri, por_end.type AS rail_section_end_type',
