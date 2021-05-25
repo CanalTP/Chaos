@@ -173,11 +173,12 @@ def populate_rail_section(rail_section, informed_entitie):
         populate_informed_entitie(rail_section.line, informed_entitie.pt_rail_section.line)
     populate_informed_entitie(rail_section.start_point, informed_entitie.pt_rail_section.start_point)
     populate_informed_entitie(rail_section.end_point, informed_entitie.pt_rail_section.end_point)
-    blocked_stop_areas = json.loads(rail_section.blocked_stop_areas)
-    for blocked_stop_area in blocked_stop_areas:
-        blocked_stop_area_pb = informed_entitie.pt_rail_section.blocked_stop_areas.add()
-        populate_ordered_pt_object(blocked_stop_area, blocked_stop_area_pb)
-    #routes = json.loads(rail_section.routes)
+
+    if hasattr(rail_section, 'blocked_stop_areas') and rail_section.blocked_stop_areas:
+        blocked_stop_areas = json.loads(rail_section.blocked_stop_areas)
+        for blocked_stop_area in blocked_stop_areas:
+            blocked_stop_area_pb = informed_entitie.pt_rail_section.blocked_stop_areas.add()
+            populate_ordered_pt_object(blocked_stop_area, blocked_stop_area_pb)
     if hasattr(rail_section, 'routes'):
         for route in rail_section.routes:
             route_pb = informed_entitie.pt_rail_section.routes.add()

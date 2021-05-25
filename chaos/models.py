@@ -2044,7 +2044,7 @@ class RailSection(TimestampMixin, db.Model):
     line = db.relationship('PTobject', foreign_keys=line_object_id)
     start_point = db.relationship('PTobject', foreign_keys=start_object_id, lazy="joined")
     end_point = db.relationship('PTobject', foreign_keys=end_object_id, lazy="joined")
-    blocked_stop_areas = db.Column(db.Text, unique=False, nullable=False)
+    blocked_stop_areas = db.Column(db.Text, unique=False, nullable=True)
     routes = db.relationship("PTobject", secondary=associate_rail_section_route_object, lazy="joined")
 
     def __repr__(self):
