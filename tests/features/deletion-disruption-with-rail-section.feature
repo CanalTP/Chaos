@@ -1,7 +1,9 @@
 Feature: Delete disruption with rail section
     Background:
+        I fill navitia authorization in header
         I fill in header "X-Customer-Id" with "5"
         I fill in header "X-Coverage" with "jdr"
+        I fill in header "X-Contributors" with "contrib1"
 
     Scenario: Delete an disruption and impact with rail_section
 
@@ -45,18 +47,16 @@ Feature: Delete disruption with rail section
     Given I have the relation associate_impact_pt_object in my database:
         | pt_object_id                               | impact_id                            |
         | e0732644-ba46-11eb-9d19-907841ddb058       | e0732643-ba46-11eb-9d19-907841ddb058 |
-    Given I have the following associate_rail_section_route_object in my database:
+    Given I have the relation associate_rail_section_route_object in my database:
         | rail_section_id                       | route_object_id                       |
         | e0732645-ba46-11eb-9d19-907841ddb058  | e0732649-ba46-11eb-9d19-907841ddb058  |
-        | e0732645-ba46-11eb-9d19-907841ddb058  | e073264a-ba46-11eb-9d19-907841ddb058  |
+        | e0732645-ba46-11eb-9d19-907841ddb058  | e073264a-ba46-11eb-9d19-907841ddb058
 
-    
 
-#    When I get "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
-#    Then the status code should be "200"
-#    And the header "Content-Type" should be "application/json"
+    When I get "/disruptions/e0732642-ba46-11eb-9d19-907841ddb058"
+    Then the status code should be "200"
+    And the header "Content-Type" should be "application/json"
 
-#    I fill in header "X-Coverage" with "jdr"
-#    When I delete "/disruptions/6a826e64-028f-11e4-92d0-090027079ff3"
-#    Then the status code should be "204"
+    When I delete "/disruptions/e0732642-ba46-11eb-9d19-907841ddb058"
+    Then the status code should be "204"
 
