@@ -662,7 +662,7 @@ Feature: Manipulate impacts in a Disruption
         """
         Then the status code should be "404"
         And the header "Content-Type" should be "application/json"
-        And the field "error.message" should be "stop_area stop_area:Failed doesn't exist"
+        And the field "error.message" should be "stop_area 'stop_area:Failed' doesn't exist"
 
     Scenario: Put impact with line_section : delete line_section
         Given I have the following clients in my database:
