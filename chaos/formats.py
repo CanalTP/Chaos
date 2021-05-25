@@ -125,7 +125,11 @@ rail_section_format = {
             'uniqueItems': True
         },
     },
-    'required': ['start_point', 'end_point']
+    'required': ['start_point', 'end_point'],
+    'oneOf': [
+        {'required': ['line']},
+        {'required': ['routes']}
+    ]
 }
 
 object_input_format = {
