@@ -6,8 +6,45 @@ import datetime
 from chaos.db_helper import manage_patterns, manage_application_periods
 from chaos.utils import get_application_periods
 
+def get_rail_section(rail_section_uri, with_line=True, with_routes=True):
+    ptobject = chaos.models.PTobject()
+    ptobject.type = "rail_section"
+    ptobject.uri = rail_section_uri
+    ptobject.rail_section = chaos.models.RailSection()
+    if with_line:
+        ptobject.rail_section.line = chaos.models.PTobject()
+        ptobject.rail_section.line.uri = 'line:1'
+        ptobject.rail_section.line.type = 'line'
 
-def get_disruption(contributor_code, with_routes=True, with_message_meta=False, with_patterns=False):
+    ptobject.rail_section.start_point = chaos.models.PTobject()
+    ptobject.rail_section.start_point.uri = 'stop_area:1'
+    ptobject.rail_section.start_point.type = 'stop_area'
+
+    ptobject.rail_section.end_point = chaos.models.PTobject()
+    ptobject.rail_section.end_point.uri = 'stop_area:2'
+    ptobject.rail_section.end_point.type = 'stop_area'
+
+    ptobject.rail_section.blocked_stop_areas = '[{"id": "block_stop_area:1", "order": 0}]'
+
+    if with_routes:
+        route = chaos.models.PTobject()
+        route.uri = 'route:JDR:M14'
+        route.type = 'route'
+        ptobject.rail_section.routes.append(route)
+
+        route = chaos.models.PTobject()
+        route.uri = 'route:JDR:M1'
+        route.type = 'route'
+        ptobject.rail_section.routes.append(route)
+    return ptobject
+
+def get_disruption(
+        contributor_code,
+        with_routes=True,
+        with_message_meta=False,
+        with_patterns=False,
+        with_rail_section=False
+):
 
     # Disruption
     disruption = chaos.models.Disruption()
@@ -132,6 +169,11 @@ def get_disruption(contributor_code, with_routes=True, with_message_meta=False, 
     ptobject.type = "stop_point"
     impact.objects.append(ptobject)
 
+    # Rail_section
+    if with_rail_section:
+        impact.objects.append(get_rail_section("rail_section:1", with_line=True, with_routes=False))
+        impact.objects.append(get_rail_section("rail_section:2", with_line=False, with_routes=True))
+
     # Messages
     message = chaos.models.Message()
     message.text = "Meassage1 test"
@@ -240,7 +282,7 @@ def test_get_pos_time():
         eq_(d, datetime.datetime.utcfromtimestamp(get_pos_time(d)))
 
 
-def test_disruption():
+def test_disruption_without_contributor():
     disruption = get_disruption(None)
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
@@ -337,8 +379,8 @@ def test_disruption():
     eq_(disruption_pb.impacts[2].HasField('notification_date'), False)
 
 
-def test_disruption_raw():
-    disruption = get_disruption('KISIO-DIGITAL', True)
+def test_disruption():
+    disruption = get_disruption('KISIO-DIGITAL')
     feed_entity = populate_pb(disruption).entity[0]
     eq_(feed_entity.is_deleted, False)
     disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
@@ -392,85 +434,6 @@ def test_disruption_raw():
     eq_(disruption_pb.impacts[0].informed_entities[3].uri, disruption.impacts[0].objects[3].uri)
     eq_(disruption_pb.impacts[0].informed_entities[3].pt_object_type,
     get_pt_object_type(disruption.impacts[0].objects[3].type))
-
-    eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
-    eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
-    eq_(disruption_pb.impacts[0].messages[0].channel.max_size, disruption.impacts[0].messages[0].channel.max_size)
-    eq_(disruption_pb.impacts[0].messages[0].channel.content_type,
-    disruption.impacts[0].messages[0].channel.content_type)
-    eq_(disruption_pb.impacts[0].messages[0].channel.types[0], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[0].name))
-    eq_(disruption_pb.impacts[0].messages[0].channel.types[1], get_channel_type(disruption.impacts[0].messages[0].channel.channel_types[1].name))
-
-
-    eq_(disruption_pb.impacts[0].messages[1].text, disruption.impacts[0].messages[1].text)
-    eq_(disruption_pb.impacts[0].messages[1].channel.name, disruption.impacts[0].messages[1].channel.name)
-    eq_(disruption_pb.impacts[0].messages[1].channel.max_size, disruption.impacts[0].messages[1].channel.max_size)
-    eq_(disruption_pb.impacts[0].messages[1].channel.content_type,
-    disruption.impacts[0].messages[1].channel.content_type)
-    eq_(disruption_pb.impacts[0].messages[1].channel.types[0], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[0].name))
-    eq_(disruption_pb.impacts[0].messages[1].channel.types[1], get_channel_type(disruption.impacts[0].messages[1].channel.channel_types[1].name))
-
-    eq_(disruption_pb.impacts[0].HasField('send_notifications'), False)
-    eq_(disruption_pb.impacts[1].HasField('send_notifications'), True)
-    eq_(disruption_pb.impacts[1].send_notifications, True)
-    eq_(disruption_pb.impacts[2].HasField('send_notifications'), False)
-    eq_(disruption_pb.impacts[0].HasField('notification_date'), False)
-    eq_(disruption_pb.impacts[1].HasField('notification_date'), True)
-    eq_(disruption_pb.impacts[1].notification_date, get_pos_time(parse_datetime("2014-04-12T16:52:00").replace(tzinfo=None)))
-    eq_(disruption_pb.impacts[2].HasField('notification_date'), False)
-
-
-def test_disruption_without_routes():
-    disruption = get_disruption('KISIO-DIGITAL', False)
-    feed_entity = populate_pb(disruption).entity[0]
-    eq_(feed_entity.is_deleted, False)
-    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
-
-    eq_(disruption_pb.reference, disruption.reference)
-    eq_(disruption_pb.cause.wording, disruption.cause.wording)
-    eq_(len(disruption_pb.localization), 1)
-    eq_(disruption_pb.localization[0].uri,  disruption.localizations[0].uri)
-    eq_(len(disruption_pb.tags), 2)
-    eq_(disruption_pb.tags[0].name, disruption.tags[0].name)
-    eq_(disruption_pb.tags[1].name, disruption.tags[1].name)
-
-
-    eq_(len(disruption_pb.impacts), 1)
-    eq_(disruption_pb.impacts[0].severity.wording, "Severity_with_priority_NULL")
-    eq_(disruption_pb.impacts[0].severity.color, "#FFFF00")
-    eq_(disruption_pb.impacts[0].severity.priority, 0)
-
-    eq_(len(disruption_pb.impacts[0].application_periods), 1)
-    eq_(len(disruption_pb.impacts[0].informed_entities), 3)
-
-    eq_(disruption_pb.impacts[0].informed_entities[0].uri, disruption.impacts[0].objects[0].uri)
-    eq_(disruption_pb.impacts[0].informed_entities[0].pt_object_type,
-    get_pt_object_type(disruption.impacts[0].objects[0].type))
-
-    eq_(disruption_pb.impacts[0].informed_entities[1].uri, disruption.impacts[0].objects[1].uri)
-    eq_(disruption_pb.impacts[0].informed_entities[1].pt_object_type,
-    get_pt_object_type(disruption.impacts[0].objects[1].type))
-
-    eq_(disruption_pb.impacts[0].informed_entities[2].uri, disruption.impacts[0].objects[2].uri)
-    eq_(disruption_pb.impacts[0].informed_entities[2].pt_object_type,
-    get_pt_object_type(disruption.impacts[0].objects[2].type))
-
-    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.uri,
-    disruption.impacts[0].objects[2].line_section.line.uri)
-    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.line.pt_object_type,
-    get_pt_object_type(disruption.impacts[0].objects[2].line_section.line.type))
-
-    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.uri,
-    disruption.impacts[0].objects[2].line_section.start_point.uri)
-    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.start_point.pt_object_type,
-    get_pt_object_type(disruption.impacts[0].objects[2].line_section.start_point.type))
-
-    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.uri,
-    disruption.impacts[0].objects[2].line_section.end_point.uri)
-    eq_(disruption_pb.impacts[0].informed_entities[2].pt_line_section.end_point.pt_object_type,
-    get_pt_object_type(disruption.impacts[0].objects[2].line_section.end_point.type))
-
-    eq_(len(disruption_pb.impacts[0].informed_entities[2].pt_line_section.routes), 0)
 
     eq_(disruption_pb.impacts[0].messages[0].text, disruption.impacts[0].messages[0].text)
     eq_(disruption_pb.impacts[0].messages[0].channel.name, disruption.impacts[0].messages[0].channel.name)
@@ -677,3 +640,36 @@ def test_impact_with_application_period_patterns():
     eq_(disruption_pb.impacts[0].application_patterns[1].time_slots[0].begin, 63900)
     eq_(disruption_pb.impacts[0].application_patterns[1].time_slots[0].end, 70200)
     eq_(disruption_pb.impacts[0].application_patterns[1].timezone, 'Europe/Paris')
+
+
+def test_disruption_with_rail_section():
+    disruption = get_disruption('KISIO-DIGITAL', with_rail_section=True)
+    feed_entity = populate_pb(disruption).entity[0]
+    disruption_pb = feed_entity.Extensions[chaos.chaos_pb2.disruption]
+
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.HasField('line'), True)
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.line.uri,
+    disruption.impacts[0].objects[5].rail_section.line.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.line.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[5].rail_section.line.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.start_point.uri,
+    disruption.impacts[0].objects[5].rail_section.start_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.start_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[5].rail_section.start_point.type))
+
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.end_point.uri,
+    disruption.impacts[0].objects[5].rail_section.end_point.uri)
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.end_point.pt_object_type,
+    get_pt_object_type(disruption.impacts[0].objects[5].rail_section.end_point.type))
+
+    eq_(len(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.blocked_stop_areas), 1)
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.blocked_stop_areas[0].uri,
+    'block_stop_area:1')
+    eq_(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.blocked_stop_areas[0].order, 0)
+    # with line without routes
+    eq_(len(disruption_pb.impacts[0].informed_entities[5].pt_rail_section.routes), 0)
+    # with routes without line
+    eq_(len(disruption_pb.impacts[0].informed_entities[6].pt_rail_section.routes), 2)
+
+
