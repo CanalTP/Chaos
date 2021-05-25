@@ -403,6 +403,36 @@ def test_impact_with_line_section_with_route_and_metas_value_not_exist():
     json = {'id': 'line:AME:3', 'type': 'line_section', "line_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "routes":[{"id":"route:MTD:9", "type":"route"}], "metas":[{"key":"direction"}]}}
     validate(json, formats.object_input_format)
 
+def test_impact_with_rail_section_validation():
+    json = {'id': 'line:AME:3', 'type': 'rail_section', "rail_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "blocked_stop_areas": [{"id": "stop_area:DUA:SA:8775810", "order": 1}]}}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_impact_with_rail_section_without_end_point_validation():
+    json = {'id': 'line:AME:3', 'type': 'rail_section', "rail_section": {"line": {"id": "line:AME:3", "type": "line"}, "start_point": {"id": "stop_area:MTD:SA:154", "type": "stop_area"}, "blocked_stop_areas": [{"id": "stop_area:DUA:SA:8775810", "order": 1}], "route_patterns": [[{"id": "stop_area:DUA:SA:8775810", "order": 1}, {"id": "stop_area:DUA:SA:8775810", "order": 2}]]}}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_impact_with_rail_section_and_line_type_invalid():
+    json = {'id': 'line:AME:3', 'type': 'rail_section', "rail_section": {"line":{"id":"line:AME:3","type":"stop_area"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "blocked_stop_areas": [{"id": "stop_area:DUA:SA:8775810", "order": 1}]}}
+    validate(json, formats.object_input_format)
+
+@raises(ValidationError)
+def test_impact_with_rail_section_and_start_point_type_invalid():
+    json = {'id': 'line:AME:3', 'type': 'rail_section', "rail_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_point"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "blocked_stop_areas": [{"id": "stop_area:DUA:SA:8775810", "order": 1}]}}
+    validate(json, formats.object_input_format)
+
+
+@raises(ValidationError)
+def test_impact_with_rail_section_and_end_point_type_invalid():
+    json = {'id': 'line:AME:3', 'type': 'rail_section', "rail_section": {"line":{"id":"line:AME:3","type":"line"}, "start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"line"}, "blocked_stop_areas": [{"id": "stop_area:DUA:SA:8775810", "order": 1}]}}
+    validate(json, formats.object_input_format)
+
+
+def test_impact_with_rail_section_without_line_validation():
+    json = {'id': 'line:AME:3', 'type': 'rail_section', "rail_section": {"start_point":{"id":"stop_area:MTD:SA:154", "type":"stop_area"},	"end_point":{"id":"stop_area:JDR:SA:CHVIN", "type":"stop_area"}, "blocked_stop_areas": [{"id": "stop_area:DUA:SA:8775810", "order": 1}], "routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}]}}
+    validate(json, formats.object_input_format)
+
 
 def test_time_slot_input_format_valid():
     json = {"begin": "07:45", "end": "09:30"}
