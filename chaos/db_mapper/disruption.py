@@ -189,11 +189,14 @@ def map_disruption(results):
                         'uri': r.por_route_uri,
                         'type': r.por_route_type
                     }
-                impact_pt_objects[impact_id][impact_pt_object_id]['rail_section'] = {
-                    'line': {
+                rail_section_line = None
+                if r.rail_section_line_uri:
+                    rail_section_line = {
                         'uri': r.rail_section_line_uri,
                         'type': r.rail_section_line_type
-                    },
+                    }
+                impact_pt_objects[impact_id][impact_pt_object_id]['rail_section'] = {
+                    'line': rail_section_line,
                     'start_point': {
                         'uri': r.rail_section_start_uri,
                         'type': r.rail_section_start_type
