@@ -53,7 +53,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects" should exist
         And the field "impact.objects" should have a size of 1
         And the field "impact.objects.0.type" should be "rail_section"
-        And "impact.objects.0.rail_section.line" should be empty
+        And the field "impact.objects.0.rail_section.line" should not exist
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity":{"id":"7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects":[{"id":"stop_area:JDR:BASTI:stop_area:JDR:CHVIN:1","type":"rail_section","rail_section":{"line":{"id":"line:JDR:M5","type":"line"},"start_point":{"id":"stop_area:JDR:BASTI","type":"stop_area"},"end_point":{"id":"stop_area:JDR:CHVIN","type":"stop_area"},"blocked_stop_areas":[{"id":"stop_area:1","order":0}],"route_patterns":[[{"id":"stop_area:JDR:BASTI","order":0},{"id":"stop_area:1","order":1},{"id":"stop_area:JDR:CHVIN","order":2}]]}}],"application_periods":[{"begin":"2014-04-29T16:52:00Z","end":"2014-06-22T02:15:00Z"}]}
@@ -117,7 +117,7 @@ Feature: Manipulate impacts in a Disruption
         And the field "impact.objects" should exist
         And the field "impact.objects" should have a size of 1
         And the field "impact.objects.0.type" should be "rail_section"
-        And "impact.objects.0.rail_section.line" should be empty
+        And the field "impact.objects.0.rail_section.line" should not exist
         When I put to "/disruptions/7ffab230-3d48-4eea-aa2c-22f8680230b6/impacts/7ffab232-3d47-4eea-aa2c-22f8680230b6" with:
         """
         {"severity":{"id":"7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects":[{"id":"stop_area:JDR:BASTI:stop_area:JDR:CHVIN:1","type":"rail_section","rail_section":{"routes":[{"type":"route", "id":"route:JDR:M14"}, {"type":"route", "id":"route:JDR:M1"}],"start_point":{"id":"stop_area:JDR:BASTI","type":"stop_area"},"end_point":{"id":"stop_area:JDR:CHVIN","type":"stop_area"},"blocked_stop_areas":[{"id":"stop_area:1","order":0}],"route_patterns":[[{"id":"stop_area:JDR:BASTI","order":0},{"id":"stop_area:1","order":1},{"id":"stop_area:JDR:CHVIN","order":2}]]}}],"application_periods":[{"begin":"2014-04-29T16:52:00Z","end":"2014-06-22T02:15:00Z"}]}
