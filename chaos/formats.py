@@ -126,7 +126,7 @@ rail_section_format = {
         },
     },
     'required': ['start_point', 'end_point'],
-    'oneOf': [
+    'anyOf': [
         {'required': ['line']},
         {'required': ['routes']}
     ]
