@@ -454,11 +454,6 @@ one_objectTC_generic_fields = {
     'type': fields.Raw
 }
 
-one_objectTC_order_fields = {
-    'id': fields.Raw(attribute='uri'),
-    'order': fields.Raw
-}
-
 one_objectTC_fields = deepcopy(one_objectTC_generic_fields)
 one_objectTC_fields['name'] = FieldObjectName()
 
