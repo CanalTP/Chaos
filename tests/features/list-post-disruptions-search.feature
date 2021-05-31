@@ -772,13 +772,13 @@ Feature: list disruptions with ptObjects filter
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-04-10 16:52:00                  |2014-04-17 16:52:00 |
 
         # string accepted as boolean
-        # When I post to "/disruptions/_search" with:
-        # """
-        # {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"lines": ["line:JDR:M1"]}, "rail_section": "true"}
-        #"""
-        # Then the status code should be "200"
-        # And the header "Content-Type" should be "application/json"
-        # And the field "disruptions" should have a size of 1
+        When I post to "/disruptions/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "publication_status": ["ongoing"], "ptObjectFilter": {"lines": ["line:JDR:M1"]}, "rail_section": "true"}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "disruptions" should have a size of 1
 
         # boolean
         When I post to "/disruptions/_search" with:

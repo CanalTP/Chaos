@@ -788,7 +788,7 @@ class Disruption(TimestampMixin, db.Model):
                     vars['po_type_line_section'] = 'line_section'
                     vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
                 if rail_section and 'lines' in ptObjectFilter and ptObjectFilter['lines']:
-                    uri_filters.append('(po.type = :po_type_rail_section AND po_line.uri IN :po_rail_section_lines)')
+                    uri_filters.append('(po.type = :po_type_rail_section AND por_line.uri IN :po_rail_section_lines)')
                     bindparams['po_type_rail_section'] = db.String
                     bindparams['po_rail_section_lines'] = db.String
                     vars['po_type_rail_section'] = 'rail_section'
