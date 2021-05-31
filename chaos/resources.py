@@ -787,6 +787,7 @@ class DisruptionsSearch(flask_restful.Resource):
         parser_post.add_argument("ends_after_date", type=utils.get_datetime, location='json')
         parser_post.add_argument("ends_before_date", type=utils.get_datetime, location='json')
         parser_post.add_argument("line_section", type=types.boolean, default=False, location='json')
+        parser_post.add_argument("rail_section", type=types.boolean, default=False, location='json')
         parser_post.add_argument("current_time", type=utils.get_datetime, location='json')
         parser_post.add_argument("depth", type=int, default=1, location='json')
 
@@ -824,6 +825,7 @@ class DisruptionsSearch(flask_restful.Resource):
             tags=json.get('tag', None),
             uri=uri,
             line_section=args['line_section'],
+            rail_section=args['rail_section'],
             statuses=json.get('status', disruption_status_values),
             ptObjectFilter=ptObjectFilter,
             cause_category_id=json.get('cause_category_id', None),
@@ -842,6 +844,7 @@ class DisruptionsSearch(flask_restful.Resource):
             tags=json.get('tag', None),
             uri=uri,
             line_section=args['line_section'],
+            rail_section=args['rail_section'],
             statuses=json.get('status', disruption_status_values),
             ptObjectFilter=ptObjectFilter,
             cause_category_id=json.get('cause_category_id', None),

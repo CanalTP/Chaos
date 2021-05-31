@@ -2955,6 +2955,10 @@ components:
           description: If uri is a line id, filter also on related line_section(s)
           type: boolean
           default: false
+        rail_section:
+          description: If uri is a line id, filter also on related rail_section(s)
+          type: boolean
+          default: false
         status:
           description: Filter by status
           default:

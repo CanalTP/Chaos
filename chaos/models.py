@@ -727,6 +727,7 @@ class Disruption(TimestampMixin, db.Model):
                                               tags,
                                               uri,
                                               line_section,
+                                              rail_section,
                                               statuses,
                                               ptObjectFilter,
                                               cause_category_id,
@@ -765,6 +766,12 @@ class Disruption(TimestampMixin, db.Model):
                 bindparams['uri_like'] = db.String
                 vars['po_type_line_section'] = 'line_section'
                 vars['uri_like'] = uri + ':%'
+            if rail_section:
+                uri_filters.append('po.type = :po_type_rail_section AND po.uri LIKE :uri_like')
+                bindparams['po_type_rail_section'] = db.String
+                bindparams['uri_like'] = db.String
+                vars['po_type_rail_section'] = 'rail_section'
+                vars['uri_like'] = uri + ':%'
             andwheres.append('(' + ' OR '.join(uri_filters) + ')')
         elif ptObjectFilter is not None:
             ptObjectIds = [id for ids in ptObjectFilter.itervalues() for id in ids]
@@ -780,6 +787,12 @@ class Disruption(TimestampMixin, db.Model):
                     bindparams['po_line_section_lines'] = db.String
                     vars['po_type_line_section'] = 'line_section'
                     vars['po_line_section_lines'] = tuple(ptObjectFilter['lines'])
+                if rail_section and 'lines' in ptObjectFilter and ptObjectFilter['lines']:
+                    uri_filters.append('(po.type = :po_type_rail_section AND po_line.uri IN :po_rail_section_lines)')
+                    bindparams['po_type_rail_section'] = db.String
+                    bindparams['po_rail_section_lines'] = db.String
+                    vars['po_type_rail_section'] = 'rail_section'
+                    vars['po_rail_section_lines'] = tuple(ptObjectFilter['lines'])
                 andwheres.append('(' + ' OR '.join(uri_filters) + ')')
 
         if isinstance(cause_category_id, basestring) and cause_category_id:
@@ -923,6 +936,7 @@ class Disruption(TimestampMixin, db.Model):
             tags,
             uri,
             line_section,
+            rail_section,
             statuses,
             ptObjectFilter,
             cause_category_id,
@@ -940,6 +954,7 @@ class Disruption(TimestampMixin, db.Model):
             tags = tags,
             uri = uri,
             line_section = line_section,
+            rail_section = rail_section,
             statuses = statuses,
             ptObjectFilter = ptObjectFilter,
             cause_category_id = cause_category_id,
@@ -975,6 +990,7 @@ class Disruption(TimestampMixin, db.Model):
             tags,
             uri,
             line_section,
+            rail_section,
             statuses,
             ptObjectFilter,
             cause_category_id,
@@ -989,6 +1005,7 @@ class Disruption(TimestampMixin, db.Model):
             tags = tags,
             uri = uri,
             line_section = line_section,
+            rail_section = rail_section,
             statuses = statuses,
             ptObjectFilter = ptObjectFilter,
             cause_category_id = cause_category_id,
@@ -1035,6 +1052,7 @@ class Disruption(TimestampMixin, db.Model):
             tags,
             uri,
             line_section,
+            rail_section,
             statuses,
             ptObjectFilter,
             cause_category_id,
@@ -1051,6 +1069,7 @@ class Disruption(TimestampMixin, db.Model):
             tags,
             uri,
             line_section,
+            rail_section,
             statuses,
             ptObjectFilter,
             cause_category_id,
@@ -1069,6 +1088,7 @@ class Disruption(TimestampMixin, db.Model):
             tags = tags,
             uri = uri,
             line_section = line_section,
+            rail_section = rail_section,
             statuses = statuses,
             ptObjectFilter = ptObjectFilter,
             cause_category_id = cause_category_id,
