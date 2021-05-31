@@ -304,6 +304,8 @@ def create_pt_object_from_json(json):
 
     if 'line_section' in json:
         pt_object.line_section = create_line_section_from_json(json['line_section'])
+    elif 'rail_section' in json:
+        pt_object.rail_section = create_rail_section_from_json(json['rail_section'])
     elif 'name' in json:
         pt_object.name = json['name']
 
@@ -319,6 +321,20 @@ def create_line_section_from_json(json):
         line_section.routes = generate_routes_pt_object_from_json(json['routes'])
 
     return line_section
+
+def create_rail_section_from_json(rail_section_json):
+    rail_section = models.RailSection()
+
+    rail_section.start_point = generate_pt_object_from_json(rail_section_json['start_point'])
+    rail_section.end_point = generate_pt_object_from_json(rail_section_json['end_point'])
+    if 'line' in rail_section_json:
+        rail_section.line = generate_pt_object_from_json(rail_section_json['line'])
+    if 'routes' in rail_section_json:
+        rail_section.routes = generate_routes_pt_object_from_json(rail_section_json['routes'])
+    if 'blocked_stop_areas' in rail_section_json:
+        rail_section.blocked_stop_areas = json.dumps(rail_section_json["blocked_stop_areas"])
+
+    return rail_section
 
 
 def create_metas_from_json(json):
