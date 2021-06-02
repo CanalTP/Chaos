@@ -985,7 +985,6 @@ Feature: list disruptions with ptObjects filter
         And the header "Content-Type" should be "application/json"
         And the field "impacts" should have a size of 2
 
-@test
     Scenario: Filter on line for rail section
 
         Given I have the following clients in my database:
@@ -1003,6 +1002,7 @@ Feature: list disruptions with ptObjects filter
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | cause_id                             | client_id                            | contributor_id                       | start_publication_date | end_publication_date |
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
+            | foo2      | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | 7ffab230-3d48-4eea-aa2c-22f8680230b7 | 7ffab230-3d48-4eea-aa2c-22f868023042 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | 2014-04-10T23:42:00    | 2014-04-20T23:42:00  |
 
         Given I have the following severities in my database:
                 | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
@@ -1011,34 +1011,24 @@ Feature: list disruptions with ptObjects filter
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status    | id                                   | disruption_id                        |severity_id                          |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b6 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
-            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b7 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | published | 7ffab232-3d47-4eea-aa2c-22f8680230b7 | 7ffab230-3d48-4eea-aa2c-22f8680230b7 |7ffab232-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following ptobject in my database:
             | type         | uri                                              | created_at          | id                                         |
-            | stop_area    | stop_area:JDR:BASTI                           | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | stop_area    | stop_area:JDR:CHVIN                           | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | rail_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b7 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b7       |
+            | stop_area    | stop_area:JDR:BASTI                              | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | stop_area    | stop_area:JDR:CHVIN                              | 2014-04-04T23:52:12 | 2ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | rail_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b6 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b6       |
+            | line_section | line:JDR:M1:7ffab234-3d49-4eea-aa2c-22f8680230b7 | 2014-04-04T23:52:12 | 3ffab232-3d48-4eea-aa2c-22f8680230b7       |
             | line         | line:JDR:M1                                      | 2014-04-06T22:52:12 | 4ffab232-3d48-4eea-aa2c-22f8680230b6       |
-            | network      | network:TAD:1                              | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
-
-        Given I have the following line_section in my database:
-            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                             |
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b6  |
+            | network      | network:TAD:1                                    | 2014-04-04T23:52:12 | 9ffab232-3d48-4eea-aa2c-22f8680230b6       |
 
         Given I have the following rail_section in my database:
             | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |blocked_stop_areas                                                                                |object_id                             |
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b7  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|'[{"id": "stop_area:DUA:SA:8775810", "order": 1}, {"id": "stop_area:DUA:SA:8768603", "order": 2}]'|3ffab232-3d48-4eea-aa2c-22f8680230b7  |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|[{"id": "stop_area:DUA:SA:8775810", "order": 1}, {"id": "stop_area:DUA:SA:8768603", "order": 2}]|3ffab232-3d48-4eea-aa2c-22f8680230b6  |
 
-        Given I have the following wording in my database:
-            | key       | value     | created_at          | updated_at          | id                                   |
-            |  key1     | 1234      | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |
-            |  key2     | 235       | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the relation associate_wording_line_section in my database:
-            | wording_id                                | line_section_id                       |
-            |  7ffab230-3d48-4eea-aa2c-22f8680230b6     | 7ffab234-3d49-4eea-aa2c-22f8680230b6  |
-            |  7ffab232-3d48-4eea-aa2c-22f8680230b6     | 7ffab234-3d49-4eea-aa2c-22f8680230b6  |
+        Given I have the following line_section in my database:
+            | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                             |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b7  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|3ffab232-3d48-4eea-aa2c-22f8680230b7  |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                                  | impact_id                            |
@@ -1048,6 +1038,15 @@ Feature: list disruptions with ptObjects filter
         Given I have the following applicationperiods in my database:
             | created_at          | updated_at          |id                                   | impact_id                            |start_date                           |end_date            |
             | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b1 | 7ffab232-3d47-4eea-aa2c-22f8680230b6 |2014-04-10 16:52:00                  |2014-04-17 16:52:00 |
+            | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 |7ffab232-3d47-4eea-aa2c-22f8680230b2 | 7ffab232-3d47-4eea-aa2c-22f8680230b7 |2014-04-10 16:52:00                  |2014-04-17 16:52:00 |
+
+        When I post to "/impacts/_search" with:
+        """
+        {"current_time": "2014-04-15T14:00:00Z", "ptObjectFilter": {"lines": ["line:JDR:M2"]}, "rail_section": "true"}
+        """
+        Then the status code should be "200"
+        And the header "Content-Type" should be "application/json"
+        And the field "impacts" should have a size of 0
 
         When I post to "/impacts/_search" with:
         """

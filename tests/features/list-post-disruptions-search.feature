@@ -761,7 +761,7 @@ Feature: list disruptions with ptObjects filter
 
         Given I have the following rail_section in my database:
             | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |blocked_stop_areas                                                                                |object_id                             |
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|'[{"id": "stop_area:DUA:SA:8775810", "order": 1}, {"id": "stop_area:DUA:SA:8768603", "order": 2}]'|3ffab232-3d48-4eea-aa2c-22f8680230b6  |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|[{"id": "stop_area:DUA:SA:8775810", "order": 1}, {"id": "stop_area:DUA:SA:8768603", "order": 2}]|3ffab232-3d48-4eea-aa2c-22f8680230b6  |
 
         Given I have the relation associate_impact_pt_object in my database:
             | pt_object_id                                  | impact_id                            |
@@ -837,7 +837,7 @@ Feature: list disruptions with ptObjects filter
 
         Given I have the following rail_section in my database:
             | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |blocked_stop_areas                                                                                |object_id                             |
-            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|'[{"id": "stop_area:DUA:SA:8775810", "order": 1}, {"id": "stop_area:DUA:SA:8768603", "order": 2}]'|3ffab232-3d48-4eea-aa2c-22f8680230b6  |
+            | 7ffab234-3d49-4eea-aa2c-22f8680230b6  | 4ffab232-3d48-4eea-aa2c-22f8680230b6  | 2014-04-04T23:52:12   | 2014-04-04T23:52:12 | 1ffab232-3d48-4eea-aa2c-22f8680230b6 |2ffab232-3d48-4eea-aa2c-22f8680230b6|[{"id": "stop_area:DUA:SA:8775810", "order": 1}, {"id": "stop_area:DUA:SA:8768603", "order": 2}]|3ffab232-3d48-4eea-aa2c-22f8680230b6  |
 
         Given I have the following line_section in my database:
             | id                                    | line_object_id                        | created_at            | updated_at          | start_object_id                      |end_object_id                       |object_id                             |
