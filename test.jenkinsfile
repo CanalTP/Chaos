@@ -15,7 +15,7 @@ pipeline {
           then
             docker network create canaltp
           fi
-          docker-compose -f docker-compose.test.yml build
+          docker-compose -f docker-compose.test.yml build /* temporary disable --pull for pull limit reasons */
           docker-compose -f docker-compose.test.yml up -d
           '''
         }
