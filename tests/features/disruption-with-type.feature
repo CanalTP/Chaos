@@ -5,20 +5,20 @@ Feature: Handle Disruption with author
         I fill navitia authorization in header
         I fill in header "X-Contributors" with "contrib1"
 
-    Scenario: Create disruption with unexpected type
-
         Given I have the following clients in my database:
             | client_code   | created_at          | updated_at          | id                                   |
             | 5             | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-            | weather   | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
+        Given I have the following contributors in my database:
+            | contributor_code   | created_at          | updated_at          | id                                   |
+            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
         Given I have the following severities in my database:
             | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
             | good news | #654321 | 2019-04-04T23:52:12 | 2019-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
+        Given I have the following causes in my database:
+            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
+            | weather   | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
+    Scenario: Create disruption with unexpected type
         When I post to "/disruptions" with:
         """
         {"reference": "foo","contributor": "contrib1","cause": {"id": "7ffab230-3d48-4eea-aa2c-22f8680230b6"},"publication_period":{"begin":"2018-09-11T13:50:00Z","end":"2018-12-31T16:50:00Z"},"impacts": [{"severity": {"id": "7ffab232-3d48-4eea-aa2c-22f8680230b6"},"objects": [{"id": "network:JDR:1","type": "network"}],"application_periods": [{"begin": "2019-04-29T16:52:00Z","end": "2019-06-22T02:15:00Z"}]}],"type":"unexpected"}
@@ -28,26 +28,9 @@ Feature: Handle Disruption with author
         And the field "disruption.type" should be "unexpected"
 
     Scenario: Get disruption with type
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date     | end_publication_date  |cause_id                              | client_id                            | contributor_id                       | type       |
             | foo       | hello | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | published | 7bbab230-3d48-4eea-aa2c-22f8680230b6 | 2019-04-01T00:00:00        | 2019-04-02T00:00:00   | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | unexpected |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-            | good news | #654321 | 2019-04-04T23:52:12 | 2019-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         Given I have the following impacts in my database:
             | created_at          | updated_at          | status     | id                                   | disruption_id                          |severity_id                            |
@@ -60,26 +43,9 @@ Feature: Handle Disruption with author
         And the field "disruption.type" should be "unexpected"
 
     Scenario: Update disruption with type
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date |cause_id                              | client_id                            | contributor_id                       | type       |
             | foo       | hello | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | published | 7bbab230-3d48-4eea-aa2c-22f8680230b6 | None                   | None                 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | unexpected |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-            | good news | #654321 | 2019-04-04T23:52:12 | 2019-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         When I put to "/disruptions/7bbab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
@@ -90,26 +56,9 @@ Feature: Handle Disruption with author
         And the field "disruption.type" should be null
 
     Scenario: Update disruption with undefined type
-
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following causes in my database:
-            | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | weather   | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
-
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date |cause_id                              | client_id                            | contributor_id                       | type       |
             | foo       | hello | 2019-04-02T23:52:12 | 2019-04-02T23:55:12 | published | 7bbab230-3d48-4eea-aa2c-22f8680230b6 | None                   | None                 | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 | unexpected |
-
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   |client_id                            |
-            | good news | #654321 | 2019-04-04T23:52:12 | 2019-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 |7ffab229-3d48-4eea-aa2c-22f8680230b6 |
 
         When I put to "/disruptions/7bbab230-3d48-4eea-aa2c-22f8680230b6" with:
         """
@@ -120,22 +69,12 @@ Feature: Handle Disruption with author
         And the field "error.message" should be "u'undefined_type' is not one of [None, 'unexpected']"
 
     Scenario: History of a disruption
-        Given I have the following clients in my database:
-            | client_code   | created_at          | updated_at          | id                                   |
-            | 5             | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         Given I have the following causes in my database:
             | wording   | created_at          | updated_at          | is_visible | id                                   |client_id                             |
-            | cause1    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
             | cause2    | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 7bfab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
-        Given I have the following contributors in my database:
-            | contributor_code   | created_at          | updated_at          | id                                   |
-            | contrib1           | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | 7ffab555-3d48-4eea-aa2c-22f8680230b6 |
         Given I have the following disruptions in my database:
             | reference | note  | created_at          | updated_at          | status    | id                                   | start_publication_date | end_publication_date | cause_id                               | client_id                            | contributor_id                         |version|
             | foo       | hello | 2014-04-02T23:52:12 | 2014-04-02T23:55:12 | published | a750994c-01fe-11e4-b4fb-080027079ff3 | 2018-09-11T13:50:00    | 2018-12-31T16:50:00  | 7ffab230-3d48-4eea-aa2c-22f8680230b6   | 7ffab229-3d48-4eea-aa2c-22f8680230b6 | 7ffab555-3d48-4eea-aa2c-22f8680230b6   |1      |
-        Given I have the following severities in my database:
-            | wording   | color   | created_at          | updated_at          | is_visible | id                                   | client_id                            |
-            | good news | #654321 | 2014-04-04T23:52:12 | 2014-04-06T22:52:12 | True       | 7ffab232-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
         Given I have the following tags in my database:
             | name      |  created_at          | updated_at          | is_visible | id                                   |client_id                             |
             | weather   |  2014-04-02T23:52:12 | 2014-04-02T23:55:12 | True       | 5ffab230-3d48-4eea-aa2c-22f8680230b6 | 7ffab229-3d48-4eea-aa2c-22f8680230b6 |
